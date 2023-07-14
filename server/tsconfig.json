@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true, /* config for dayjs */
+    "target": "es6", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "commonjs", /* Specify what module code is generated. */
+    "sourceMap": true, /* Generates corresponding '.map' file. */
+    "rootDir": "./src", /* Specify the root folder within your source files. */
+    "outDir": "./dist", /* Specify an output folder for all emitted files. */
+    "baseUrl": "./", /* Base directory to resolve non-absolute module names. */
+    "removeComments": true, /* Do not emit comments to output. */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
+    "strict": true, /* Enable all strict type-checking options. */
+    "experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
+    "skipLibCheck": true, /* Skip type checking all .d.ts files. */
+    "typeRoots": [
+      "node_modules/@types",
+      "src/typings"
+    ], /* List of folders to include type definitions from. */
+    "lib": [
+      "es6",
+      "dom"
+    ], /* Specify a set of bundled library declaration files that describe the target runtime*/
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ],
+  "ts-node": {
+    "transpileOnly": true
+  }
+}

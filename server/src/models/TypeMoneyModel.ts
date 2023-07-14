@@ -1,0 +1,59 @@
+import { Knex } from "knex";
+
+export default class TypeMoneyModel {
+
+    /**
+    * GET ข้อมูลหลายรายการ
+    */
+
+    async getMany(db: Knex): Promise<{results: any[], totalItem: number, totalPage: number}> {
+        const rs = await db('tbTypeMoneys')
+
+        return {
+            results: rs,
+            totalItem: rs.length,
+            totalPage: (rs.length/15)+1
+        }
+    }
+
+    /**
+    * GET ตาม id
+    */
+
+    async getById(db: Knex, id:number): Promise<{results: any[]}> {
+        const rs = await db('tbTypeMoneys').where('id', id)
+
+        return {
+            results:rs
+        }
+    }
+
+    /**
+    * เพิ่ม Typemoney
+    */
+    async createTypeMoney(db: Knex, money_type:string, durable_goods:number, building:number): Promise<{id: number}> {
+        const [id] = await db('tbTypeMoneys').insert({money_type, durable_goods, building})
+   
+        return {id};
+    }
+
+    /**
+    * แก้ไข Typemoney
+    */
+
+    async updateTypeMoney(db: Knex, id:number, money_type:string, durable_goods:number, building:number): Promise<{rs: number}> {
+        const rs = await db('tbTypeMoneys').where({id:id}).update({money_type:money_type, durable_goods:durable_goods, building:building})
+
+        return {rs}
+    }
+
+    /**
+    * ลบ Typemoney
+    */
+
+    async deleteTypeMoney(db:Knex, id:number): Promise<{rs:number}> {
+        const rs = await db('tbTypeMoneys').where({id:id}).del()
+
+        return {rs}
+    }
+}
