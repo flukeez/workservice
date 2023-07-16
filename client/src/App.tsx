@@ -10,11 +10,13 @@ import {
 } from "@mantine/core";
 
 import DashboardLayout from "./components/DashboardLayout";
-
 const Dashboard = lazy(() => import("./pages/dashboard"));
 const Information = lazy(() => import("./pages/information"));
 const TypeManage = lazy(() => import("./pages/typeManage"));
 const TypeMoney = lazy(() => import("./pages/typeMoney"));
+const FormTypeMange = lazy(
+  () => import("./pages/formTypeManage/formTypeManage")
+);
 
 const Pagenotfound = lazy(() => import("./pages/pageNotFound/pageNotFound"));
 
@@ -48,8 +50,9 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/information" element={<Information />} />
-              <Route path="/typemanages" element={<TypeManage />} />
+              <Route path="/typeManages" element={<TypeManage />} />
               <Route path="/typeMoneys" element={<TypeMoney />} />
+              <Route path="/typeManages/add" element={<FormTypeMange />} />
 
               <Route path="*" element={<Pagenotfound />} />
             </Route>

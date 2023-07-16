@@ -2,13 +2,16 @@ import useTypeMoneyStore from "../../store/TypeMoneyStore";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { Drawer, Text, Input, Group, Button } from "@mantine/core";
+import { useEffect } from "react";
 
 export function DrawerTypeMoneyForm({
   opened,
   onClose,
+  TypeMoney,
 }: {
   opened: boolean;
   onClose: () => void;
+  TypeMoney: number | undefined;
 }) {
   interface Inputs {
     money_type: string;
@@ -31,14 +34,39 @@ export function DrawerTypeMoneyForm({
 
   //submit
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    typeMoneyStore.addTypeMoney({ ...data });
+    if (TypeMoney) {
+      typeMoneyStore
+        .updateTypeMoney(TypeMoney, { ...data })
+        .catch((error) => console.log("Error updating TypeMoney:", error));
+    } else {
+      typeMoneyStore
+        .addTypeMoney({ ...data })
+        .catch((error) => console.log("Error adding TypeMoney:", error));
+    }
+
     handleDrawerClose();
   };
+
+  const fetchTypeMoneyData = (id: number | undefined) => {
+    const typeMoneyData = typeMoneyStore.typeMoney.filter(
+      (state) => state.id === id
+    );
+    reset(...typeMoneyData);
+  };
+
+  useEffect(() => {
+    if (TypeMoney) {
+      console.log(TypeMoney);
+      fetchTypeMoneyData(TypeMoney);
+    } else {
+      console.log("typeMoney=", TypeMoney);
+    }
+  }, [TypeMoney]);
 
   return (
     <Drawer.Root
       opened={opened}
-      onClose={handleDrawerClose}
+      onClose={() => handleDrawerClose}
       position="top"
       size={340}
     >

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { IconPencil, IconX, IconPlus } from "@tabler/icons-react";
 import { Container, Table, Text, Button, Grid, Space } from "@mantine/core";
@@ -39,11 +39,18 @@ export default function TypeMoney() {
     await typeMoneyStore.fetchTypeMoney();
   };
 
-  const delTypeMoneys = (id: number) => {
-    typeMoneyStore.deleteTypeMoney(id);
+  const delTypeMoneys = (id: number | undefined) => {
+    if (id !== undefined) {
+      typeMoneyStore.deleteTypeMoney(id).catch((error) => {
+        console.log("error =>", error);
+      });
+    } else {
+      console.log("Invalid id");
+    }
   };
 
   const [opened, { toggle }] = useDisclosure(false);
+  const [typeMoney, setTypeMoney] = useState<number | undefined>();
 
   const rows = typeMoneyStore.typeMoney.map((value, key) => {
     return (
@@ -53,7 +60,15 @@ export default function TypeMoney() {
         <td className={classes.td}>{value.durable_goods}</td>
         <td className={classes.td}>{value.building}</td>
         <td className={classes.center}>
-          <Button size="xs" mx="xs" compact>
+          <Button
+            size="xs"
+            mx="xs"
+            compact
+            onClick={() => {
+              setTypeMoney(value.id);
+              toggle();
+            }}
+          >
             <IconPencil />
             แก้ไข
           </Button>
@@ -83,7 +98,13 @@ export default function TypeMoney() {
             <Text size="lg">ประเภทเงิน</Text>
           </Grid.Col>
           <Grid.Col md={"auto"} offset={9}>
-            <Button color="green" size="xs" onClick={toggle}>
+            <Button
+              color="green"
+              size="xs"
+              onClick={() => {
+                toggle(), setTypeMoney(undefined);
+              }}
+            >
               <IconPlus /> เพิ่มข้อมูล
             </Button>
           </Grid.Col>
@@ -124,7 +145,11 @@ export default function TypeMoney() {
         </Grid>
       </Container>
 
-      <DrawerTypeMoneyForm opened={opened} onClose={toggle} />
+      <DrawerTypeMoneyForm
+        opened={opened}
+        onClose={toggle}
+        TypeMoney={typeMoney}
+      />
     </>
   );
 }

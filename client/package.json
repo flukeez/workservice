@@ -14,8 +14,10 @@
     "@mantine/core": "^6.0.16",
     "@mantine/dates": "^6.0.16",
     "@mantine/hooks": "^6.0.16",
+    "@pavlobu/zustand": "^4.1.4-4",
     "@tabler/icons-react": "^2.25.0",
     "@types/node": "^20.4.2",
+    "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "immer": "^10.0.2",
     "react": "^18.2.0",
@@ -23,6 +25,7 @@
     "react-hook-form": "^7.45.1",
     "react-router-dom": "^6.14.1",
     "react-toastify": "^9.1.3",
+    "zukeeper": "^1.0.2",
     "zustand": "^4.3.9"
   },
   "devDependencies": {
