@@ -1,12 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import { IconPencil, IconX, IconPlus } from "@tabler/icons-react";
-import { Container, Table, Text, Button, Grid, Space } from "@mantine/core";
+import { IconPencil, IconX, IconPlus, IconSearch } from "@tabler/icons-react";
+import {
+  Container,
+  Table,
+  Text,
+  Button,
+  Grid,
+  Space,
+  Input,
+} from "@mantine/core";
 import useTypeManageStore from "../../store/TypeManageStore";
 
 import { createStyles } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -49,9 +56,6 @@ export default function TypeManage() {
     }
   };
 
-  const [opened, { toggle }] = useDisclosure(false);
-  const [typeManage, setTypeManage] = useState<number | undefined>();
-
   const rows = typeManageStore.typeManage.map((value, key) => {
     return (
       <tr key={key}>
@@ -64,10 +68,8 @@ export default function TypeManage() {
             size="xs"
             mx="xs"
             compact
-            onClick={() => {
-              setTypeManage(value.id);
-              toggle();
-            }}
+            component={Link}
+            to={value.id ? `edit/${value.id.toString()}` : ""}
           >
             <IconPencil />
             แก้ไข
@@ -108,8 +110,14 @@ export default function TypeManage() {
             </Button>
           </Grid.Col>
         </Grid>
-        <Space h="md" />
 
+        <Grid>
+          <Grid.Col md={4}>
+            <Input icon={<IconSearch />} placeholder="ค้นหา ชื่อ" />
+          </Grid.Col>
+        </Grid>
+
+        <Space h="md" />
         <Table striped highlightOnHover withColumnBorders>
           <thead className={classes.thead}>
             <tr>

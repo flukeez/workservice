@@ -1,5 +1,5 @@
 import useTypeManageStore from "../../store/TypeManageStore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import {
@@ -12,6 +12,7 @@ import {
   Group,
 } from "@mantine/core";
 import { createStyles } from "@mantine/core";
+import { useEffect } from "react";
 
 const useStyles = createStyles((theme) => ({
   container: {
@@ -39,35 +40,58 @@ export default function FormTypeMange() {
   const { classes } = useStyles();
 
   const typeManageStore = useTypeManageStore();
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    typeManageStore
-      .addTypeManage({ ...data })
-      .catch((error) => console.log("Error adding TypeManage", error));
+    if (id) {
+      const parsedId = Number(id);
+      typeManageStore
+        .updateTypeManage(parsedId, { ...data })
+        .catch((error) => console.log("Error updating TypeManage:", error));
+    } else {
+      typeManageStore
+        .addTypeManage({ ...data })
+        .catch((error) => console.log("Error adding TypeManage", error));
+    }
+
+    navigate("/typeManages");
   };
+
+  useEffect(() => {
+    if (id) {
+      const parsedId = Number(id);
+      const typeManageData = typeManageStore.typeManage.filter(
+        (state) => state.id == parsedId
+      );
+      reset(...typeManageData);
+    }
+  }, []);
 
   return (
     <>
       <Container fluid px="xs" className={classes.container} pb="md">
         <Grid mt="sm">
           <Grid.Col md={2}>
-            <Text size="lg">เพิ่มข้อมูลประเภทการจัดหา</Text>
+            <Text size="lg">
+              {id ? "แก้ไขข้อมูลประเภทการจัดการ" : "ประเภทการจัดหา"}
+            </Text>
           </Grid.Col>
         </Grid>
 
         <Space h="md" />
         <form onSubmit={handleSubmit(onSubmit)}>
           <Input.Wrapper
-            label="ประเภทงิน"
+            label="ประเภทการจัดหา"
             required
             mx="auto"
             error={errors.manage_type && errors.manage_type.message}
           >
             <Input
-              placeholder="ประเภทงิน"
+              placeholder="ประเภทการจัดหา"
               error={errors.manage_type ? errors.manage_type.message : ""}
               {...register("manage_type", {
-                required: "ป้อนประเภทของเงิน",
+                required: "ป้อนประเภทของการจัดหา",
               })}
             />
           </Input.Wrapper>

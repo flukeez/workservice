@@ -30,6 +30,13 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+interface typeMoneyInterface {
+  id?: number;
+  money_type: string;
+  durable_goods: number;
+  building: number;
+}
+
 export default function TypeMoney() {
   const { classes } = useStyles();
 
@@ -50,7 +57,9 @@ export default function TypeMoney() {
   };
 
   const [opened, { toggle }] = useDisclosure(false);
-  const [typeMoney, setTypeMoney] = useState<number | undefined>();
+  const [typeMoney, setTypeMoney] = useState<typeMoneyInterface | undefined>(
+    undefined
+  );
 
   const rows = typeMoneyStore.typeMoney.map((value, key) => {
     return (
@@ -65,7 +74,7 @@ export default function TypeMoney() {
             mx="xs"
             compact
             onClick={() => {
-              setTypeMoney(value.id);
+              setTypeMoney(value);
               toggle();
             }}
           >

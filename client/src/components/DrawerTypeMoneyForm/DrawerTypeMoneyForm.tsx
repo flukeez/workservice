@@ -4,6 +4,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Drawer, Text, Input, Group, Button } from "@mantine/core";
 import { useEffect } from "react";
 
+interface TypeMoneyInterFace {
+  id?: number;
+  money_type: string;
+  durable_goods: number;
+  building: number;
+}
+
 export function DrawerTypeMoneyForm({
   opened,
   onClose,
@@ -11,13 +18,14 @@ export function DrawerTypeMoneyForm({
 }: {
   opened: boolean;
   onClose: () => void;
-  TypeMoney: number | undefined;
+  TypeMoney?: TypeMoneyInterFace;
 }) {
   interface Inputs {
     money_type: string;
     durable_goods: number;
     building: number;
   }
+
   const {
     register,
     handleSubmit,
@@ -34,9 +42,9 @@ export function DrawerTypeMoneyForm({
 
   //submit
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    if (TypeMoney) {
+    if (TypeMoney && typeof TypeMoney.id === "number") {
       typeMoneyStore
-        .updateTypeMoney(TypeMoney, { ...data })
+        .updateTypeMoney(TypeMoney.id, { ...data })
         .catch((error) => console.log("Error updating TypeMoney:", error));
     } else {
       typeMoneyStore
@@ -47,19 +55,11 @@ export function DrawerTypeMoneyForm({
     handleDrawerClose();
   };
 
-  const fetchTypeMoneyData = (id: number | undefined) => {
-    const typeMoneyData = typeMoneyStore.typeMoney.filter(
-      (state) => state.id === id
-    );
-    reset(...typeMoneyData);
-  };
-
   useEffect(() => {
     if (TypeMoney) {
-      console.log(TypeMoney);
-      fetchTypeMoneyData(TypeMoney);
+      reset(TypeMoney);
     } else {
-      console.log("typeMoney=", TypeMoney);
+      reset();
     }
   }, [TypeMoney]);
 
@@ -75,7 +75,7 @@ export function DrawerTypeMoneyForm({
         <Drawer.Header>
           <Drawer.Title>
             <Text size="xl" fw={700}>
-              เพิ่มข้อมูลประเภทเงิน
+              {TypeMoney ? "แก้ไขข้อมูลประเภทเงิน" : "เพิ่มข้อมูลประเภทเงิน"}
             </Text>
           </Drawer.Title>
           <Drawer.CloseButton />

@@ -53,6 +53,7 @@ function App() {
               <Route path="/typeManages" element={<TypeManage />} />
               <Route path="/typeMoneys" element={<TypeMoney />} />
               <Route path="/typeManages/add" element={<FormTypeMange />} />
+              <Route path="/typeManages/edit/:id" element={<FormTypeMange />} />
 
               <Route path="*" element={<Pagenotfound />} />
             </Route>
