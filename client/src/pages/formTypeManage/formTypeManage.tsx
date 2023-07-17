@@ -1,3 +1,4 @@
+import shallow from "@pavlobu/zustand/shallow";
 import useTypeManageStore from "../../store/TypeManageStore";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -40,20 +41,27 @@ export default function FormTypeMange() {
 
   const { classes } = useStyles();
 
-  const typeManageStore = useTypeManageStore();
+  const { updateTypeManage, addTypeManage, typeManage } = useTypeManageStore(
+    (state) => ({
+      updateTypeManage: state.updateTypeManage,
+      addTypeManage: state.addTypeManage,
+      typeManage: state.typeManage,
+    }),
+    shallow
+  );
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if (id) {
       const parsedId = Number(id);
-      typeManageStore
-        .updateTypeManage(parsedId, { ...data })
-        .catch((error) => console.log("Error updating TypeManage:", error));
+      updateTypeManage(parsedId, { ...data }).catch((error) =>
+        console.log("Error updating TypeManage:", error)
+      );
     } else {
-      typeManageStore
-        .addTypeManage({ ...data })
-        .catch((error) => console.log("Error adding TypeManage", error));
+      addTypeManage({ ...data }).catch((error) =>
+        console.log("Error adding TypeManage", error)
+      );
     }
 
     navigate("/typeManages");
@@ -62,9 +70,7 @@ export default function FormTypeMange() {
   useEffect(() => {
     if (id) {
       const parsedId = Number(id);
-      const typeManageData = typeManageStore.typeManage.filter(
-        (state) => state.id == parsedId
-      );
+      const typeManageData = typeManage.filter((state) => state.id == parsedId);
       reset(...typeManageData);
     }
   }, []);

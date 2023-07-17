@@ -11,6 +11,7 @@ import {
   Space,
   Input,
 } from "@mantine/core";
+import { shallow } from "zustand/shallow";
 import useTypeManageStore from "../../store/TypeManageStore";
 
 import { createStyles } from "@mantine/core";
@@ -40,15 +41,22 @@ const useStyles = createStyles((theme) => ({
 export default function TypeManage() {
   const { classes } = useStyles();
 
-  const typeManageStore = useTypeManageStore();
+  const { fetchTypeManage, deleteTypeManage, typeManage } = useTypeManageStore(
+    (state) => ({
+      fetchTypeManage: state.fetchTypeManage,
+      deleteTypeManage: state.deleteTypeManage,
+      typeManage: state.typeManage,
+    }),
+    shallow
+  );
 
   const getTypeManages = async () => {
-    await typeManageStore.fetchTypeManage();
+    await fetchTypeManage();
   };
 
   const delTypeManages = (id: number | undefined) => {
     if (id !== undefined) {
-      typeManageStore.deleteTypeManage(id).catch((error) => {
+      deleteTypeManage(id).catch((error) => {
         console.log("error =>", error);
       });
     } else {
@@ -56,7 +64,7 @@ export default function TypeManage() {
     }
   };
 
-  const rows = typeManageStore.typeManage.map((value, key) => {
+  const rows = typeManage.map((value, key) => {
     return (
       <tr key={key}>
         <td className={classes.center}>{value.code}</td>
@@ -146,7 +154,7 @@ export default function TypeManage() {
           <Grid.Col span={10}></Grid.Col>
           <Grid.Col span="auto">
             <Text ta="right">
-              ค้นเจอทั้งหมด {typeManageStore.typeManage.length} รายการ
+              {/* ค้นเจอทั้งหมด {typeManageStore.typeManage.length} รายการ */}
             </Text>
           </Grid.Col>
         </Grid>

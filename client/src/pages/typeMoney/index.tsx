@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { IconPencil, IconX, IconPlus } from "@tabler/icons-react";
 import { Container, Table, Text, Button, Grid, Space } from "@mantine/core";
+import { shallow } from "zustand/shallow";
 import useTypeMoneyStore from "../../store/TypeMoneyStore";
 
 import { createStyles, getStylesRef, rem } from "@mantine/core";
@@ -41,15 +42,22 @@ interface typeMoneyInterface {
 export default function TypeMoney() {
   const { classes } = useStyles();
 
-  const typeMoneyStore = useTypeMoneyStore();
+  const { fetchTypeMoney, deleteTypeMoney, typeMoney } = useTypeMoneyStore(
+    (state) => ({
+      fetchTypeMoney: state.fetchTypeMoney,
+      deleteTypeMoney: state.deleteTypeMoney,
+      typeMoney: state.typeMoney,
+    }),
+    shallow
+  );
 
   const getTypeMoneys = async () => {
-    await typeMoneyStore.fetchTypeMoney();
+    await fetchTypeMoney();
   };
 
   const delTypeMoneys = (id: number | undefined) => {
     if (id !== undefined) {
-      typeMoneyStore.deleteTypeMoney(id).catch((error) => {
+      deleteTypeMoney(id).catch((error) => {
         console.log("error =>", error);
       });
     } else {
@@ -58,11 +66,11 @@ export default function TypeMoney() {
   };
 
   const [opened, { toggle }] = useDisclosure(false);
-  const [typeMoney, setTypeMoney] = useState<typeMoneyInterface | undefined>(
-    undefined
-  );
+  const [typeMoneyData, setTypeMoneyData] = useState<
+    typeMoneyInterface | undefined
+  >(undefined);
 
-  const rows = typeMoneyStore.typeMoney.map((value, key) => {
+  const rows = typeMoney.map((value, key) => {
     return (
       <tr key={key}>
         <td className={classes.center}>{value.code}</td>
@@ -75,7 +83,7 @@ export default function TypeMoney() {
             mx="xs"
             compact
             onClick={() => {
-              setTypeMoney(value);
+              setTypeMoneyData(value);
               toggle();
             }}
           >
@@ -112,7 +120,7 @@ export default function TypeMoney() {
               color="green"
               size="xs"
               onClick={() => {
-                toggle(), setTypeMoney(undefined);
+                toggle(), setTypeMoneyData(undefined);
               }}
             >
               <IconPlus /> เพิ่มข้อมูล
@@ -148,9 +156,7 @@ export default function TypeMoney() {
         <Grid mt="sm" justify="flex-end">
           <Grid.Col span={10}></Grid.Col>
           <Grid.Col span="auto">
-            <Text ta="right">
-              ค้นเจอทั้งหมด {typeMoneyStore.typeMoney.length} รายการ
-            </Text>
+            <Text ta="right">ค้นเจอทั้งหมด {typeMoney.length} รายการ</Text>
           </Grid.Col>
         </Grid>
       </Container>
@@ -158,7 +164,7 @@ export default function TypeMoney() {
       <DrawerTypeMoneyForm
         opened={opened}
         onClose={toggle}
-        TypeMoney={typeMoney}
+        TypeMoney={typeMoneyData}
       />
     </>
   );

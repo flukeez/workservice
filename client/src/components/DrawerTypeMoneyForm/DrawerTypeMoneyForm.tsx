@@ -42,18 +42,21 @@ export function DrawerTypeMoneyForm({
     reset(initialTypeMoney);
   };
 
-  const typeMoneyStore = useTypeMoneyStore();
+  const { updateTypeMoney, addTypeMoney } = useTypeMoneyStore((state) => ({
+    updateTypeMoney: state.updateTypeMoney,
+    addTypeMoney: state.addTypeMoney,
+  }));
 
   //submit
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     if (TypeMoney && typeof TypeMoney.id === "number") {
-      typeMoneyStore
-        .updateTypeMoney(TypeMoney.id, { ...data })
-        .catch((error) => console.log("Error updating TypeMoney:", error));
+      updateTypeMoney(TypeMoney.id, { ...data }).catch((error) =>
+        console.log("Error updating TypeMoney:", error)
+      );
     } else {
-      typeMoneyStore
-        .addTypeMoney({ ...data })
-        .catch((error) => console.log("Error adding TypeMoney:", error));
+      addTypeMoney({ ...data }).catch((error) =>
+        console.log("Error adding TypeMoney:", error)
+      );
     }
 
     handleDrawerClose();
