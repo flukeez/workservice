@@ -4,8 +4,11 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Drawer, Text, Input, Group, Button } from "@mantine/core";
 import { useEffect } from "react";
 
+import { initialTypeMoney } from "../../initial/initialTypeMoney";
+
 interface TypeMoneyInterFace {
   id?: number;
+  code: string;
   money_type: string;
   durable_goods: number;
   building: number;
@@ -21,6 +24,7 @@ export function DrawerTypeMoneyForm({
   TypeMoney?: TypeMoneyInterFace;
 }) {
   interface Inputs {
+    code: string;
     money_type: string;
     durable_goods: number;
     building: number;
@@ -35,7 +39,7 @@ export function DrawerTypeMoneyForm({
 
   const handleDrawerClose = () => {
     onClose();
-    reset();
+    reset(initialTypeMoney);
   };
 
   const typeMoneyStore = useTypeMoneyStore();
@@ -68,7 +72,7 @@ export function DrawerTypeMoneyForm({
       opened={opened}
       onClose={() => handleDrawerClose}
       position="top"
-      size={340}
+      size={380}
     >
       <Drawer.Overlay />
       <Drawer.Content>
@@ -84,13 +88,27 @@ export function DrawerTypeMoneyForm({
           {/* ส่วนของฟอร์ม */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <Input.Wrapper
-              label="ประเภทงิน"
+              label="รหัส"
+              required
+              mx="auto"
+              error={errors.code && errors.code.message}
+            >
+              <Input
+                placeholder="รหัส"
+                error={errors.code ? errors.code.message : ""}
+                {...register("code", {
+                  required: "ป้อนรหัส",
+                })}
+              />
+            </Input.Wrapper>
+            <Input.Wrapper
+              label="ประเภทเงิน"
               required
               mx="auto"
               error={errors.money_type && errors.money_type.message}
             >
               <Input
-                placeholder="ประเภทงิน"
+                placeholder="ประเภทเงิน"
                 error={errors.money_type ? errors.money_type.message : ""}
                 {...register("money_type", {
                   required: "ป้อนประเภทของเงิน",

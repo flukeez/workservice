@@ -59,7 +59,7 @@ export default function TypeManage() {
   const rows = typeManageStore.typeManage.map((value, key) => {
     return (
       <tr key={key}>
-        <td className={classes.center}>{key + 1}</td>
+        <td className={classes.center}>{value.code}</td>
         <td>{value.manage_type}</td>
         <td className={classes.td}>{value.durable_goods}</td>
         <td className={classes.td}>{value.building}</td>

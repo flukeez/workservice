@@ -32,6 +32,7 @@ const useStyles = createStyles((theme) => ({
 
 interface typeMoneyInterface {
   id?: number;
+  code: string;
   money_type: string;
   durable_goods: number;
   building: number;
@@ -64,7 +65,7 @@ export default function TypeMoney() {
   const rows = typeMoneyStore.typeMoney.map((value, key) => {
     return (
       <tr key={key}>
-        <td className={classes.center}>{key + 1}</td>
+        <td className={classes.center}>{value.code}</td>
         <td>{value.money_type}</td>
         <td className={classes.td}>{value.durable_goods}</td>
         <td className={classes.td}>{value.building}</td>

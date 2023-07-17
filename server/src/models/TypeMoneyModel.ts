@@ -31,8 +31,8 @@ export default class TypeMoneyModel {
     /**
     * เพิ่ม Typemoney
     */
-    async createTypeMoney(db: Knex, money_type:string, durable_goods:number, building:number): Promise<{id: number}> {
-        const [id] = await db('tbTypeMoneys').insert({money_type, durable_goods, building})
+    async createTypeMoney(db: Knex, code:string, money_type:string, durable_goods:number, building:number): Promise<{id: number}> {
+        const [id] = await db('tbTypeMoneys').insert({code, money_type, durable_goods, building})
    
         return {id};
     }
@@ -41,8 +41,8 @@ export default class TypeMoneyModel {
     * แก้ไข Typemoney
     */
 
-    async updateTypeMoney(db: Knex, id:number, money_type:string, durable_goods:number, building:number): Promise<{rs: number}> {
-        const rs = await db('tbTypeMoneys').where({id:id}).update({money_type:money_type, durable_goods:durable_goods, building:building})
+    async updateTypeMoney(db: Knex, id:number, code:string, money_type:string, durable_goods:number, building:number): Promise<{rs: number}> {
+        const rs = await db('tbTypeMoneys').where({id:id}).update({code:code, money_type:money_type, durable_goods:durable_goods, building:building})
 
         return {rs}
     }

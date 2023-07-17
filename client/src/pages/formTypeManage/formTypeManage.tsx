@@ -25,6 +25,7 @@ const useStyles = createStyles((theme) => ({
 
 export default function FormTypeMange() {
   interface Inputs {
+    code: string;
     manage_type: string;
     durable_goods: number;
     building: number;
@@ -81,6 +82,20 @@ export default function FormTypeMange() {
 
         <Space h="md" />
         <form onSubmit={handleSubmit(onSubmit)}>
+          <Input.Wrapper
+            label="รหัส"
+            required
+            mx="auto"
+            error={errors.code && errors.code.message}
+          >
+            <Input
+              placeholder="รหัส"
+              error={errors.code ? errors.code.message : ""}
+              {...register("code", {
+                required: "ป้อนรหัส",
+              })}
+            />
+          </Input.Wrapper>
           <Input.Wrapper
             label="ประเภทการจัดหา"
             required

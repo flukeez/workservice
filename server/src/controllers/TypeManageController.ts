@@ -34,10 +34,10 @@ export default async function TypeManageController(fastify:FastifyInstance) {
     //insert
     fastify.post('/create', async (request, replay) => {
         try {
-            const {manage_type, durable_goods, building}: any = request.body
-            const {id} = await typeManageModel.createTypeManage(db, manage_type, durable_goods, building);
+            const {code, manage_type, durable_goods, building}: any = request.body
+            const {id} = await typeManageModel.createTypeManage(db, code, manage_type, durable_goods, building);
 
-            replay.send({message: `เพิ่มข้อมูลสำเร็จ`, rows: {id:id, manage_type:manage_type, durable_goods:durable_goods, building:building}})
+            replay.send({message: `เพิ่มข้อมูลสำเร็จ`, rows: {id:id, code:code, manage_type:manage_type, durable_goods:durable_goods, building:building}})
 
         } catch (error) {
             console.log('Error =>', error)
@@ -49,9 +49,9 @@ export default async function TypeManageController(fastify:FastifyInstance) {
     fastify.put('/:id', async (request, replay) => {
         try {
             const {id}:any = request.params
-            const {manage_type, durable_goods, building}: any = request.body
+            const {code, manage_type, durable_goods, building}: any = request.body
 
-            const result = await typeManageModel.updateTypeManage(db, id, manage_type, durable_goods, building)
+            const result = await typeManageModel.updateTypeManage(db, id, code, manage_type, durable_goods, building)
 
             replay.send({message: `แก้ไขข้อมูลสำเร็จ`, rows:result})
         } catch (error) {

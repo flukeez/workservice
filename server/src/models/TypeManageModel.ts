@@ -31,8 +31,8 @@ export default class TypeManageModel {
     /**
     * เพิ่ม Typemoney
     */
-    async createTypeManage(db: Knex, manage_type:string, durable_goods:number, building:number): Promise<{id: number}> {
-        const [id] = await db('tbTypeManages').insert({manage_type, durable_goods, building})
+    async createTypeManage(db: Knex, code:string, manage_type:string, durable_goods:number, building:number): Promise<{id: number}> {
+        const [id] = await db('tbTypeManages').insert({code, manage_type, durable_goods, building})
    
         return {id};
     }
@@ -41,8 +41,8 @@ export default class TypeManageModel {
     * แก้ไข Typemoney
     */
 
-    async updateTypeManage(db: Knex, id:number, manage_type:string, durable_goods:number, building:number): Promise<{rs: number}> {
-        const rs = await db('tbTypeManages').where({id:id}).update({manage_type:manage_type, durable_goods:durable_goods, building:building})
+    async updateTypeManage(db: Knex, id:number, code:string, manage_type:string, durable_goods:number, building:number): Promise<{rs: number}> {
+        const rs = await db('tbTypeManages').where({id:id}).update({code:code, manage_type:manage_type, durable_goods:durable_goods, building:building})
 
         return {rs}
     }

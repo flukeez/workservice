@@ -5,6 +5,7 @@ import axios from "axios";
 
 type TypeManage = {
   id?: number | undefined;
+  code: string;
   manage_type: string;
   durable_goods: number;
   building: number;

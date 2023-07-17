@@ -5,6 +5,7 @@ import axios from "axios";
 
 type TypeMoney = {
   id?: number | undefined;
+  code: string;
   money_type: string;
   durable_goods: number;
   building: number;
