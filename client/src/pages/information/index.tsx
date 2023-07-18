@@ -1,5 +1,5 @@
-import { Text } from "@mantine/core";
+import BreadcrumbNavigation from "@/components/breadcrumb_navigation/BreadcrumbNavigation";
 
 export default function Information() {
-  return <Text size="lg">Information Page</Text>;
+  return <BreadcrumbNavigation label="information" />;
 }

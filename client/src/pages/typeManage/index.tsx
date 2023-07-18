@@ -1,164 +1,180 @@
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { sortBy } from "lodash";
+import Axios from "axios";
 
-import { IconPencil, IconX, IconPlus, IconSearch } from "@tabler/icons-react";
-import {
-  Container,
-  Table,
-  Text,
-  Button,
-  Grid,
-  Space,
-  Input,
-} from "@mantine/core";
-import { shallow } from "zustand/shallow";
-import useTypeManageStore from "../../store/TypeManageStore";
+import { useDisclosure } from "@mantine/hooks";
+import { DataTable, DataTableSortStatus } from "mantine-datatable";
+import { Card, Group, Text, Button } from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
 
-import { createStyles } from "@mantine/core";
+import BreadcrumbNavigation from "@/components/breadcrumb_navigation/BreadcrumbNavigation";
+import TypeMoney from "../typeMoney";
 
-const useStyles = createStyles((theme) => ({
-  container: {
-    borderRadius: theme.radius.sm,
-    boxShadow: theme.shadows.xs,
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-  },
-  thead: {
-    backgroundColor:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[4]
-        : theme.colors.gray[4],
-  },
-  center: {
-    textAlign: "center",
-  },
-  td: {
-    textAlign: "center",
-    color: theme.colors.blue[8],
-  },
-}));
+interface TypeManageInterface {
+  id: number;
+  code: string;
+  manage_type: string;
+  durable_goods: number;
+  building: number;
+}
 
 export default function TypeManage() {
-  const { classes } = useStyles();
+  const [opened, { toggle }] = useDisclosure(false);
+  const [loading, setLoading] = useState(true); //ถ้าไม่รอโหลด เวลาเอา typemoney มาsort มันจะยังไม่มีค่า หรือจะเอาทั้งหมดไปใส่ใน getTypemoney ก้ได้ แต่มันจะfetch ข้อมูลบ่อย
+  const [typeManage, setTypeManage] = useState<TypeManageInterface[]>([]); //ไว้เก็บข้อมูลทั้งหมด
+  const [typeManageData, setTypeManageData] = useState<
+    TypeManageInterface | undefined
+  >(undefined); //เวลาดึงไปใช้แค่ไอดีเดียว
+  const PAGE_SIZE = 15;
+  const [page, setPage] = useState(1); //เลขหน้า เริ่มจาก 1
 
-  const { fetchTypeManage, deleteTypeManage, typeManage } = useTypeManageStore(
-    (state) => ({
-      fetchTypeManage: state.fetchTypeManage,
-      deleteTypeManage: state.deleteTypeManage,
-      typeManage: state.typeManage,
-    }),
-    shallow
-  );
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
+    columnAccessor: "code",
+    direction: "asc",
+  });
+  const [record, setRecord] = useState<TypeManageInterface[]>([]);
 
   const getTypeManages = async () => {
-    await fetchTypeManage();
-  };
-
-  const delTypeManages = (id: number | undefined) => {
-    if (id !== undefined) {
-      deleteTypeManage(id).catch((error) => {
-        console.log("error =>", error);
-      });
-    } else {
-      console.log("Invalid id");
+    try {
+      const response = await Axios.get<{ rows: TypeManageInterface[] }>(
+        "http://localhost:4000/api/typeManages"
+      );
+      setTypeManage(response.data.rows);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const rows = typeManage.map((value, key) => {
-    return (
-      <tr key={key}>
-        <td className={classes.center}>{value.code}</td>
-        <td>{value.manage_type}</td>
-        <td className={classes.td}>{value.durable_goods}</td>
-        <td className={classes.td}>{value.building}</td>
-        <td className={classes.center}>
-          <Button
-            size="xs"
-            mx="xs"
-            compact
-            component={Link}
-            to={value.id ? `edit/${value.id.toString()}` : ""}
-          >
-            <IconPencil />
-            แก้ไข
-          </Button>
-          <Button
-            color="red"
-            size="xs"
-            compact
-            onClick={() => delTypeManages(value.id)}
-          >
-            <IconX />
-            ลบ
-          </Button>
-        </td>
-      </tr>
-    );
-  });
+  const updateTypeManage = (id: number) => {
+    const selectTypeManage = record.find((data) => data.id === id);
+    setTypeManageData(selectTypeManage);
+    toggle();
+  };
+
+  const deleteTypeManage = async (id: number) => {
+    try {
+      const response = await Axios.delete(
+        `http://localhost:4000/api/typeManages/${id}`
+      );
+      setRecord(record.filter((item) => item.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    getTypeManages().catch((error) => {
-      console.log("error =", error);
-    });
+    void getTypeManages();
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      const from = (page - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE;
+      const sortData = sortBy(typeManage, sortStatus.columnAccessor);
+      const sortedData =
+        sortStatus.direction === "desc" ? sortData.reverse() : sortData;
+      const paginatedData = sortedData.slice(from, to);
+      setRecord(paginatedData);
+    }
+  }, [loading, page, sortStatus]);
+
   return (
     <>
-      <Container fluid px="xs" className={classes.container}>
-        <Grid mt="sm">
-          <Grid.Col md={2}>
-            <Text size="lg">ประเภทการจัดหา</Text>
-          </Grid.Col>
-          <Grid.Col md={"auto"} offset={9}>
+      <BreadcrumbNavigation label="ประเภทการจัดการ" />
+      <Card shadow="xs" mt="sm">
+        <Card.Section withBorder p="sm">
+          <Group position="right">
             <Button
               color="green"
-              size="xs"
-              component={Link}
-              to={"/typeManages/add"}
+              leftIcon={<IconPlus size={16} />}
+              onClick={() => {
+                toggle();
+                setTypeManageData(undefined);
+              }}
             >
-              <IconPlus /> เพิ่มข้อมูล
+              เพิ่มข้อมูล
             </Button>
-          </Grid.Col>
-        </Grid>
+          </Group>
+        </Card.Section>
 
-        <Grid>
-          <Grid.Col md={4}>
-            <Input icon={<IconSearch />} placeholder="ค้นหา ชื่อ" />
-          </Grid.Col>
-        </Grid>
-
-        <Space h="md" />
-        <Table striped highlightOnHover withColumnBorders>
-          <thead className={classes.thead}>
-            <tr>
-              <th>
-                <Text ta="center">รหัส</Text>
-              </th>
-              <th>
-                <Text>ประเภทการจัดหา</Text>
-              </th>
-              <th>
-                <Text ta="center" color="blue.8">
-                  ครุภัณฑ์ (รายการ)
+        <DataTable
+          mt="md"
+          withBorder
+          withColumnBorders
+          minHeight={150}
+          striped
+          highlightOnHover
+          records={record}
+          columns={[
+            {
+              accessor: "code",
+              title: "รหัส",
+              textAlignment: "center",
+              width: "5%",
+              sortable: true,
+            },
+            {
+              accessor: "manage_type",
+              title: "ประเภทเงิน",
+              sortable: true,
+              width: "35%",
+              render: ({ manage_type, id }) => (
+                <Text c="blue" onClick={() => updateTypeManage(id)}>
+                  {manage_type}
                 </Text>
-              </th>
-              <th>
-                <Text ta="center" color="blue.8">
-                  สิ่งก่อสร้าง (รายการ)
-                </Text>
-              </th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </Table>
-        <Grid mt="sm" justify="flex-end">
-          <Grid.Col span={10}></Grid.Col>
-          <Grid.Col span="auto">
-            <Text ta="right">
-              {/* ค้นเจอทั้งหมด {typeManageStore.typeManage.length} รายการ */}
-            </Text>
-          </Grid.Col>
-        </Grid>
-      </Container>
+              ),
+            },
+            {
+              accessor: "durable_goods",
+              title: "ครุภัณฑ์ (รายการ)",
+              textAlignment: "center",
+              sortable: true,
+              width: "10%",
+            },
+            {
+              accessor: "building",
+              title: "สิ่งก่อสร้าง (รายการ)",
+              textAlignment: "center",
+              sortable: true,
+              width: "10%",
+            },
+            {
+              accessor: "id",
+              title: "...",
+              width: "10%",
+              textAlignment: "center",
+              render: ({ id }) => (
+                <>
+                  <Button
+                    size="xs"
+                    mx="xs"
+                    onClick={() => updateTypeManage(id)}
+                  >
+                    แก้ไข
+                  </Button>
+                  <Button
+                    color="red"
+                    size="xs"
+                    onClick={() => void deleteTypeManage(id)}
+                  >
+                    ลบ
+                  </Button>
+                </>
+              ),
+            },
+          ]}
+          totalRecords={TypeMoney.length}
+          recordsPerPage={PAGE_SIZE}
+          page={page}
+          onPageChange={(p: number) => setPage(p)}
+          paginationColor="dark.2"
+          paginationText={({ from, to, totalRecords }) =>
+            `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
+          }
+          sortStatus={sortStatus}
+          onSortStatusChange={setSortStatus}
+        />
+      </Card>
     </>
   );
 }

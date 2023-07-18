@@ -1,10 +1,10 @@
-import useTypeMoneyStore from "../../store/TypeMoneyStore";
+import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import Axios from "axios";
 
 import { Drawer, Text, Input, Group, Button } from "@mantine/core";
-import { useEffect } from "react";
 
-import { initialTypeMoney } from "../../initial/initialTypeMoney";
+import { initialTypeMoney } from "@/initial/initialTypeMoney";
 
 interface TypeMoneyInterFace {
   id?: number;
@@ -42,24 +42,24 @@ export function DrawerTypeMoneyForm({
     reset(initialTypeMoney);
   };
 
-  const { updateTypeMoney, addTypeMoney } = useTypeMoneyStore((state) => ({
-    updateTypeMoney: state.updateTypeMoney,
-    addTypeMoney: state.addTypeMoney,
-  }));
-
   //submit
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    if (TypeMoney && typeof TypeMoney.id === "number") {
-      updateTypeMoney(TypeMoney.id, { ...data }).catch((error) =>
-        console.log("Error updating TypeMoney:", error)
-      );
-    } else {
-      addTypeMoney({ ...data }).catch((error) =>
-        console.log("Error adding TypeMoney:", error)
-      );
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      if (TypeMoney && typeof TypeMoney.id === "number") {
+        const response = await Axios.put(
+          `http://localhost:4000/api/typeMoneys/${TypeMoney.id}`,
+          data
+        );
+      } else {
+        const response = await Axios.post(
+          "http://localhost:4000/api/typeMoneys/create",
+          data
+        );
+      }
+      handleDrawerClose();
+    } catch (error) {
+      console.log(error);
     }
-
-    handleDrawerClose();
   };
 
   useEffect(() => {
@@ -71,12 +71,7 @@ export function DrawerTypeMoneyForm({
   }, [TypeMoney]);
 
   return (
-    <Drawer.Root
-      opened={opened}
-      onClose={() => handleDrawerClose}
-      position="top"
-      size={380}
-    >
+    <Drawer.Root opened={opened} onClose={handleDrawerClose} position="right">
       <Drawer.Overlay />
       <Drawer.Content>
         <Drawer.Header>
@@ -92,7 +87,6 @@ export function DrawerTypeMoneyForm({
           <Input.Wrapper
             label="รหัส"
             required
-            mx="auto"
             error={errors.code && errors.code.message}
           >
             <Input
@@ -106,7 +100,7 @@ export function DrawerTypeMoneyForm({
           <Input.Wrapper
             label="ประเภทเงิน"
             required
-            mx="auto"
+            mt="xs"
             error={errors.money_type && errors.money_type.message}
           >
             <Input
@@ -120,7 +114,6 @@ export function DrawerTypeMoneyForm({
           <Input.Wrapper
             label="ครุภัณฑ์"
             required
-            mx="auto"
             mt="xs"
             error={errors.durable_goods && errors.durable_goods.message}
           >
@@ -166,7 +159,7 @@ export function DrawerTypeMoneyForm({
             >
               ยกเลิก
             </Button>
-            <Button color="green" size="xs" onClick={handleSubmit(onSubmit)}>
+            <Button color="blue" size="xs" onClick={handleSubmit(onSubmit)}>
               ยืนยัน
             </Button>
           </Group>

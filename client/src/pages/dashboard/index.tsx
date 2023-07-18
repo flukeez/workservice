@@ -1,5 +1,5 @@
-import { Text } from "@mantine/core";
+import BreadcrumbNavigation from "@/components/breadcrumb_navigation/BreadcrumbNavigation";
 
 export default function Dashboard() {
-  return <Text size="lg">Dashboard Page</Text>;
+  return <BreadcrumbNavigation label="แดชนบอร์ด" />;
 }

@@ -14,9 +14,7 @@ const Dashboard = lazy(() => import("./pages/dashboard"));
 const Information = lazy(() => import("./pages/information"));
 const TypeManage = lazy(() => import("./pages/typeManage"));
 const TypeMoney = lazy(() => import("./pages/typeMoney"));
-const FormTypeMange = lazy(
-  () => import("./pages/formTypeManage/formTypeManage")
-);
+const FormTypeMange = lazy(() => import("./pages/typeManage/formTypeManage"));
 
 const Pagenotfound = lazy(() => import("./pages/pageNotFound/pageNotFound"));
 
