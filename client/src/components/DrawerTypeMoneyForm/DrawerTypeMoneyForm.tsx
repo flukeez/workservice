@@ -89,89 +89,87 @@ export function DrawerTypeMoneyForm({
         </Drawer.Header>
         <Drawer.Body>
           {/* ส่วนของฟอร์ม */}
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Input.Wrapper
-              label="รหัส"
-              required
-              mx="auto"
-              error={errors.code && errors.code.message}
+          <Input.Wrapper
+            label="รหัส"
+            required
+            mx="auto"
+            error={errors.code && errors.code.message}
+          >
+            <Input
+              placeholder="รหัส"
+              error={errors.code ? errors.code.message : ""}
+              {...register("code", {
+                required: "ป้อนรหัส",
+              })}
+            />
+          </Input.Wrapper>
+          <Input.Wrapper
+            label="ประเภทเงิน"
+            required
+            mx="auto"
+            error={errors.money_type && errors.money_type.message}
+          >
+            <Input
+              placeholder="ประเภทเงิน"
+              error={errors.money_type ? errors.money_type.message : ""}
+              {...register("money_type", {
+                required: "ป้อนประเภทของเงิน",
+              })}
+            />
+          </Input.Wrapper>
+          <Input.Wrapper
+            label="ครุภัณฑ์"
+            required
+            mx="auto"
+            mt="xs"
+            error={errors.durable_goods && errors.durable_goods.message}
+          >
+            <Input
+              type="number"
+              placeholder="ครุภัณฑ์"
+              error={errors.durable_goods ? errors.durable_goods.message : ""}
+              {...register("durable_goods", {
+                required: "ระบุจำนวนครุภัณฑ์",
+                min: {
+                  value: 0,
+                  message: "ค่าจำนวนครุภัณฑ์ต้องไม่น้อยกว่า 0",
+                },
+              })}
+            />
+          </Input.Wrapper>
+          <Input.Wrapper
+            label="สิ่งก่อสร้าง"
+            required
+            mx="auto"
+            mt="xs"
+            error={errors.building && errors.building.message}
+          >
+            <Input
+              type="number"
+              placeholder="สิ่งก่อสร้าง"
+              error={errors.building ? errors.building.message : ""}
+              {...register("building", {
+                required: "ระบุจำนวนสิ่งก่อสร้าง",
+                min: {
+                  value: 0,
+                  message: "ค่าจำนวนสิ่งก่อสร้างต้องไม่น้อยกว่า 0",
+                },
+              })}
+            />
+          </Input.Wrapper>
+          <Group position="right" mt="sm">
+            <Button
+              variant="outline"
+              color="gray"
+              size="xs"
+              onClick={handleDrawerClose}
             >
-              <Input
-                placeholder="รหัส"
-                error={errors.code ? errors.code.message : ""}
-                {...register("code", {
-                  required: "ป้อนรหัส",
-                })}
-              />
-            </Input.Wrapper>
-            <Input.Wrapper
-              label="ประเภทเงิน"
-              required
-              mx="auto"
-              error={errors.money_type && errors.money_type.message}
-            >
-              <Input
-                placeholder="ประเภทเงิน"
-                error={errors.money_type ? errors.money_type.message : ""}
-                {...register("money_type", {
-                  required: "ป้อนประเภทของเงิน",
-                })}
-              />
-            </Input.Wrapper>
-            <Input.Wrapper
-              label="ครุภัณฑ์"
-              required
-              mx="auto"
-              mt="xs"
-              error={errors.durable_goods && errors.durable_goods.message}
-            >
-              <Input
-                type="number"
-                placeholder="ครุภัณฑ์"
-                error={errors.durable_goods ? errors.durable_goods.message : ""}
-                {...register("durable_goods", {
-                  required: "ระบุจำนวนครุภัณฑ์",
-                  min: {
-                    value: 0,
-                    message: "ค่าจำนวนครุภัณฑ์ต้องไม่น้อยกว่า 0",
-                  },
-                })}
-              />
-            </Input.Wrapper>
-            <Input.Wrapper
-              label="สิ่งก่อสร้าง"
-              required
-              mx="auto"
-              mt="xs"
-              error={errors.building && errors.building.message}
-            >
-              <Input
-                type="number"
-                placeholder="สิ่งก่อสร้าง"
-                error={errors.building ? errors.building.message : ""}
-                {...register("building", {
-                  required: "ระบุจำนวนสิ่งก่อสร้าง",
-                  min: {
-                    value: 0,
-                    message: "ค่าจำนวนสิ่งก่อสร้างต้องไม่น้อยกว่า 0",
-                  },
-                })}
-              />
-            </Input.Wrapper>
-            <Group position="right" mt="sm">
-              <Button
-                variant="outline"
-                color="gray"
-                size="xs"
-                onClick={handleDrawerClose}
-              >
-                ยกเลิก
-              </Button>
-              <Button color="green" size="xs" type="submit">
-                ยืนยัน
-              </Button>
-            </Group>
-          </form>
+              ยกเลิก
+            </Button>
+            <Button color="green" size="xs" onClick={handleSubmit(onSubmit)}>
+              ยืนยัน
+            </Button>
+          </Group>
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>
