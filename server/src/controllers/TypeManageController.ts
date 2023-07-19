@@ -26,9 +26,17 @@ export default async function TypeManageController(fastify:FastifyInstance) {
     //get by id
     fastify.get('/:id', async (request, replay) => {
         const {id}:any = request.params
-        const rs: any = await typeManageModel.getById(db,id)
+        const {results}: any = await typeManageModel.getById(db,id)
 
-        replay.send({row:rs})
+        replay.send({row:results})
+    })
+
+        //search
+    fastify.get('/search/:searchTerm', async (request, replay) => {
+        const {searchTerm}: any = request.params
+        const {results}: any = await typeManageModel.getBySearch(db ,searchTerm)
+
+        replay.send({row:results})
     })
 
     //insert

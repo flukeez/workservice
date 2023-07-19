@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { sortBy } from "lodash";
 import Axios from "axios";
 
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useDebouncedValue } from "@mantine/hooks";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { Card, Group, Text, Button } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
+import { Card, Group, Text, Button, Input } from "@mantine/core";
+import { IconSearch, IconPlus, IconX } from "@tabler/icons-react";
 
 import { DrawerTypeMoneyForm } from "@/pages/typeMoney/components/DrawerTypeMoneyForm";
 import BreadcrumbNavigation from "@/components/breadcrumb_navigation/BreadcrumbNavigation";
@@ -22,9 +22,9 @@ export default function TypeMoney() {
   const [opened, { toggle }] = useDisclosure(false);
   const [loading, setLoading] = useState(true); //ถ้าไม่รอโหลด เวลาเอา typemoney มาsort มันจะยังไม่มีค่า หรือจะเอาทั้งหมดไปใส่ใน getTypemoney ก้ได้ แต่มันจะfetch ข้อมูลบ่อย
   const [typeMoney, setTypeMoney] = useState<TypeMoneyInterface[]>([]); //ไว้เก็บข้อมูลทั้งหมด
-  const [typeMoneyData, setTypeMoneyData] = useState<
-    TypeMoneyInterface | undefined
-  >(undefined); //เวลาดึงไปใช้แค่ไอดีเดียว
+  const [typeMoneyData, setTypeMoneyData] = useState<number | undefined>(
+    undefined
+  ); //เวลาดึงไปใช้แค่ไอดีเดียว
   const PAGE_SIZE = 15;
   const [page, setPage] = useState(1); //เลขหน้า เริ่มจาก 1
 
@@ -34,8 +34,12 @@ export default function TypeMoney() {
   });
   const [record, setRecord] = useState<TypeMoneyInterface[]>([]);
 
+  const [search, setSearch] = useState("");
+  const [debounced] = useDebouncedValue(search, 200);
+
   const getTypeMoneys = async () => {
     try {
+      setLoading(true);
       const response = await Axios.get<{ rows: TypeMoneyInterface[] }>(
         "http://localhost:4000/api/typeMoneys"
       );
@@ -47,8 +51,7 @@ export default function TypeMoney() {
   };
 
   const updateTypeMoney = (id: number) => {
-    const selectTypeMoney = record.find((data) => data.id === id);
-    setTypeMoneyData(selectTypeMoney);
+    setTypeMoneyData(id);
     toggle();
   };
 
@@ -57,12 +60,30 @@ export default function TypeMoney() {
       const response = await Axios.delete(
         `http://localhost:4000/api/typeMoneys/${id}`
       );
-      setRecord(record.filter((item) => item.id !== id));
-      setTypeMoney(typeMoney.filter((item) => item.id !== id));
+      void getTypeMoneys();
     } catch (error) {
       console.log(error);
     }
   };
+
+  const searchTypeMoney = async (searchTxt: string) => {
+    try {
+      setLoading(true);
+      const response = await Axios.get<{ row: TypeMoneyInterface[] }>(
+        `http://localhost:4000/api/typeMoneys/search/${searchTxt}`
+      );
+      setTypeMoney(response.data.row);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const resetSearch = () => {
+    void getTypeMoneys();
+    setSearch("");
+  };
+
   useEffect(() => {
     void getTypeMoneys();
   }, []);
@@ -77,14 +98,41 @@ export default function TypeMoney() {
       const paginatedData = sortedData.slice(from, to);
       setRecord(paginatedData);
     }
-  }, [loading, page, sortStatus, record]);
+  }, [loading, page, sortStatus]);
 
   return (
     <>
       <BreadcrumbNavigation label={"ประเภทเงิน"} />
       <Card shadow="xs" mt="sm">
         <Card.Section withBorder p="sm">
-          <Group position="right">
+          <Group position="apart">
+            <Input
+              placeholder="ค้นหา รหัส, ชื่อ"
+              value={search}
+              onChange={(event) => setSearch(event.currentTarget.value)}
+              rightSection={
+                <>
+                  <IconSearch
+                    size="1rem"
+                    onClick={() => searchTypeMoney(debounced)}
+                    style={{
+                      display: "block",
+                      opacity: 0.3,
+                      cursor: "pointer",
+                    }}
+                  />
+                  <IconX
+                    size="1rem"
+                    style={{
+                      display: "block",
+                      opacity: 0.3,
+                      cursor: "pointer",
+                    }}
+                    onClick={() => resetSearch()}
+                  />
+                </>
+              }
+            />
             <Button
               color="green"
               leftIcon={<IconPlus size={16} />}
@@ -174,7 +222,8 @@ export default function TypeMoney() {
       <DrawerTypeMoneyForm
         opened={opened}
         onClose={toggle}
-        TypeMoney={typeMoneyData}
+        id={typeMoneyData}
+        getTypeMoneys={getTypeMoneys}
       />
     </>
   );

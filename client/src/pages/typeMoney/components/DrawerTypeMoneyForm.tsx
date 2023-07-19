@@ -17,11 +17,13 @@ interface TypeMoneyInterFace {
 export function DrawerTypeMoneyForm({
   opened,
   onClose,
-  TypeMoney,
+  id,
+  getTypeMoneys,
 }: {
   opened: boolean;
   onClose: () => void;
-  TypeMoney?: TypeMoneyInterFace;
+  id?: number;
+  getTypeMoneys: () => Promise<void>;
 }) {
   interface Inputs {
     code: string;
@@ -45,9 +47,9 @@ export function DrawerTypeMoneyForm({
   //submit
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      if (TypeMoney && typeof TypeMoney.id === "number") {
+      if (id) {
         const response = await Axios.put(
-          `http://localhost:4000/api/typeMoneys/${TypeMoney.id}`,
+          `http://localhost:4000/api/typeMoneys/${id}`,
           data
         );
       } else {
@@ -57,18 +59,26 @@ export function DrawerTypeMoneyForm({
         );
       }
       handleDrawerClose();
+      await getTypeMoneys();
     } catch (error) {
       console.log(error);
     }
   };
 
+  const fetchTypeMoney = async (id: number) => {
+    const response = await Axios.get<{ row: TypeMoneyInterFace[] }>(
+      `http://localhost:4000/api/typeMoneys/${id}`
+    );
+    reset(...response.data.row);
+  };
+
   useEffect(() => {
-    if (TypeMoney) {
-      reset(TypeMoney);
+    if (id) {
+      void fetchTypeMoney(id);
     } else {
-      reset();
+      reset(initialTypeMoney);
     }
-  }, [TypeMoney]);
+  }, [id]);
 
   return (
     <Drawer.Root opened={opened} onClose={handleDrawerClose} position="right">
@@ -77,7 +87,7 @@ export function DrawerTypeMoneyForm({
         <Drawer.Header>
           <Drawer.Title>
             <Text size="xl" fw={700}>
-              {TypeMoney ? "แก้ไขข้อมูลประเภทเงิน" : "เพิ่มข้อมูลประเภทเงิน"}
+              {id ? "แก้ไขข้อมูลประเภทเงิน" : "เพิ่มข้อมูลประเภทเงิน"}
             </Text>
           </Drawer.Title>
           <Drawer.CloseButton />

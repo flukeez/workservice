@@ -1,8 +1,8 @@
 export const initialTypeMoney = {
     code: '',
     money_type: '',
-    durable_goods: null,
-    building: null,
+    durable_goods: undefined,
+    building: undefined,
 
 
 }

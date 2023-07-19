@@ -28,6 +28,20 @@ export default class TypeMoneyModel {
         }
     }
 
+        /**
+    * GET ตามการค้นหา
+    */
+
+        async getBySearch(db: Knex, searchTerm:string): Promise<{results: any[]}> {
+            const rs = await db('tbTypeMoneys').where(function () {
+                this.where('code', 'like', `%${searchTerm}%`).orWhere('money_type', 'like', `%${searchTerm}%`);
+              });
+    
+            return {
+                results:rs
+            }
+        }
+
     /**
     * เพิ่ม Typemoney
     */

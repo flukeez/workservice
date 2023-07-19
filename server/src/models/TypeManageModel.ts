@@ -28,6 +28,20 @@ export default class TypeManageModel {
         }
     }
 
+           /**
+    * GET ตามการค้นหา
+    */
+
+           async getBySearch(db: Knex, searchTerm:string): Promise<{results: any[]}> {
+            const rs = await db('tbTypeManages').where(function () {
+                this.where('code', 'like', `%${searchTerm}%`).orWhere('manage_type', 'like', `%${searchTerm}%`);
+              });
+    
+            return {
+                results:rs
+            }
+        }
+
     /**
     * เพิ่ม Typemoney
     */

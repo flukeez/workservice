@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { sortBy } from "lodash";
 import Axios from "axios";
 
-import { useDisclosure } from "@mantine/hooks";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { Card, Group, Text, Button } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
+import { useDebouncedValue } from "@mantine/hooks";
+import { Card, Group, Text, Button, Input } from "@mantine/core";
+import { IconSearch, IconPlus, IconX } from "@tabler/icons-react";
 
 import BreadcrumbNavigation from "@/components/breadcrumb_navigation/BreadcrumbNavigation";
-import TypeMoney from "../typeMoney";
 
 interface TypeManageInterface {
   id: number;
@@ -19,12 +19,8 @@ interface TypeManageInterface {
 }
 
 export default function TypeManage() {
-  const [opened, { toggle }] = useDisclosure(false);
   const [loading, setLoading] = useState(true); //ถ้าไม่รอโหลด เวลาเอา typemoney มาsort มันจะยังไม่มีค่า หรือจะเอาทั้งหมดไปใส่ใน getTypemoney ก้ได้ แต่มันจะfetch ข้อมูลบ่อย
   const [typeManage, setTypeManage] = useState<TypeManageInterface[]>([]); //ไว้เก็บข้อมูลทั้งหมด
-  const [typeManageData, setTypeManageData] = useState<
-    TypeManageInterface | undefined
-  >(undefined); //เวลาดึงไปใช้แค่ไอดีเดียว
   const PAGE_SIZE = 15;
   const [page, setPage] = useState(1); //เลขหน้า เริ่มจาก 1
 
@@ -33,6 +29,9 @@ export default function TypeManage() {
     direction: "asc",
   });
   const [record, setRecord] = useState<TypeManageInterface[]>([]);
+
+  const [search, setSearch] = useState("");
+  const [debounced] = useDebouncedValue(search, 200);
 
   const getTypeManages = async () => {
     try {
@@ -46,12 +45,6 @@ export default function TypeManage() {
     }
   };
 
-  const updateTypeManage = (id: number) => {
-    const selectTypeManage = record.find((data) => data.id === id);
-    setTypeManageData(selectTypeManage);
-    toggle();
-  };
-
   const deleteTypeManage = async (id: number) => {
     try {
       const response = await Axios.delete(
@@ -61,6 +54,25 @@ export default function TypeManage() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const searchTypeMoney = async (searchTxt: string) => {
+    try {
+      setLoading(true);
+      const response = await Axios.get<{ row: TypeManageInterface[] }>(
+        `http://localhost:4000/api/typeManages/search/${searchTxt}`
+      );
+      setTypeManage(response.data.row);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const resetSearch = () => {
+    void getTypeManages();
+    setSearch("");
+    setLoading(true);
   };
   useEffect(() => {
     void getTypeManages();
@@ -83,14 +95,39 @@ export default function TypeManage() {
       <BreadcrumbNavigation label="ประเภทการจัดการ" />
       <Card shadow="xs" mt="sm">
         <Card.Section withBorder p="sm">
-          <Group position="right">
+          <Group position="apart">
+            <Input
+              placeholder="ค้นหา รหัส, ชื่อ"
+              value={search}
+              onChange={(event) => setSearch(event.currentTarget.value)}
+              rightSection={
+                <>
+                  <IconSearch
+                    size="1rem"
+                    onClick={() => searchTypeMoney(debounced)}
+                    style={{
+                      display: "block",
+                      opacity: 0.3,
+                      cursor: "pointer",
+                    }}
+                  />
+                  <IconX
+                    size="1rem"
+                    style={{
+                      display: "block",
+                      opacity: 0.3,
+                      cursor: "pointer",
+                    }}
+                    onClick={() => resetSearch()}
+                  />
+                </>
+              }
+            />
             <Button
               color="green"
               leftIcon={<IconPlus size={16} />}
-              onClick={() => {
-                toggle();
-                setTypeManageData(undefined);
-              }}
+              component={Link}
+              to="add"
             >
               เพิ่มข้อมูล
             </Button>
@@ -118,11 +155,7 @@ export default function TypeManage() {
               title: "ประเภทเงิน",
               sortable: true,
               width: "35%",
-              render: ({ manage_type, id }) => (
-                <Text c="blue" onClick={() => updateTypeManage(id)}>
-                  {manage_type}
-                </Text>
-              ),
+              render: ({ manage_type, id }) => <Text>{manage_type}</Text>,
             },
             {
               accessor: "durable_goods",
@@ -145,11 +178,7 @@ export default function TypeManage() {
               textAlignment: "center",
               render: ({ id }) => (
                 <>
-                  <Button
-                    size="xs"
-                    mx="xs"
-                    onClick={() => updateTypeManage(id)}
-                  >
+                  <Button size="xs" mx="xs" component={Link} to={`edit/${id}`}>
                     แก้ไข
                   </Button>
                   <Button
@@ -163,7 +192,7 @@ export default function TypeManage() {
               ),
             },
           ]}
-          totalRecords={TypeMoney.length}
+          totalRecords={typeManage.length}
           recordsPerPage={PAGE_SIZE}
           page={page}
           onPageChange={(p: number) => setPage(p)}

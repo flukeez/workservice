@@ -26,9 +26,17 @@ export default async function TypeMoneyController(fastify:FastifyInstance) {
     //get by id
     fastify.get('/:id', async (request, replay) => {
         const {id}:any = request.params
-        const rs: any = await typeMoneyModel.getById(db,id)
+        const {results}: any = await typeMoneyModel.getById(db,id)
 
-        replay.send({row:rs})
+        replay.send({row:results})
+    })
+
+    //search
+    fastify.get('/search/:searchTerm', async (request, replay) => {
+        const {searchTerm}: any = request.params
+        const {results}: any = await typeMoneyModel.getBySearch(db ,searchTerm)
+
+        replay.send({row:results})
     })
 
     //insert
