@@ -40,9 +40,6 @@ export default function TypeManage() {
   const [search, setSearch] = useState("");
   const [debounced] = useDebouncedValue(search, 200);
 
-  const queryClient = new QueryClient();
-  const query = useQuery({ queryKey: ["typeManage"], queryFn: getTypeManages });
-
   const getTypeManages = async () => {
     try {
       const response = await Axios.get<{ rows: TypeManageInterface[] }>(
@@ -78,6 +75,9 @@ export default function TypeManage() {
       console.log(error);
     }
   };
+
+  const queryClient = new QueryClient();
+  const query = useQuery({ queryKey: ["typeManage"], queryFn: getTypeManages });
 
   const resetSearch = () => {
     // void getTypeManages();
@@ -115,7 +115,7 @@ export default function TypeManage() {
                 <>
                   <IconSearch
                     size="1rem"
-                    onClick={() => searchTypeMoney(debounced)}
+                    onClick={() => void searchTypeMoney(debounced)}
                     style={{
                       display: "block",
                       opacity: 0.3,
