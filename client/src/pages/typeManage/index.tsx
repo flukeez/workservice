@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { sortBy } from "lodash";
 import Axios from "axios";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { useDebouncedValue } from "@mantine/hooks";
@@ -32,6 +39,9 @@ export default function TypeManage() {
 
   const [search, setSearch] = useState("");
   const [debounced] = useDebouncedValue(search, 200);
+
+  const queryClient = new QueryClient();
+  const query = useQuery({ queryKey: ["typeManage"], queryFn: getTypeManages });
 
   const getTypeManages = async () => {
     try {
@@ -70,12 +80,12 @@ export default function TypeManage() {
   };
 
   const resetSearch = () => {
-    void getTypeManages();
+    // void getTypeManages();
     setSearch("");
     setLoading(true);
   };
   useEffect(() => {
-    void getTypeManages();
+    // void getTypeManages();
   }, []);
 
   useEffect(() => {
@@ -95,6 +105,7 @@ export default function TypeManage() {
       <BreadcrumbNavigation label="ประเภทการจัดการ" />
       <Card shadow="xs" mt="sm">
         <Card.Section withBorder p="sm">
+          {JSON.stringify(query.data)}
           <Group position="apart">
             <Input
               placeholder="ค้นหา รหัส, ชื่อ"
