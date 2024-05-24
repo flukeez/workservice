@@ -1,17 +1,21 @@
 import app from './app'
-import config from './config'
+require('dotenv').config()
 
-const port = Number(config.server_port)
-const address = config.server_address
+const server_address = process.env.SERVER_ADDRESS
+const server_port = Number(process.env.SERVER_PORT)
 
 
-const start = async () => {
-  try {
-    await app.listen({ port, host: address })
-    console.log('Server START at ' + address + ':' + port)
-  } catch (error) {
-    // console.error('Server Error : ' + error)
-    console.error(`Server Error : ${error}`)
+app.get('/ping', async (request, reply) => {
+  console.log(server_address, server_port)
+  return 'pong 4\n'
+})
+
+const start = async()=>{
+  try{
+    await app.listen({ port: server_port,host: server_address })
+    console.log(`Server listening at ${server_address}:${server_port}`)
+  }catch(err){
+    console.error(err)
     process.exit(1)
   }
 }

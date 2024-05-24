@@ -1,35 +1,24 @@
-import Fastify, { FastifyInstance } from 'fastify'
-import fastifyCors from '@fastify/cors';
-import routes from './routes'
-import config from './config'
+import "module-alias";
+import fastify from "fastify";
+import cors from "@fastify/cors";
+import routes from "./route";
 
-const app: FastifyInstance = Fastify({
-  logger: true,
-})
-
-//ติดต่อฐานข้อมูล MySQL ด้วย Knex
-app.register(require('./plugins/knex-db'), {
-  connectionName: 'db',
-  options: {
-    client: 'mysql2',
-    connection: {
-      host: config.db1host,
-      port: config.db1port,
-      database: config.db1name,
-      user: config.db1user,
-      password: config.db1password,
-    }
-  }
-})
-
-app.register(fastifyCors, {
-  origin: true
-  // origin: ['http://example.com', 'http://localhost:3000'],
-  // methods: ['GET', 'POST'],
-  // allowedHeaders: ['Content-Type', 'Authorization'],
+const app = fastify({
+  logger: false,
 });
 
+// ฮุก onRequest จะทำงานเมื่อได้รับคำขอ
+//เอาไว้แสดงเฉยๆเวลามีการ call api
+app.addHook("onRequest", (request, reply, done) => {
+  const method = request.raw.method; // HTTP method
+  const url = request.raw.url; // URL path
+  console.log(`${method} ${url}`);
+  done(); // เรียก done() เพื่อดำเนินการต่อ
+});
 
-
-app.register(routes)
-export default app
+app.register(cors, {
+  origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
+  credentials: true,
+});
+app.register(routes);
+export default app;
