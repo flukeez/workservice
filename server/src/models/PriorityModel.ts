@@ -1,67 +1,57 @@
+import db from "@/database";
 import { pagination } from "@/utils/pagination";
-import db from "../database";
+import type {
+  IPriority,
+  IPriorityForm,
+  IPriorityQuery,
+} from "@/types/PriorityType";
 
-import { IFaculty, IFacultyForm, IFacultyQuery } from "../types/FacultyType";
+const tbName = "tb_priority";
 
-const tbName = "tb_faculty";
-export class FacultyModel {
-  //ค้นหาทั้งหมด
+export class PriorityModel {
+  //find all
   async findMany(
-    query: IFacultyQuery
-  ): Promise<{ result: IFaculty[]; totalItem: number; totalPage: number }> {
+    query: IPriorityQuery
+  ): Promise<{ result: IPriority[]; totalItem: number; totalPage: number }> {
     const { txtSearch, page, limit, sortField, sortDirection } = query;
     const offset = page * limit;
     const baseQuery = db(tbName)
-      .leftJoin({ tbParent: tbName }, "tb_faculty.faculty_id", "tbParent.id")
-      .where((builder) => {
-        builder
-          .where("tbParent.name", "LIKE", `%${txtSearch}%`)
-          .orWhere(`${tbName}.name`, "LIKE", `%${txtSearch}%`);
-      })
-      .andWhere(`${tbName}.faculty_show`, 0);
+      .where("name", "LIKE", `%${txtSearch}%`)
+      .where("priority_show", 0);
+
     try {
       const result = await baseQuery
         .clone()
-        .select(
-          `${tbName}.id`,
-          `${tbName}.name`,
-          `tbParent.name as faculty_name`
-        )
         .orderBy(sortField, sortDirection)
         .offset(offset)
         .limit(limit);
-
-      const rowCount = await baseQuery
-        .clone()
-        .count({ countId: `${tbName}.id` })
-        .first();
+      const rowCount = await baseQuery.clone().count({ countId: "id" }).first();
       const totalItem = Number(rowCount?.countId || 0);
-      const totalPage = await pagination(totalItem, limit);
+      const totalPage = pagination(totalItem, limit);
       return { result, totalItem, totalPage };
     } catch (error) {
-      console.error("Error:", error);
+      console.log(error);
       throw new Error("Internal server error");
     }
   }
-  //ค้นหาตามไอดี
-  async findById(id: number): Promise<{ result: IFaculty }> {
+  //find by id
+  async findById(id: number): Promise<{ result: IPriority }> {
     try {
       const result = await db(tbName).where({ id }).first();
       return { result };
     } catch (error) {
-      console.error("Error in findById:", error);
+      console.error("Error in FindyById:", error);
       throw error;
     }
   }
-  //เพิ่มใหม่ 1 รายการ
-  async createOne(data: IFacultyForm): Promise<{ result: number }> {
+  //save one
+  async createOne(data: IPriorityForm): Promise<{ result: number }> {
     try {
       const checkDuplicate = await this.checkDuplicate(data.name);
       if (checkDuplicate) {
         return { result: 0 };
       }
       const result = await db(tbName).insert(data);
-
       return { result: result[0] };
     } catch (error) {
       console.error("Error in create:", error);
@@ -69,8 +59,8 @@ export class FacultyModel {
     }
   }
 
-  //อัพเดท
-  async update(id: number, data: IFacultyForm): Promise<{ result: number }> {
+  //update
+  async update(id: number, data: IPriorityForm): Promise<{ result: number }> {
     try {
       const checkDuplicate = await this.checkDuplicate(data.name, id);
       if (checkDuplicate) {
@@ -84,24 +74,24 @@ export class FacultyModel {
     }
   }
 
-  //ลบ
+  //delete one
   async deleteOne(id: number): Promise<{ result: number }> {
     try {
-      const result = await db(tbName).where({ id }).update("faculty_show", 1);
+      const result = await db(tbName).where({ id }).update("priority_show", 1);
       return { result };
     } catch (error) {
-      console.error("Error in delete:", error);
+      console.error("Error in update:", error);
       throw error;
     }
   }
 
-  //เช็คซ้ำ
+  //check duplicate
   async checkDuplicate(name: string, id = 0): Promise<number> {
     try {
       const query = await db(tbName)
         .where({ name })
         .whereNot({ id })
-        .where("faculty_show", 0)
+        .where("priority_show", 0)
         .first();
       return query ? 1 : 0;
     } catch (error) {

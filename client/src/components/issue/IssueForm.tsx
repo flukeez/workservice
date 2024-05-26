@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import {
   Alert,
   Button,
@@ -10,35 +9,36 @@ import {
   TextInput,
 } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { facultyInitialValues, facultyYup } from "@/validations/faculty.schema";
-import { useFaculty, useFacultySave } from "@/hooks/faculty";
-import type { IFacultyForm } from "@/types/IFaculty";
-import DropdownFaculty from "../shared/DropdownFaculty";
+import { issueInitialValues, issueYup } from "@/validations/issue.schema";
+import { useIssue, useIssueSave } from "@/hooks/issue";
+import { IIssueForm } from "@/types/IIssue";
+import DropdownIssue from "../shared/DropdownIssue";
 
-interface FacultyFormProps {
+interface IssueFormProps {
   onClose: () => void;
-  id: string;
+  rowId: string;
 }
 
-export default function FacultyForm({ onClose, id }: FacultyFormProps) {
-  const { data, isLoading } = useFaculty(id);
-  const mutationSave = useFacultySave();
+export default function IssueForm({ onClose, rowId }: IssueFormProps) {
+  const { data, isLoading } = useIssue(rowId);
+  const mutationSave = useIssueSave();
 
   const {
     handleSubmit,
     register,
     reset,
+    getValues,
     formState: { errors },
     control,
-    getValues,
   } = useForm({
     mode: "onChange",
-    resolver: yupResolver(facultyYup),
-    defaultValues: facultyInitialValues,
+    resolver: yupResolver(issueYup),
+    defaultValues: issueInitialValues,
   });
   const [showAlert, setShowAlert] = useState(false);
-  const onSubmit: SubmitHandler<IFacultyForm> = async (formData) => {
+  const onSubmit: SubmitHandler<IIssueForm> = async (formData) => {
     const { data } = await mutationSave.mutateAsync(formData);
     try {
       if (data.result) {
@@ -69,6 +69,7 @@ export default function FacultyForm({ onClose, id }: FacultyFormProps) {
       reset(data.result);
     }
   }, [data]);
+
   return (
     <>
       <LoadingOverlay visible={isLoading || mutationSave.isPending} />
@@ -85,29 +86,28 @@ export default function FacultyForm({ onClose, id }: FacultyFormProps) {
       )}
       <Stack>
         <TextInput
-          label="ชื่อหน่วยงาน"
-          placeholder="กรอกชื่อหน่วยงาน"
+          label="ชื่อปัญหา"
           {...register("name")}
+          placeholder="กรอกชื่อประเภทปัญหา"
           error={errors.name?.message}
           required
         />
         <Controller
-          name="faculty_id"
+          name="issue_id"
           control={control}
           render={({ field }) => {
             const handleSelectChange = (value: string | null) => {
               field.onChange(value);
             };
             return (
-              <DropdownFaculty
-                faculty={field.value}
-                setFaculty={handleSelectChange}
-                error={errors.faculty_id?.message}
+              <DropdownIssue
+                issue={field.value ? field.value : null}
+                setIssue={handleSelectChange}
+                error={errors.issue_id?.message}
               />
             );
           }}
         />
-
         <Group justify="right" mt={20}>
           <Button color="gray" onClick={onClose}>
             ยกเลิก

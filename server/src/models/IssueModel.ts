@@ -1,36 +1,30 @@
+import db from "@/database";
 import { pagination } from "@/utils/pagination";
-import db from "../database";
+import type { IIssueQuery, IIssueForm, IIssue } from "@/types/IssueType";
 
-import { IFaculty, IFacultyForm, IFacultyQuery } from "../types/FacultyType";
-
-const tbName = "tb_faculty";
-export class FacultyModel {
+const tbName = "tb_issue";
+export class IssueModel {
   //ค้นหาทั้งหมด
   async findMany(
-    query: IFacultyQuery
-  ): Promise<{ result: IFaculty[]; totalItem: number; totalPage: number }> {
+    query: IIssueQuery
+  ): Promise<{ result: IIssue[]; totalPage: number; totalItem: number }> {
     const { txtSearch, page, limit, sortField, sortDirection } = query;
     const offset = page * limit;
     const baseQuery = db(tbName)
-      .leftJoin({ tbParent: tbName }, "tb_faculty.faculty_id", "tbParent.id")
+      .leftJoin({ tbParent: tbName }, "tb_issue.issue_id", "tbParent.id")
       .where((builder) => {
         builder
           .where("tbParent.name", "LIKE", `%${txtSearch}%`)
           .orWhere(`${tbName}.name`, "LIKE", `%${txtSearch}%`);
       })
-      .andWhere(`${tbName}.faculty_show`, 0);
+      .andWhere(`${tbName}.issue_show`, 0);
     try {
       const result = await baseQuery
         .clone()
-        .select(
-          `${tbName}.id`,
-          `${tbName}.name`,
-          `tbParent.name as faculty_name`
-        )
+        .select(`${tbName}.id`, `${tbName}.name`, `tbParent.name as issue_name`)
         .orderBy(sortField, sortDirection)
         .offset(offset)
         .limit(limit);
-
       const rowCount = await baseQuery
         .clone()
         .count({ countId: `${tbName}.id` })
@@ -44,7 +38,7 @@ export class FacultyModel {
     }
   }
   //ค้นหาตามไอดี
-  async findById(id: number): Promise<{ result: IFaculty }> {
+  async findById(id: number): Promise<{ result: IIssue }> {
     try {
       const result = await db(tbName).where({ id }).first();
       return { result };
@@ -54,54 +48,58 @@ export class FacultyModel {
     }
   }
   //เพิ่มใหม่ 1 รายการ
-  async createOne(data: IFacultyForm): Promise<{ result: number }> {
+  async createOne(data: IIssueForm): Promise<{ result: number }> {
     try {
       const checkDuplicate = await this.checkDuplicate(data.name);
       if (checkDuplicate) {
         return { result: 0 };
       }
-      const result = await db(tbName).insert(data);
-
+      const result = await db(tbName).insert({
+        ...data,
+        issue_type: data.issue_id ? 1 : 0,
+      });
       return { result: result[0] };
     } catch (error) {
       console.error("Error in create:", error);
       throw error;
     }
   }
-
   //อัพเดท
-  async update(id: number, data: IFacultyForm): Promise<{ result: number }> {
+  async update(id: number, data: IIssueForm): Promise<{ result: number }> {
     try {
       const checkDuplicate = await this.checkDuplicate(data.name, id);
-      if (checkDuplicate) {
+      if (checkDuplicate !== 0) {
         return { result: 0 };
       }
-      const result = await db(tbName).where({ id }).update(data);
+      const result = await db(tbName)
+        .where({ id })
+        .update({
+          ...data,
+          issue_type: data.issue_id ? 1 : 0,
+        });
       return { result };
     } catch (error) {
       console.error("Error in update:", error);
       throw error;
     }
   }
-
   //ลบ
   async deleteOne(id: number): Promise<{ result: number }> {
     try {
-      const result = await db(tbName).where({ id }).update("faculty_show", 1);
+      const result = await db(tbName).where({ id }).update("issue_show", 1);
       return { result };
     } catch (error) {
       console.error("Error in delete:", error);
       throw error;
     }
   }
-
   //เช็คซ้ำ
   async checkDuplicate(name: string, id = 0): Promise<number> {
     try {
       const query = await db(tbName)
         .where({ name })
         .whereNot({ id })
-        .where("faculty_show", 0)
+        .where("issue_show", 0)
         .first();
       return query ? 1 : 0;
     } catch (error) {

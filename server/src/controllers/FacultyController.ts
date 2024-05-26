@@ -1,21 +1,19 @@
 import { FastifyInstance } from "fastify";
-import { FacultyModel } from "../models/FacultyModel";
-import { IFacultyForm, IQuery } from "../types/FacultyType";
+import { FacultyModel } from "@/models/FacultyModel";
+import { IFacultyForm, IFacultyQuery } from "@/types/FacultyType";
 
 export default async function FacultyController(fastify: FastifyInstance) {
   const facultyModel = new FacultyModel();
   fastify.get("/", async (req, res) => {
-    const query = req.query as IQuery;
-    const { results, totalItem, totalPage } = await facultyModel.findMany(
-      query
-    );
-    res.send({ rows: results, totalItem, totalPage });
+    const query = req.query as IFacultyQuery;
+    const { result, totalItem, totalPage } = await facultyModel.findMany(query);
+    res.send({ rows: result, totalItem, totalPage });
   });
 
   fastify.get("/:id", async (req, res) => {
     const { id } = req.params as { id: number };
     const result = await facultyModel.findById(id);
-    res.send({ result });
+    res.send(result);
   });
 
   fastify.post("/create", async (req, res) => {

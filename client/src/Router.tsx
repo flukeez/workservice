@@ -7,6 +7,8 @@ import CustomerPage from "@/pages/customer";
 import CustomerFormPage from "@/pages/customer/customer_form";
 import { lazy } from "react";
 const Faculty = lazy(() => import("@/pages/faculty"));
+const Issue = lazy(() => import("@/pages/issue"));
+const Position = lazy(() => import("@/pages/position"));
 
 export function Router() {
   return (
@@ -16,6 +18,8 @@ export function Router() {
           <Route path="/" element={<Ctype />} />
           <Route path="/home" element={<Ctype />} />
           <Route path="/faculty" element={<Faculty />} />
+          <Route path="/issue" element={<Issue />} />
+          <Route path="/position" element={<Position />} />
           <Route path="/ctype" element={<Ctype />} />
           <Route path="/customer">
             <Route index element={<CustomerPage />} />

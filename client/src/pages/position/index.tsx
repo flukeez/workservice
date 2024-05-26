@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import {
   Button,
   Card,
@@ -12,40 +11,39 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconChevronDown, IconPlus } from "@tabler/icons-react";
-import { useFacultyDelete, useFacultys } from "@/hooks/faculty";
-import { useFacultyStore } from "@/stores/useFacultyStore";
-import PageHeader from "@/components/common/PageHeader";
+import { DataTable, DataTableSortStatus } from "mantine-datatable";
+import { IconCheck, IconChevronDown, IconPlus } from "@tabler/icons-react";
 import InputSearch from "@/components/common/InputSearch";
-import FacultyForm from "@/components/faculty/FacultyForm";
+import PageHeader from "@/components/common/PageHeader";
+import { usePositionStore } from "@/stores/usePositionStore";
+import { usePositionDelete, usePositions } from "@/hooks/position";
+import PositionForm from "@/components/position/PositionForm";
 
-const title = "หน่วยงาน";
+const title = "ตำแหน่งงาน";
 const listItems = [{ title: title, href: "#" }];
 const Page_size = 10;
-export default function Faculty() {
-  const facultyStore = useFacultyStore();
-  const [debounce] = useDebouncedValue(facultyStore.txtSearch, 500);
+export default function Position() {
+  const positionStore = usePositionStore();
+  const [debounce] = useDebouncedValue(positionStore.txtSearch, 500);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-    columnAccessor: facultyStore.sortField,
-    direction: facultyStore.sortDirection,
+    columnAccessor: positionStore.sortField,
+    direction: positionStore.sortDirection,
   });
   const [opened, setOpened] = useState(false);
   const [rowId, setRowId] = useState("0");
-
   const setCondition = () => {
     const condition = {
-      txtSearch: facultyStore.txtSearch,
-      page: facultyStore.page - 1,
+      txtSearch: positionStore.txtSearch,
+      sortField: positionStore.sortField,
+      sortDirection: positionStore.sortDirection,
+      page: positionStore.page - 1,
       limit: Page_size,
-      sortField: sortStatus.columnAccessor,
-      sortDirection: sortStatus.direction,
     };
     return condition;
   };
 
-  const { data, isLoading, setFilter } = useFacultys(setCondition());
-  const mutationDelete = useFacultyDelete();
-
+  const { data, isLoading, setFilter } = usePositions(setCondition());
+  const mutationDelete = usePositionDelete();
   const handleNew = () => {
     setRowId("0");
     setOpened(true);
@@ -79,17 +77,22 @@ export default function Faculty() {
       });
     }
   };
+
   const searchData = () => {
     setFilter(setCondition());
   };
+
   const clearSearchData = () => {
-    facultyStore.setFilter({ ...facultyStore, txtSearch: "", page: 1 });
+    positionStore.setFilter({
+      ...positionStore,
+      txtSearch: "",
+      page: 1,
+    });
   };
 
   useEffect(() => {
     searchData();
-  }, [debounce, facultyStore.page, sortStatus]);
-
+  }, [debounce, positionStore.page, sortStatus]);
   return (
     <>
       <Drawer
@@ -99,7 +102,7 @@ export default function Faculty() {
         position="right"
       >
         {opened ? (
-          <FacultyForm onClose={() => setOpened(false)} id={rowId} />
+          <PositionForm onClose={() => setOpened(false)} rowId={rowId} />
         ) : null}
       </Drawer>
       <PageHeader title={title} listItems={listItems} />
@@ -108,7 +111,7 @@ export default function Faculty() {
           <Group justify="right">
             <Button
               color="green"
-              leftSection={<IconPlus size="1rem" />}
+              leftSection={<IconPlus />}
               onClick={handleNew}
             >
               เพิ่มข้อมูล
@@ -119,17 +122,17 @@ export default function Faculty() {
           <Grid mx="md" mt="md">
             <Grid.Col span={{ md: 4 }}>
               <InputSearch
-                placeholder="ค้นหาจากชื่อหน่วยงาน, หน่วยงานต้นสังกัด"
+                placeholder="ค้นหาประเภทตำแหน่ง"
                 onChange={(e) =>
-                  facultyStore.setFilter({
-                    ...facultyStore,
+                  positionStore.setFilter({
+                    ...positionStore,
                     txtSearch: e.target.value,
                     page: 1,
                   })
                 }
                 onClearSearch={clearSearchData}
                 onSearchData={searchData}
-                value={facultyStore.txtSearch}
+                value={positionStore.txtSearch}
               />
             </Grid.Col>
           </Grid>
@@ -146,12 +149,12 @@ export default function Faculty() {
             columns={[
               {
                 accessor: "name",
-                title: "ชื่อหน่วยงาน",
-                width: "45%",
+                title: "ชื่อตำแหน่ง",
+                width: "35%",
                 sortable: true,
                 render({ name }) {
                   return (
-                    <Highlight highlight={facultyStore.txtSearch}>
+                    <Highlight highlight={positionStore.txtSearch}>
                       {String(name)}
                     </Highlight>
                   );
@@ -159,15 +162,18 @@ export default function Faculty() {
               },
               {
                 accessor: "faculty_name",
-                title: "หน่วยงงานต้นสังกัด",
-                width: "40%",
+                title: "หน่วยงาน",
+                width: "30%",
                 sortable: true,
-                render({ faculty_name }) {
-                  return (
-                    <Highlight highlight={facultyStore.txtSearch}>
-                      {String(faculty_name || "")}
-                    </Highlight>
-                  );
+              },
+              {
+                accessor: "super_admin",
+                title: "สิทธิ์หัวหน้างาน",
+                textAlign: "center",
+                sortable: true,
+                width: "20%",
+                render({ super_admin }) {
+                  return super_admin ? <IconCheck color="green" /> : null;
                 },
               },
               {
@@ -225,19 +231,19 @@ export default function Faculty() {
               },
             ]}
             sortStatus={sortStatus}
-            onSortStatusChange={(sort) => {
-              setSortStatus(sort);
-              facultyStore.setFilter({
-                ...facultyStore,
+            onSortStatusChange={(sort) => [
+              setSortStatus(sort),
+              positionStore.setFilter({
+                ...positionStore,
                 sortField: sort.columnAccessor,
                 sortDirection: sort.direction,
-              });
-            }}
+              }),
+            ]}
             totalRecords={data?.totalItem || 0}
             recordsPerPage={Page_size}
-            page={facultyStore.page}
+            page={positionStore.page}
             onPageChange={(p: number) =>
-              facultyStore.setFilter({ ...facultyStore, page: p })
+              positionStore.setFilter({ ...positionStore, page: p })
             }
             paginationText={({ from, to, totalRecords }) =>
               `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`

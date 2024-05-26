@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import {
   Button,
   Card,
@@ -12,40 +11,39 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
+import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { IconChevronDown, IconPlus } from "@tabler/icons-react";
-import { useFacultyDelete, useFacultys } from "@/hooks/faculty";
-import { useFacultyStore } from "@/stores/useFacultyStore";
-import PageHeader from "@/components/common/PageHeader";
+import { useIssueDelete, useIssues } from "@/hooks/issue";
+import { useIssueStore } from "@/stores/useIssueStore";
 import InputSearch from "@/components/common/InputSearch";
-import FacultyForm from "@/components/faculty/FacultyForm";
+import PageHeader from "@/components/common/PageHeader";
+import IssueForm from "@/components/issue/IssueForm";
 
-const title = "หน่วยงาน";
+const title = "ประเภทปัญหา";
 const listItems = [{ title: title, href: "#" }];
 const Page_size = 10;
-export default function Faculty() {
-  const facultyStore = useFacultyStore();
-  const [debounce] = useDebouncedValue(facultyStore.txtSearch, 500);
+export default function Issue() {
+  const issueStore = useIssueStore();
+  const [debounce] = useDebouncedValue(issueStore.txtSearch, 500);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-    columnAccessor: facultyStore.sortField,
-    direction: facultyStore.sortDirection,
+    columnAccessor: issueStore.sortField,
+    direction: issueStore.sortDirection,
   });
   const [opened, setOpened] = useState(false);
   const [rowId, setRowId] = useState("0");
-
   const setCondition = () => {
     const condition = {
-      txtSearch: facultyStore.txtSearch,
-      page: facultyStore.page - 1,
+      txtSearch: issueStore.txtSearch,
+      sortField: issueStore.sortField,
+      sortDirection: issueStore.sortDirection,
+      page: issueStore.page - 1,
       limit: Page_size,
-      sortField: sortStatus.columnAccessor,
-      sortDirection: sortStatus.direction,
     };
     return condition;
   };
 
-  const { data, isLoading, setFilter } = useFacultys(setCondition());
-  const mutationDelete = useFacultyDelete();
-
+  const { data, isLoading, setFilter } = useIssues(setCondition());
+  const mutationDelete = useIssueDelete();
   const handleNew = () => {
     setRowId("0");
     setOpened(true);
@@ -79,17 +77,22 @@ export default function Faculty() {
       });
     }
   };
+
   const searchData = () => {
     setFilter(setCondition());
   };
+
   const clearSearchData = () => {
-    facultyStore.setFilter({ ...facultyStore, txtSearch: "", page: 1 });
+    issueStore.setFilter({
+      ...issueStore,
+      txtSearch: "",
+      page: 1,
+    });
   };
 
   useEffect(() => {
     searchData();
-  }, [debounce, facultyStore.page, sortStatus]);
-
+  }, [debounce, issueStore.page, sortStatus]);
   return (
     <>
       <Drawer
@@ -99,7 +102,7 @@ export default function Faculty() {
         position="right"
       >
         {opened ? (
-          <FacultyForm onClose={() => setOpened(false)} id={rowId} />
+          <IssueForm onClose={() => setOpened(false)} rowId={rowId} />
         ) : null}
       </Drawer>
       <PageHeader title={title} listItems={listItems} />
@@ -108,7 +111,7 @@ export default function Faculty() {
           <Group justify="right">
             <Button
               color="green"
-              leftSection={<IconPlus size="1rem" />}
+              leftSection={<IconPlus />}
               onClick={handleNew}
             >
               เพิ่มข้อมูล
@@ -119,17 +122,17 @@ export default function Faculty() {
           <Grid mx="md" mt="md">
             <Grid.Col span={{ md: 4 }}>
               <InputSearch
-                placeholder="ค้นหาจากชื่อหน่วยงาน, หน่วยงานต้นสังกัด"
+                placeholder="ค้นหาประเภทปัญหา"
                 onChange={(e) =>
-                  facultyStore.setFilter({
-                    ...facultyStore,
+                  issueStore.setFilter({
+                    ...issueStore,
                     txtSearch: e.target.value,
                     page: 1,
                   })
                 }
                 onClearSearch={clearSearchData}
                 onSearchData={searchData}
-                value={facultyStore.txtSearch}
+                value={issueStore.txtSearch}
               />
             </Grid.Col>
           </Grid>
@@ -146,26 +149,26 @@ export default function Faculty() {
             columns={[
               {
                 accessor: "name",
-                title: "ชื่อหน่วยงาน",
+                title: "ชื่อปัญหา",
                 width: "45%",
                 sortable: true,
                 render({ name }) {
                   return (
-                    <Highlight highlight={facultyStore.txtSearch}>
+                    <Highlight highlight={issueStore.txtSearch}>
                       {String(name)}
                     </Highlight>
                   );
                 },
               },
               {
-                accessor: "faculty_name",
-                title: "หน่วยงงานต้นสังกัด",
+                accessor: "issue_name",
+                title: "ประเภทปัญหา",
                 width: "40%",
                 sortable: true,
-                render({ faculty_name }) {
+                render({ issue_name }) {
                   return (
-                    <Highlight highlight={facultyStore.txtSearch}>
-                      {String(faculty_name || "")}
+                    <Highlight highlight={issueStore.txtSearch}>
+                      {String(issue_name || "")}
                     </Highlight>
                   );
                 },
@@ -225,19 +228,19 @@ export default function Faculty() {
               },
             ]}
             sortStatus={sortStatus}
-            onSortStatusChange={(sort) => {
-              setSortStatus(sort);
-              facultyStore.setFilter({
-                ...facultyStore,
+            onSortStatusChange={(sort) => [
+              setSortStatus(sort),
+              issueStore.setFilter({
+                ...issueStore,
                 sortField: sort.columnAccessor,
                 sortDirection: sort.direction,
-              });
-            }}
+              }),
+            ]}
             totalRecords={data?.totalItem || 0}
             recordsPerPage={Page_size}
-            page={facultyStore.page}
+            page={issueStore.page}
             onPageChange={(p: number) =>
-              facultyStore.setFilter({ ...facultyStore, page: p })
+              issueStore.setFilter({ ...issueStore, page: p })
             }
             paginationText={({ from, to, totalRecords }) =>
               `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`

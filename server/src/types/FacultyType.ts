@@ -9,7 +9,7 @@ export interface IFacultyForm {
   faculty_id: number;
 }
 
-export interface IQuery {
+export interface IFacultyQuery {
   txtSearch: string;
   page: number;
   limit: number;

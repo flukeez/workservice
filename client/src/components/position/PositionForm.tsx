@@ -1,30 +1,33 @@
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { usePosition, usePositionSave } from "@/hooks/position";
+import type { IPositionForm } from "@/types/IPosition";
+import {
+  positionInitialValues,
+  positionYup,
+} from "@/validations/position.schema";
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Alert,
   Button,
+  Checkbox,
   Group,
   LoadingOverlay,
   Stack,
   TextInput,
 } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons-react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { facultyInitialValues, facultyYup } from "@/validations/faculty.schema";
-import { useFaculty, useFacultySave } from "@/hooks/faculty";
-import type { IFacultyForm } from "@/types/IFaculty";
+import { useEffect, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import DropdownFaculty from "../shared/DropdownFaculty";
+import { IconAlertCircle } from "@tabler/icons-react";
+import Swal from "sweetalert2";
 
-interface FacultyFormProps {
+interface PositionProps {
   onClose: () => void;
-  id: string;
+  rowId: string;
 }
 
-export default function FacultyForm({ onClose, id }: FacultyFormProps) {
-  const { data, isLoading } = useFaculty(id);
-  const mutationSave = useFacultySave();
-
+export default function PositionForm({ rowId, onClose }: PositionProps) {
+  const { data, isLoading } = usePosition(rowId);
+  const mutationSave = usePositionSave();
   const {
     handleSubmit,
     register,
@@ -34,11 +37,11 @@ export default function FacultyForm({ onClose, id }: FacultyFormProps) {
     getValues,
   } = useForm({
     mode: "onChange",
-    resolver: yupResolver(facultyYup),
-    defaultValues: facultyInitialValues,
+    resolver: yupResolver(positionYup),
+    defaultValues: positionInitialValues,
   });
   const [showAlert, setShowAlert] = useState(false);
-  const onSubmit: SubmitHandler<IFacultyForm> = async (formData) => {
+  const onSubmit: SubmitHandler<IPositionForm> = async (formData) => {
     const { data } = await mutationSave.mutateAsync(formData);
     try {
       if (data.result) {
@@ -69,6 +72,7 @@ export default function FacultyForm({ onClose, id }: FacultyFormProps) {
       reset(data.result);
     }
   }, [data]);
+
   return (
     <>
       <LoadingOverlay visible={isLoading || mutationSave.isPending} />
@@ -85,9 +89,9 @@ export default function FacultyForm({ onClose, id }: FacultyFormProps) {
       )}
       <Stack>
         <TextInput
-          label="ชื่อหน่วยงาน"
-          placeholder="กรอกชื่อหน่วยงาน"
+          label="ชื่อตำแหน่ง"
           {...register("name")}
+          placeholder="กรอกชื่อตำแหน่ง"
           error={errors.name?.message}
           required
         />
@@ -102,12 +106,14 @@ export default function FacultyForm({ onClose, id }: FacultyFormProps) {
               <DropdownFaculty
                 faculty={field.value}
                 setFaculty={handleSelectChange}
+                label="หน่วยงาน"
                 error={errors.faculty_id?.message}
               />
             );
           }}
         />
 
+        <Checkbox label="สิทธิ์หัวหน้างาน" {...register("super_admin")} />
         <Group justify="right" mt={20}>
           <Button color="gray" onClick={onClose}>
             ยกเลิก

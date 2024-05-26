@@ -5,26 +5,28 @@ import { Select } from "@mantine/core";
 interface FacultyProps {
   faculty: string | null;
   setFaculty: (faculty: string | null) => void;
+  label?: string;
   error?: string;
 }
 export default function DropdownFaculty({
   faculty,
   setFaculty,
+  label,
   error,
 }: FacultyProps) {
   const condition = {
     page: 0,
     limit: 1000,
     sortDirection: "asc",
-    sortField: "id",
+    sortField: "name",
   };
 
   const { data } = useFacultys(condition);
   return (
     <Select
-      label="หน่วยงานต้นสังกัด"
+      label={label || "หน่วยงานต้นสังกัด"}
       placeholder="เลือกหน่วยงานต้นสังกัด"
-      value={faculty}
+      value={faculty?.toString()}
       onChange={setFaculty}
       data={
         data?.rows &&

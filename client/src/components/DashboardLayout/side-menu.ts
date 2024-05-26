@@ -31,18 +31,21 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     ],
   },
   {
-    title: "หน่วยงาน",
-    path: "/faculty",
+    title: "อุปกรณ์",
+    path: "/equipment",
     icon: IconArchiveFilled,
   },
   {
     title: "ข้อมูลพื้นฐาน",
     path: "#",
     icon: IconStack2Filled,
-    childPath: ["/info"],
+    childPath: ["/issue", "/position", "priority", "status", "/faculty"],
     subMenuItems: [
       { title: "ประเภทปัญหา", path: "/issue" },
       { title: "ตำแหน่งงาน", path: "/position" },
+      { title: "ลําดับความสําคัญ", path: "/priority" },
+      { title: "สถานะงาน", path: "/status" },
+      { title: "หน่วยงาน", path: "/faculty" },
     ],
   },
 ];

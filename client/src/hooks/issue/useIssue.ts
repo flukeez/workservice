@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { IConditionFilter } from "@/types/IConditionFilter";
-import { axiosAuth } from "@/utils/axios";
 import { useQuery } from "@tanstack/react-query";
+import { axiosAuth } from "@/utils/axios";
 import { queryKeys } from "@/utils/queryKeys";
+import { IConditionFilter } from "@/types/IConditionFilter";
 
-const url = "/facultys";
+const url = "/issues";
 //get all
-export const useFacultys = (condition: IConditionFilter) => {
+export const useIssues = (condition: IConditionFilter) => {
   const [filter, setFilter] = useState(condition);
 
   const findMany = async () => {
@@ -14,7 +14,7 @@ export const useFacultys = (condition: IConditionFilter) => {
       ["txtSearch", filter.txtSearch || ""],
       ["sortField", filter.sortField || "name"],
       ["sortDirection", filter.sortDirection || "asc"],
-      ["page", filter.page?.toString()],
+      ["page", filter.page.toString()],
       ["limit", filter.limit.toString()],
     ]);
 
@@ -23,15 +23,15 @@ export const useFacultys = (condition: IConditionFilter) => {
   };
 
   const query = useQuery({
-    queryKey: [queryKeys.facultys, { ...filter }],
+    queryKey: [queryKeys.issues, { ...filter }],
     queryFn: findMany,
   });
 
   return { ...query, setFilter };
 };
 
-//get by id
-export const useFaculty = (id: string) => {
+// get by id
+export const useIssue = (id: string) => {
   const [filter, setFilter] = useState(id);
 
   const findById = async () => {
@@ -43,7 +43,7 @@ export const useFaculty = (id: string) => {
   };
 
   const query = useQuery({
-    queryKey: [queryKeys.faculty, filter],
+    queryKey: [queryKeys.issue, filter],
     queryFn: findById,
   });
 
