@@ -5,6 +5,7 @@ export type IIssue = {
 };
 
 export type IIssueForm = {
+  id?: number;
   name: string;
   issue_id: string | null;
 };

@@ -3,5 +3,6 @@ export type IPriority = {
   name: string;
 };
 export type IPriorityForm = {
+  id?: number;
   name: string;
 };

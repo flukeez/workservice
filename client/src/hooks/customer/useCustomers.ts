@@ -9,10 +9,10 @@ export const useCustomers = (condition: IConditionFilter) => {
 
   const findMany = async () => {
     const params = new URLSearchParams([
-      ["textSearch", filter.textSearch || ""],
+      ["textSearch", filter.txtSearch || ""],
       ["sortField", filter.sortField || "name"],
       ["sortDirection", filter.sortDirection || "asc"],
-      ["activePage", filter.activePage?.toString()],
+      ["activePage", filter.page?.toString()],
       ["limit", filter.limit.toString()],
     ]);
     const { data } = await axiosAuth.get("/customer", { params });

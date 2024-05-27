@@ -1,7 +1,7 @@
 export interface IConditionFilter {
-  txtSearch?: string;
+  txtSearch: string;
   page: number;
-  sortField?: string;
-  sortDirection?: string;
+  sortField: string;
+  sortDirection: string;
   limit: number;
 }

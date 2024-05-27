@@ -4,6 +4,7 @@ import {
   IconNews,
   IconStack2Filled,
   IconTools,
+  IconUserFilled,
 } from "@tabler/icons-react";
 
 import { SideNavItem } from "./types";
@@ -34,6 +35,11 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     title: "อุปกรณ์",
     path: "/equipment",
     icon: IconArchiveFilled,
+  },
+  {
+    title: "ข้อมูลผู้ใช้",
+    path: "/user",
+    icon: IconUserFilled,
   },
   {
     title: "ข้อมูลพื้นฐาน",

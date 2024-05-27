@@ -3,5 +3,6 @@ export type IStatus = {
   name: string;
 };
 export type IStatusForm = {
+  id?: number;
   name: string;
 };
