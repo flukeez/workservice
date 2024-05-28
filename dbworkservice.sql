@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2024-05-27 17:26:26
+Date: 2024-05-28 17:18:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -408,7 +408,7 @@ CREATE TABLE `tb_user` (
   `line_token` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
-  `birthday` varchar(255) NOT NULL,
+  `birthday` date NOT NULL,
   `image` varchar(255) NOT NULL,
   `sex` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
@@ -418,15 +418,17 @@ CREATE TABLE `tb_user` (
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT '',
   `create_date` datetime NOT NULL,
-  `last_login` time NOT NULL,
+  `last_login` datetime NOT NULL,
   `user_show` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_user
 -- ----------------------------
-INSERT INTO `tb_user` VALUES ('1', '1234567891012', 'admin', 'no', 'one', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '18/10/2542', 'test3', '1', 'test4', '1', '1', '1', 'test5', 'test6', '0000-00-00 00:00:00', '00:00:00', '');
+INSERT INTO `tb_user` VALUES ('1', '1234567891012', 'admin', 'no', 'one', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', 'test3', '1', 'test4', '1', '1', '1', 'test5', 'test6', '0000-00-00 00:00:00', '2024-05-08 00:00:00', '');
+INSERT INTO `tb_user` VALUES ('2', '1234567891012', 'admin1', 'no', '', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', 'test3', '1', 'test4', '1', '1', '1', 'test5', 'test6', '0000-00-00 00:00:00', '2024-05-28 00:00:00', '');
+INSERT INTO `tb_user` VALUES ('3', '1234567891012', 'admin2', 'no', 'one', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', '', '1', 'test4', '1', '1', '1', 'test5', 'test6', '0000-00-00 00:00:00', '2023-06-28 00:00:00', '');
 
 -- ----------------------------
 -- Table structure for tb_user_position
