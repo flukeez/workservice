@@ -123,7 +123,7 @@ export default function Status() {
           <Grid mx="md" mt="md">
             <Grid.Col span={{ md: 4 }}>
               <InputSearch
-                placeholder="ค้นหาประเภทตำแหน่ง"
+                placeholder="ค้นหาสถานะงาน"
                 onChange={(e) =>
                   statusStore.setFilter({
                     ...statusStore,

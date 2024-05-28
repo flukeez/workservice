@@ -27,10 +27,10 @@ export const useUsers = (condition: IConditionFilter) => {
   return { ...query, setFilter };
 };
 
-export const useUser = (id: string) => {
+export const useUser = (id: number) => {
   const [filter, setFilter] = useState(id);
   const findById = async () => {
-    if (id === "0") {
+    if (id === 0) {
       return {};
     }
     const { data } = await axiosAuth.get(url + "/" + filter);

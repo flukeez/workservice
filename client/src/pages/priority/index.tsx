@@ -123,7 +123,7 @@ export default function Priority() {
           <Grid mx="md" mt="md">
             <Grid.Col span={{ md: 4 }}>
               <InputSearch
-                placeholder="ค้นหาประเภทตำแหน่ง"
+                placeholder="ค้นหาลำดับความสำคัญ"
                 onChange={(e) =>
                   priorityStore.setFilter({
                     ...priorityStore,

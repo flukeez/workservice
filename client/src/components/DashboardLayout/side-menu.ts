@@ -39,6 +39,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: "ข้อมูลผู้ใช้",
     path: "/user",
+    childPath: ["/user/new", "/user/:id"],
     icon: IconUserFilled,
   },
   {

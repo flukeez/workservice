@@ -3,7 +3,9 @@ import { Dayjs, default as dayjs } from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import thLocale from "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
+import relativeTime from "dayjs/plugin/relativeTime";
 
+dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 dayjs.extend(buddhistEra);
 dayjs.locale(thLocale);
@@ -28,6 +30,10 @@ function dateToText(dateSql: any) {
 
   result = `${day}/${month}/${yearThai}`;
   return result;
+}
+//เช็ควจำนวนวันตั้งแต่ล่าสุดจนถึงปัจจุบัน
+function timeFormNow(dateSql: string) {
+  return dayjs(dateSql).fromNow();
 }
 //สำหรับเช็ครูปแบบวันที่ว่าถูกต้องหรือไม่
 function convertDate(dateSql: string) {
@@ -77,4 +83,4 @@ function dayThai(dateSql: any, short = false) {
   return formatDate(date, short ? "dd DD MMM BBBB" : "วันddddที่DD MMMM BBBB");
 }
 
-export { dateToText, dateThai, dayThai, dateThaiLong, dateShort };
+export { timeFormNow, dateToText, dateThai, dayThai, dateThaiLong, dateShort };

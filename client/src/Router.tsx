@@ -10,6 +10,8 @@ const Issue = lazy(() => import("@/pages/issue"));
 const Position = lazy(() => import("@/pages/position"));
 const Priority = lazy(() => import("@/pages/priority"));
 const Status = lazy(() => import("@/pages/status"));
+const User = lazy(() => import("@/pages/user"));
+const UserForm = lazy(() => import("@/pages/user/user_form"));
 const PageNotFound = lazy(() => import("@/pages/notfound"));
 
 export function Router() {
@@ -24,6 +26,12 @@ export function Router() {
           <Route path="/position" element={<Position />} />
           <Route path="/priority" element={<Priority />} />
           <Route path="/status" element={<Status />} />
+          <Route path="/user" element={<User />} />
+          <Route path="/user">
+            <Route index element={<User />} />
+            <Route path="new" element={<UserForm />} />
+            <Route path=":id" element={<UserForm />} />
+          </Route>
           <Route path="/ctype" element={<Ctype />} />
           <Route path="/customer">
             <Route index element={<CustomerPage />} />

@@ -13,7 +13,8 @@ export class UserModel {
     const baseQuery = db(tbName)
       .where("firstname", "LIKE", `%${txtSearch}%`)
       .orWhere("surname", "LIKE", `%${txtSearch}%`)
-      .orWhere("nickname", "LIKE", `%${txtSearch}%`);
+      .orWhere("nickname", "LIKE", `%${txtSearch}%`)
+      .orWhere("username", "LIKE", `%${txtSearch}%`);
     try {
       const result = await baseQuery
         .clone()
@@ -23,7 +24,7 @@ export class UserModel {
           "surname",
           "nickname",
           "image",
-          "line",
+          "username",
           "phone",
           "last_login"
         )

@@ -77,7 +77,8 @@ export default function MenuItem({
           leftSection={Icon && <Icon size="1.2rem" stroke={1.5} />}
           py="sm"
           className={cx(classes.navlink, {
-            [classes.activeNavLink]: pathname === path,
+            [classes.activeNavLink]:
+              pathname === path || (pathname.startsWith(path) && path !== "/"),
           })}
         />
       )}
