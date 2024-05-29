@@ -107,7 +107,6 @@ export default function FacultyForm({ onClose, id }: FacultyFormProps) {
             );
           }}
         />
-
         <Group justify="right" mt={20}>
           <Button color="gray" onClick={onClose}>
             ยกเลิก

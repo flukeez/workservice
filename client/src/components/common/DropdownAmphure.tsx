@@ -1,6 +1,7 @@
 import { Select } from "@mantine/core";
 import { useAmphures } from "@/hooks/amphure";
 import type { IAmphure } from "@/types/IAmphure";
+import { useEffect } from "react";
 
 type AmphureProps = {
   amphure: string | null;
@@ -12,13 +13,18 @@ export default function DropdownAmphure({
   setAmphure,
   province,
 }: AmphureProps) {
-  const { data } = useAmphures(province);
+  const { data, setFilter } = useAmphures(province);
+
+  useEffect(() => {
+    setFilter(province);
+  }, [province]);
 
   return (
     <Select
+      key={province}
       label="อำเภอ"
       placeholder="เลือกอำเภอ"
-      value={amphure?.toString()}
+      value={amphure?.toString() || ""}
       onChange={setAmphure}
       data={
         data?.rows &&

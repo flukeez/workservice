@@ -1,8 +1,10 @@
 import DropdownAmphure from "@/components/common/DropdownAmphure";
 import DropdownProvince from "@/components/common/DropdownProvince";
 import DropdownTumbol from "@/components/common/DropdownTumbol";
+import InputDate from "@/components/common/InputDate";
 import PageHeader from "@/components/common/PageHeader";
 import { useUser, useUserSave } from "@/hooks/user";
+import { IUserForm } from "@/types/IUser";
 import { convertToNumberOrZero } from "@/utils/mynumber";
 import { userYup } from "@/validations/user.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,9 +21,9 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
+import { IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -40,13 +42,25 @@ export default function UserForm() {
   const id = convertToNumberOrZero(params.id);
   const { data, isLoading } = useUser(id);
   const mutation = useUserSave();
-  const { control, register, watch, setValue } = useForm({
+  const {
+    control,
+    register,
+    watch,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     mode: "onChange",
     resolver: yupResolver(userYup),
   });
   const [title, setTitle] = useState("");
+  const [birthday, setBirthday] = useState("");
   const handleNew = () => {
     navigate("/user/new");
+  };
+
+  const onSubmit: SubmitHandler<IUserForm> = (formData) => {
+    console.log(formData);
   };
   useEffect(() => {
     setTitle(id ? "(รายละเอียด)" : "(เพิ่ม)");
@@ -73,32 +87,66 @@ export default function UserForm() {
               placeholder="กรอกเลขบัตรประชาชน"
               required
               {...register("id_card")}
+              error={errors.id_card?.message}
             />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <TextInput label="ชื่อจริง" placeholder="กรอกชื่อจริง" required />
+            <TextInput
+              label="ชื่อจริง"
+              placeholder="กรอกชื่อจริง"
+              required
+              {...register("firstname")}
+              error={errors.firstname?.message}
+            />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <TextInput label="นามสกุล" placeholder="กรอกนามสกุล" required />
+            <TextInput
+              label="นามสกุล"
+              placeholder="กรอกนามสกุล"
+              required
+              {...register("surname")}
+              error={errors.surname?.message}
+            />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <TextInput label="ชื่อเล่น" placeholder="กรอกชื่อเล่น" />
+            <TextInput
+              label="ชื่อเล่น"
+              placeholder="กรอกชื่อเล่น"
+              {...register("nickname")}
+              error={errors.nickname?.message}
+            />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <Select
-              label="เพศ"
-              placeholder="เลือกเพศ"
-              data={[
-                { value: "1", label: "ชาย" },
-                { value: "2", label: "หญิง" },
-                { value: "3", label: "ไม่ระบุ" },
-              ]}
-              clearable
+            <Controller
+              name="sex"
+              control={control}
+              render={({ field }) => {
+                const handleSelectChange = (value: string | null) => {
+                  field.onChange(value || "");
+                };
+                return (
+                  <Select
+                    label="เพศ"
+                    placeholder="เลือกเพศ"
+                    data={[
+                      { value: "1", label: "ชาย" },
+                      { value: "2", label: "หญิง" },
+                      { value: "3", label: "ไม่ระบุ" },
+                    ]}
+                    onChange={handleSelectChange}
+                    clearable
+                    error={errors.sex?.message}
+                  />
+                );
+              }}
             />
           </Grid.Col>
           <Grid.Col span={layout}>
             <InputWrapper label="วัน/เดือน/ปีเกิด">
-              <TextInput placeholder="วัน/เดือน/ปีเกิด" />
+              <InputDate
+                textValue={birthday}
+                onChangeText={(value: string) => setBirthday(value)}
+              />
             </InputWrapper>
           </Grid.Col>
           <Grid.Col span={12}>
@@ -111,7 +159,8 @@ export default function UserForm() {
               render={({ field }) => {
                 const handleSelectChange = (value: string | null) => {
                   field.onChange(value || "");
-                  setValue("amphure_id", value || "");
+                  setValue("amphure_id", "");
+                  setValue("tumbol_id", "");
                 };
                 return (
                   <DropdownProvince
@@ -128,7 +177,7 @@ export default function UserForm() {
               control={control}
               render={({ field }) => {
                 const handleSelectChange = (value: string | null) => {
-                  console.log("test");
+                  setValue("tumbol_id", "");
                   field.onChange(value || "");
                 };
                 return (
@@ -217,6 +266,17 @@ export default function UserForm() {
             />
           </Grid.Col>
         </Grid>
+        <Card.Section withBorder inheritPadding py="sm" mt="lg">
+          <Group justify="center">
+            <Button
+              leftSection={<IconDeviceFloppy />}
+              size="lg"
+              onClick={handleSubmit(onSubmit)}
+            >
+              บันทึกข้อมูล
+            </Button>
+          </Group>
+        </Card.Section>
       </Card>
     </>
   );

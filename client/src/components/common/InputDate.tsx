@@ -2,7 +2,15 @@ import { useState, useRef, useEffect } from "react";
 import { PatternFormat } from "react-number-format";
 
 import { Calendar } from "@mantine/dates";
-import { ActionIcon, CloseButton, Group, Indicator, Input, Popover, TextInput, } from "@mantine/core";
+import {
+  ActionIcon,
+  CloseButton,
+  Group,
+  Indicator,
+  Input,
+  Popover,
+  TextInput,
+} from "@mantine/core";
 import { IconCalendarEvent, IconX } from "@tabler/icons-react";
 
 import { dateToMySql } from "@/utils/mydate";
@@ -23,8 +31,8 @@ const InputDate = ({
   onChangeText,
   isError,
   isClear,
-  // ...rest
-}: Props) => {
+}: // ...rest
+Props) => {
   const [opened, setOpened] = useState(false);
   const [value, setValue] = useState<Date>(new Date());
   const [textDate, setTextDate] = useState(textValue);
@@ -48,7 +56,6 @@ const InputDate = ({
     if (day) {
       const mydate = dateToMySql(e.target.value);
       setValue(new Date(mydate));
-
       setTextDate(e.target.value);
       onChangeText(e.target.value);
     }
@@ -60,7 +67,7 @@ const InputDate = ({
   };
 
   const handleChangeCalendar = (value: any) => {
-    const valueThai = !!value ? dayjs(value).format("DD/MM/BBBB") : ''
+    const valueThai = !!value ? dayjs(value).format("DD/MM/BBBB") : "";
 
     setValue(value);
     setOpened(false);
@@ -97,8 +104,9 @@ const InputDate = ({
         getInputRef={inputRef}
         format="##/##/####"
         placeholder="วว/ดด/ปปปป"
-        className={`mantineTextInput ${isError ? " mantineTextInput-Valid" : ""
-          }`}
+        className={`mantineTextInput ${
+          isError ? " mantineTextInput-Valid" : ""
+        }`}
         defaultValue={textValue}
         onChange={handleChangeText}
         onBlur={onBlur}
@@ -108,32 +116,56 @@ const InputDate = ({
   };
 
   const handleNextClickMonth = () => {
-    const nextMonth = new Date(value.getFullYear(), value.getMonth() + 1, value.getDate());
+    const nextMonth = new Date(
+      value.getFullYear(),
+      value.getMonth() + 1,
+      value.getDate()
+    );
     setValue(nextMonth);
   };
 
   const handlePrevClickMonth = () => {
-    const prevMonth = new Date(value.getFullYear(), value.getMonth() - 1, value.getDate());
+    const prevMonth = new Date(
+      value.getFullYear(),
+      value.getMonth() - 1,
+      value.getDate()
+    );
     setValue(prevMonth);
   };
 
   const handleNextClickYear = () => {
-    const nextYear = new Date(value.getFullYear() + 1, value.getMonth(), value.getDate());
+    const nextYear = new Date(
+      value.getFullYear() + 1,
+      value.getMonth(),
+      value.getDate()
+    );
     setValue(nextYear);
   };
 
   const handlePrevClickYear = () => {
-    const prevYear = new Date(value.getFullYear() - 1, value.getMonth(), value.getDate());
+    const prevYear = new Date(
+      value.getFullYear() - 1,
+      value.getMonth(),
+      value.getDate()
+    );
     setValue(prevYear);
   };
 
   const handleNextClickDecade = () => {
-    const nextYear = new Date(value.getFullYear() + 10, value.getMonth(), value.getDate());
+    const nextYear = new Date(
+      value.getFullYear() + 10,
+      value.getMonth(),
+      value.getDate()
+    );
     setValue(nextYear);
   };
 
   const handlePrevClickDecade = () => {
-    const prevYear = new Date(value.getFullYear() - 10, value.getMonth(), value.getDate());
+    const prevYear = new Date(
+      value.getFullYear() - 10,
+      value.getMonth(),
+      value.getDate()
+    );
     setValue(prevYear);
   };
 
@@ -154,7 +186,11 @@ const InputDate = ({
                 onClose={() => setOpened(false)}
               >
                 <Popover.Target>
-                  <ActionIcon color="blue" variant="light" onClick={openCalendar}>
+                  <ActionIcon
+                    color="blue"
+                    variant="light"
+                    onClick={openCalendar}
+                  >
                     <IconCalendarEvent size={16} />
                   </ActionIcon>
                 </Popover.Target>
@@ -166,32 +202,46 @@ const InputDate = ({
                     yearsListFormat="BBBB"
                     monthLabelFormat="MMMM BBBB"
                     getDayProps={(date) => ({
-                      selected: dayjs(date).isSame(new Date(dateToMySql(textDate)), 'date'),
+                      selected: dayjs(date).isSame(
+                        new Date(dateToMySql(textDate)),
+                        "date"
+                      ),
                       onClick: () => handleChangeCalendar(date),
                     })}
                     locale="th"
                     date={value}
                     onMonthSelect={(v) => {
-                      const setData = new Date(value.getFullYear(), v.getMonth(), 1)
-                      setValue(setData)
+                      const setData = new Date(
+                        value.getFullYear(),
+                        v.getMonth(),
+                        1
+                      );
+                      setValue(setData);
                     }}
                     onNextMonth={handleNextClickMonth}
                     onPreviousMonth={handlePrevClickMonth}
-
                     onYearSelect={(v) => {
-                      const setData = new Date(v.getFullYear(), value.getMonth(), 1)
-                      setValue(setData)
+                      const setData = new Date(
+                        v.getFullYear(),
+                        value.getMonth(),
+                        1
+                      );
+                      setValue(setData);
                     }}
                     onNextYear={handleNextClickYear}
                     onPreviousYear={handlePrevClickYear}
-
                     onNextDecade={handleNextClickDecade}
                     onPreviousDecade={handlePrevClickDecade}
                     renderDay={(date) => {
                       const day = date.getDate();
-                      const today = new Date()
+                      const today = new Date();
                       return (
-                        <Indicator size={6} color="green" offset={-2} disabled={day !== today.getDate()}>
+                        <Indicator
+                          size={6}
+                          color="green"
+                          offset={-2}
+                          disabled={day !== today.getDate()}
+                        >
                           <div>{day}</div>
                         </Indicator>
                       );
@@ -199,7 +249,11 @@ const InputDate = ({
                   />
                 </Popover.Dropdown>
               </Popover>
-              <ActionIcon color="gray" variant="light" onClick={() => handleChangeCalendar("")}>
+              <ActionIcon
+                color="gray"
+                variant="light"
+                onClick={() => handleChangeCalendar("")}
+              >
                 <IconX size={16} />
               </ActionIcon>
             </>

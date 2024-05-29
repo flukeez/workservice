@@ -52,6 +52,11 @@ function convertDate(dateSql: string) {
 function formatDate(date: Dayjs | null, format: string) {
   return date ? date.format(format) : "";
 }
+function dateToMySql(dateText: string) {
+  console.log(dateText);
+  const date: any = convertDate(dateText);
+  return formatDate(date, "YYYY-MM-DD");
+}
 //ตย
 //แบบสั้น 	19 พ.ค. 67
 //แบบยาว  19 พ.ค. 2567
@@ -83,4 +88,12 @@ function dayThai(dateSql: any, short = false) {
   return formatDate(date, short ? "dd DD MMM BBBB" : "วันddddที่DD MMMM BBBB");
 }
 
-export { timeFormNow, dateToText, dateThai, dayThai, dateThaiLong, dateShort };
+export {
+  timeFormNow,
+  dateToMySql,
+  dateToText,
+  dateThai,
+  dayThai,
+  dateThaiLong,
+  dateShort,
+};

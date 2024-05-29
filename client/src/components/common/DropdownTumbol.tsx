@@ -1,6 +1,7 @@
-import { useTumbols } from "@/hooks/tumbol/useTumbol";
-import { ITumbol } from "@/types/ITumbol";
+import { useEffect } from "react";
 import { Select } from "@mantine/core";
+import { useTumbols } from "@/hooks/tumbol/useTumbol";
+import type { ITumbol } from "@/types/ITumbol";
 
 type TumbolProps = {
   tumbol: string | null;
@@ -12,13 +13,17 @@ export default function DropdownTumbol({
   setTumbol,
   amphure,
 }: TumbolProps) {
-  const { data } = useTumbols(amphure);
+  const { data, setFilter } = useTumbols(amphure);
 
+  useEffect(() => {
+    setFilter(amphure);
+  }, [amphure]);
   return (
     <Select
+      key={amphure}
       label="ตำบล"
       placeholder="เลือกตำบล"
-      value={tumbol?.toString()}
+      value={tumbol?.toString() || ""}
       onChange={setTumbol}
       data={
         data?.rows &&
