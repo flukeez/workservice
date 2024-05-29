@@ -47,7 +47,8 @@ export type IUserForm = {
   amphure_id?: number;
   province_id?: number;
   username: string;
-  password: string;
+  password?: string;
+  con_password?: string;
 };
 
 export type IUserQuery = {

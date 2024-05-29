@@ -1,5 +1,5 @@
 import db from "../database";
-import { pagination } from "../utils/pagination";
+import { pagination } from "@/utils/pagination";
 
 const tbname = "tb_cust";
 export class CustomerModel {

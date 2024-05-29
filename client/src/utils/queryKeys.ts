@@ -11,4 +11,7 @@ export const queryKeys = {
   status: "Get Status",
   users: "Fetch User",
   user: "Get User",
+  provinces: "Fetch Province",
+  amphure: "Get Amphure",
+  tumbol: "Get tumbol",
 };

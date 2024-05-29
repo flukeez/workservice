@@ -1,4 +1,5 @@
 import { useFacultys } from "@/hooks/faculty";
+import { IConditionFilter } from "@/types/IConditionFilter";
 import { IFaculty } from "@/types/IFaculty";
 import { Select } from "@mantine/core";
 
@@ -14,7 +15,8 @@ export default function DropdownFaculty({
   label,
   error,
 }: FacultyProps) {
-  const condition = {
+  const condition: IConditionFilter = {
+    txtSearch: "",
     page: 0,
     limit: 1000,
     sortDirection: "asc",

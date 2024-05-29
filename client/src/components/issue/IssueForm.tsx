@@ -14,7 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { issueInitialValues, issueYup } from "@/validations/issue.schema";
 import { useIssue, useIssueSave } from "@/hooks/issue";
 import { IIssueForm } from "@/types/IIssue";
-import DropdownIssue from "../shared/DropdownIssue";
+import DropdownIssue from "./DropdownIssue";
 
 interface IssueFormProps {
   onClose: () => void;

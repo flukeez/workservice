@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import DropdownFaculty from "../shared/DropdownFaculty";
+import DropdownFaculty from "../faculty/DropdownFaculty";
 import { IconAlertCircle } from "@tabler/icons-react";
 import Swal from "sweetalert2";
 

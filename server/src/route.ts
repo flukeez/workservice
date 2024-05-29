@@ -8,6 +8,9 @@ import PositionController from "./controllers/PositionController";
 import PriorityController from "./controllers/PriorityController";
 import StatusController from "./controllers/StatusController";
 import UserController from "./controllers/UserController";
+import ProvinceController from "./controllers/ProvinceController";
+import AmphureController from "./controllers/AmphureController";
+import TumbolController from "./controllers/TumbolController";
 
 const routes = async (fastify: FastifyInstance) => {
   //DEFAULT ROUTE
@@ -28,6 +31,9 @@ const routes = async (fastify: FastifyInstance) => {
   fastify.register(PriorityController, { prefix: "/api/prioritys" });
   fastify.register(StatusController, { prefix: "/api/statuses" });
   fastify.register(UserController, { prefix: "/api/users" });
+  fastify.register(ProvinceController, { prefix: "/api/provinces" });
+  fastify.register(AmphureController, { prefix: "/api/amphures" });
+  fastify.register(TumbolController, { prefix: "/api/tumbols" });
 };
 
 export default routes;

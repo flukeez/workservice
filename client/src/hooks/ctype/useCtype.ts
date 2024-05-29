@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { URL } from "url";
 
-const url = "/ctype";
+const url = "/ctypes";
 //GET ALL
 export const useCtype = (condition: IConditionFilter) => {
   const [filter, setFilter] = useState(condition);

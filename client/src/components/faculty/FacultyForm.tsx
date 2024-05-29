@@ -14,7 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { facultyInitialValues, facultyYup } from "@/validations/faculty.schema";
 import { useFaculty, useFacultySave } from "@/hooks/faculty";
 import type { IFacultyForm } from "@/types/IFaculty";
-import DropdownFaculty from "../shared/DropdownFaculty";
+import DropdownFaculty from "./DropdownFaculty";
 
 interface FacultyFormProps {
   onClose: () => void;
