@@ -22,10 +22,10 @@ import "dayjs/locale/th";
 interface Props {
   textValue: string; //thai date string eg. 20/05/2565
   onChangeText: (v: string) => void;
-  isError?: boolean;
+  isError?: string | undefined;
   isClear?: boolean;
 }
-
+const today = new Date();
 const InputDate = ({
   textValue,
   onChangeText,
@@ -56,6 +56,7 @@ Props) => {
     if (day) {
       const mydate = dateToMySql(e.target.value);
       setValue(new Date(mydate));
+
       setTextDate(e.target.value);
       onChangeText(e.target.value);
     }
@@ -68,7 +69,6 @@ Props) => {
 
   const handleChangeCalendar = (value: any) => {
     const valueThai = !!value ? dayjs(value).format("DD/MM/BBBB") : "";
-
     setValue(value);
     setOpened(false);
 
@@ -78,12 +78,6 @@ Props) => {
 
   const openCalendar = () => {
     const day = dayjs(textDate, "DD/MM/YYYY", true).isValid();
-    if (day) {
-      const myDate = dateToMySql(textDate);
-      setValue(new Date(myDate));
-    } else {
-      setValue(new Date());
-    }
     setOpened(true);
   };
 
@@ -107,6 +101,7 @@ Props) => {
         className={`mantineTextInput ${
           isError ? " mantineTextInput-Valid" : ""
         }`}
+        error={!!isError}
         defaultValue={textValue}
         onChange={handleChangeText}
         onBlur={onBlur}
@@ -116,62 +111,69 @@ Props) => {
   };
 
   const handleNextClickMonth = () => {
+    const currentDate = value || today;
     const nextMonth = new Date(
-      value.getFullYear(),
-      value.getMonth() + 1,
-      value.getDate()
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      currentDate.getDate()
     );
     setValue(nextMonth);
   };
 
   const handlePrevClickMonth = () => {
+    const currentDate = value || today;
     const prevMonth = new Date(
-      value.getFullYear(),
-      value.getMonth() - 1,
-      value.getDate()
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+      currentDate.getDate()
     );
     setValue(prevMonth);
   };
 
   const handleNextClickYear = () => {
+    const currentDate = value || today;
     const nextYear = new Date(
-      value.getFullYear() + 1,
-      value.getMonth(),
-      value.getDate()
+      currentDate.getFullYear() + 1,
+      currentDate.getMonth(),
+      currentDate.getDate()
     );
     setValue(nextYear);
   };
 
   const handlePrevClickYear = () => {
+    const currentDate = value || today;
     const prevYear = new Date(
-      value.getFullYear() - 1,
-      value.getMonth(),
-      value.getDate()
+      currentDate.getFullYear() - 1,
+      currentDate.getMonth(),
+      currentDate.getDate()
     );
     setValue(prevYear);
   };
 
   const handleNextClickDecade = () => {
+    const currentDate = value || today;
     const nextYear = new Date(
-      value.getFullYear() + 10,
-      value.getMonth(),
-      value.getDate()
+      currentDate.getFullYear() + 10,
+      currentDate.getMonth(),
+      currentDate.getDate()
     );
     setValue(nextYear);
   };
 
   const handlePrevClickDecade = () => {
+    const currentDate = value || today;
     const prevYear = new Date(
-      value.getFullYear() - 10,
-      value.getMonth(),
-      value.getDate()
+      currentDate.getFullYear() - 10,
+      currentDate.getMonth(),
+      currentDate.getDate()
     );
     setValue(prevYear);
   };
 
   return (
-    <>
+    <Input.Wrapper error={isError}>
       <Input
+        error={isError}
         component={inputDate}
         rightSectionPointerEvents="all"
         rightSectionWidth={65}
@@ -194,7 +196,6 @@ Props) => {
                     <IconCalendarEvent size={16} />
                   </ActionIcon>
                 </Popover.Target>
-
                 <Popover.Dropdown>
                   <Calendar
                     yearLabelFormat="BBBB"
@@ -234,7 +235,6 @@ Props) => {
                     onPreviousDecade={handlePrevClickDecade}
                     renderDay={(date) => {
                       const day = date.getDate();
-                      const today = new Date();
                       return (
                         <Indicator
                           size={6}
@@ -260,7 +260,7 @@ Props) => {
           </Group>
         }
       />
-    </>
+    </Input.Wrapper>
   );
 };
 

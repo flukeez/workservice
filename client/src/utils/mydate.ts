@@ -37,14 +37,15 @@ function timeFormNow(dateSql: string) {
 }
 //สำหรับเช็ครูปแบบวันที่ว่าถูกต้องหรือไม่
 function convertDate(dateSql: string) {
+  console.log(dateSql);
   let date = dayjs(dateSql, "YYYY-MM-DD", true);
   if (!date.isValid()) {
     return "";
   }
-  let year = date.year();
+  const year = date.year();
   //ถ้าปีน้อยกว่าปี 2200 ให้ถือว่าเป็นปีที่ส่งมาเป็น คศ
-  if (year > 2200) {
-    date = date.add(543, "year");
+  if (year > 2100) {
+    date = date.year(year - 543);
   }
   return date;
 }
@@ -52,9 +53,9 @@ function convertDate(dateSql: string) {
 function formatDate(date: Dayjs | null, format: string) {
   return date ? date.format(format) : "";
 }
-function dateToMySql(dateText: string) {
-  console.log(dateText);
-  const date: any = convertDate(dateText);
+function dateToMySql(dateSql: string) {
+  const day = dayjs(dateSql, "DD/MM/YYYY", true).format("YYYY-MM-DD");
+  const date: any = convertDate(day.toString());
   return formatDate(date, "YYYY-MM-DD");
 }
 //ตย

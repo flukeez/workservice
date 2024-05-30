@@ -145,12 +145,21 @@ export default function UserForm() {
             <InputWrapper label="วัน/เดือน/ปีเกิด">
               <InputDate
                 textValue={birthday}
-                onChangeText={(value: string) => setBirthday(value)}
+                onChangeText={(value: string) => [
+                  setBirthday(value),
+                  setValue("birthday", value),
+                ]}
               />
             </InputWrapper>
           </Grid.Col>
           <Grid.Col span={12}>
-            <Textarea label="ที่อยู่" rows={3} placeholder="กรอกที่อยู่" />
+            <Textarea
+              label="ที่อยู่"
+              rows={3}
+              placeholder="กรอกที่อยู่"
+              {...register("address")}
+              error={errors.address?.message}
+            />
           </Grid.Col>
           <Grid.Col span={layout}>
             <Controller
@@ -221,16 +230,36 @@ export default function UserForm() {
         />
         <Grid mt="sm">
           <Grid.Col span={layout}>
-            <TextInput label="เบอร์โทรศัพท์" placeholder="กรอกเบอร์โทรศัพท์" />
+            <TextInput
+              label="เบอร์โทรศัพท์"
+              placeholder="กรอกเบอร์โทรศัพท์"
+              {...register("phone")}
+              error={errors.phone?.message}
+            />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <TextInput label="อีเมล" placeholder="กรอกอีเมล" />
+            <TextInput
+              label="อีเมล"
+              placeholder="กรอกอีเมล"
+              {...register("email")}
+              error={errors.email?.message}
+            />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <TextInput label="ไลน์ไอดี" placeholder="กรอกไลน์ไอดี" />
+            <TextInput
+              label="ไลน์ไอดี"
+              placeholder="กรอกไลน์ไอดี"
+              {...register("line")}
+              error={errors.line?.message}
+            />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <TextInput label="LINE Token" placeholder="กรอก LINE Token" />
+            <TextInput
+              label="LINE Token"
+              placeholder="กรอก LINE Token"
+              {...register("line_token")}
+              error={errors.line_token?.message}
+            />
           </Grid.Col>
         </Grid>
         <Divider
@@ -249,21 +278,28 @@ export default function UserForm() {
               label="ชื่อผู้ใช้"
               placeholder="กรอกชื่อผู้ใช้"
               required
+              {...register("username")}
+              error={errors.username?.message}
             />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <PasswordInput
+            <TextInput
               label="รหัสผ่าน"
               placeholder="กรอกรหัสผ่าน"
-              required
+              {...register("password")}
+              error={errors.password?.message}
             />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <PasswordInput
+            <TextInput
               label="ยืนยันรหัสผ่าน"
               placeholder="กรอกรหัสผ่าน"
-              required
+              {...register("con_password")}
+              error={errors.con_password?.message}
             />
+          </Grid.Col>
+          <Grid.Col span={layout}>
+            <TextInput label="รูปภาพ" {...register("image")} />
           </Grid.Col>
         </Grid>
         <Card.Section withBorder inheritPadding py="sm" mt="lg">

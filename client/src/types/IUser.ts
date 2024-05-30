@@ -8,24 +8,24 @@ export type User = {
   phone: string;
   last_login: string;
 };
-
-export type IUserForm = {
+export interface IUserForm {
   id: number;
   id_card: string;
   firstname: string;
   surname: string;
-  nickname: string;
-  line: string;
-  line_token: string;
-  email: string;
-  phone: string;
-  birthday: string;
-  image: string;
-  sex: string;
-  address: string;
-  tumbol_id: number;
-  amphure_id: number;
-  province_id: number;
+  nickname: string | null;
+  sex: number | null;
+  birthday: string | null;
+  address: string | null;
+  province_id: string | null;
+  amphure_id: string | null;
+  tumbol_id: string | null;
+  phone: string | null;
+  email: string | null;
+  line: string | null;
+  line_token: string | null;
   username: string;
-  password: string;
-};
+  password: string | null;
+  con_password: string | null;
+  image: string | null;
+}
