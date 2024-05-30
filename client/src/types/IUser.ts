@@ -9,7 +9,7 @@ export type User = {
   last_login: string;
 };
 export interface IUserForm {
-  id: number;
+  id: number | null;
   id_card: string;
   firstname: string;
   surname: string;
@@ -26,6 +26,6 @@ export interface IUserForm {
   line_token: string | null;
   username: string;
   password: string | null;
-  con_password: string | null;
+  con_password?: string | null;
   image: string | null;
 }

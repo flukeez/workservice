@@ -5,6 +5,7 @@ import InputDate from "@/components/common/InputDate";
 import PageHeader from "@/components/common/PageHeader";
 import { useUser, useUserSave } from "@/hooks/user";
 import { IUserForm } from "@/types/IUser";
+import { checkThaiID } from "@/utils/checkThaiID";
 import { convertToNumberOrZero } from "@/utils/mynumber";
 import { userYup } from "@/validations/user.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -26,6 +27,7 @@ import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const listItems = [
   { title: "รายชื่อผู้ใช้", href: "/user" },
@@ -41,7 +43,7 @@ export default function UserForm() {
   const params = useParams();
   const id = convertToNumberOrZero(params.id);
   const { data, isLoading } = useUser(id);
-  const mutation = useUserSave();
+  const mutationSave = useUserSave();
   const {
     control,
     register,
@@ -59,8 +61,42 @@ export default function UserForm() {
     navigate("/user/new");
   };
 
-  const onSubmit: SubmitHandler<IUserForm> = (formData) => {
-    console.log(formData);
+  const onSubmit: SubmitHandler<IUserForm> = async (formData) => {
+    const id_card = checkThaiID(formData.id_card);
+    if (!id_card) {
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: "เลขบัตรประชาชนไม่ถูกต้อง",
+      });
+      return;
+    }
+    const { data } = await mutationSave.mutateAsync(formData);
+    try {
+      if (data.result) {
+        Swal.fire({
+          icon: "success",
+          title: "บันทึกข้อมูลสําเร็จ",
+        }).then((results) => {
+          if (results.isConfirmed) {
+            navigate("/user");
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดพลาด",
+          text: "มีข้อมูลอยู่แล้วในระบบ ไม่สามารถบันทึกข้อมูลได้",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
+      });
+    }
   };
   useEffect(() => {
     setTitle(id ? "(รายละเอียด)" : "(เพิ่ม)");
@@ -283,7 +319,7 @@ export default function UserForm() {
             />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <TextInput
+            <PasswordInput
               label="รหัสผ่าน"
               placeholder="กรอกรหัสผ่าน"
               {...register("password")}
@@ -291,7 +327,7 @@ export default function UserForm() {
             />
           </Grid.Col>
           <Grid.Col span={layout}>
-            <TextInput
+            <PasswordInput
               label="ยืนยันรหัสผ่าน"
               placeholder="กรอกรหัสผ่าน"
               {...register("con_password")}

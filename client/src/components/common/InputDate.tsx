@@ -78,6 +78,12 @@ Props) => {
 
   const openCalendar = () => {
     const day = dayjs(textDate, "DD/MM/YYYY", true).isValid();
+    if (day) {
+      const myDate = dateToMySql(textDate);
+      setValue(new Date(myDate));
+    } else {
+      setValue(new Date());
+    }
     setOpened(true);
   };
 

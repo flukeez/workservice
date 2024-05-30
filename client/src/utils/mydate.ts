@@ -37,7 +37,6 @@ function timeFormNow(dateSql: string) {
 }
 //สำหรับเช็ครูปแบบวันที่ว่าถูกต้องหรือไม่
 function convertDate(dateSql: string) {
-  console.log(dateSql);
   let date = dayjs(dateSql, "YYYY-MM-DD", true);
   if (!date.isValid()) {
     return "";

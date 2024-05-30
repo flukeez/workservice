@@ -8,6 +8,7 @@ export function useUserSave() {
   const queryClient = useQueryClient();
   const saveOne = async (formData: IUserForm) => {
     let response;
+    delete formData.con_password;
     if (formData.id) {
       response = await axiosAuth.patch(`${url}/${formData.id}`, formData);
     } else {

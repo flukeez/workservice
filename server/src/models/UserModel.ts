@@ -110,7 +110,7 @@ export class UserModel {
         .where(function () {
           this.where({
             id_card,
-          }).orWhere({ firstname, surname });
+          }).andWhere({ firstname, surname });
         })
         .whereNot({ id })
         .where("user_show", 0)
