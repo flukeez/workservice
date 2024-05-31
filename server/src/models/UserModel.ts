@@ -1,6 +1,7 @@
 import db from "@/database";
 import { pagination } from "@/utils/pagination";
 import type { IUser, IUserData, IUserForm, IUserQuery } from "@/types/UserType";
+import { encryptPassword } from "@/utils/encrypt";
 
 const tbName = "tb_user";
 export class UserModel {
@@ -56,11 +57,13 @@ export class UserModel {
       const checkDuplicate = await this.checkDuplicate(
         data.id_card,
         data.firstname,
-        data.surname
+        data.surname,
+        data.username
       );
       if (checkDuplicate) {
         return { result: 0 };
       }
+      data = { ...data, password: encryptPassword(data.password!) };
       const result = await db(tbName).insert(data);
       return { result: result[0] };
     } catch (error) {
@@ -75,6 +78,7 @@ export class UserModel {
         data.id_card,
         data.firstname,
         data.surname,
+        data.username,
         id
       );
       if (checkDuplicate) {
@@ -103,6 +107,7 @@ export class UserModel {
     id_card: string,
     firstname: string,
     surname: string,
+    username: string,
     id = 0
   ): Promise<number> {
     try {
@@ -110,7 +115,9 @@ export class UserModel {
         .where(function () {
           this.where({
             id_card,
-          }).andWhere({ firstname, surname });
+          })
+            .andWhere({ firstname, surname })
+            .orWhere({ username });
         })
         .whereNot({ id })
         .where("user_show", 0)

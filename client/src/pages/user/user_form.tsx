@@ -13,6 +13,8 @@ import {
   Button,
   Card,
   Divider,
+  FileButton,
+  FileInput,
   Grid,
   Group,
   InputWrapper,
@@ -22,7 +24,12 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import { IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
+import {
+  IconCloudUpload,
+  IconDeviceFloppy,
+  IconPlus,
+  IconUpload,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
@@ -50,6 +57,7 @@ export default function UserForm() {
     watch,
     setValue,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     mode: "onChange",
@@ -116,6 +124,16 @@ export default function UserForm() {
             </Button>
           </Group>
         </Card.Section>
+        <Divider
+          size="xs"
+          mt="md"
+          labelPosition="left"
+          label={
+            <Text size="lg" c="dimmed">
+              ข้อมูลพื้นฐาน
+            </Text>
+          }
+        />
         <Grid mt="sm">
           <Grid.Col span={layout}>
             <TextInput
@@ -162,6 +180,7 @@ export default function UserForm() {
                 };
                 return (
                   <Select
+                    {...field}
                     label="เพศ"
                     placeholder="เลือกเพศ"
                     data={[
@@ -334,8 +353,54 @@ export default function UserForm() {
               error={errors.con_password?.message}
             />
           </Grid.Col>
+        </Grid>
+        <Divider
+          size="xs"
+          mt="md"
+          labelPosition="left"
+          label={
+            <Text size="lg" c="dimmed">
+              รูปประจำตัว
+            </Text>
+          }
+        />
+        <Grid mt="sm">
+          {getValues("image") && (
+            <Grid.Col span={layout}>
+              <Text>รูปประจำตัวเดิม</Text>
+            </Grid.Col>
+          )}
           <Grid.Col span={layout}>
-            <TextInput label="รูปภาพ" {...register("image")} />
+            <Controller
+              name="image"
+              control={control}
+              render={({ field }) => {
+                const handleSelectChange = (value: File | null) => {
+                  field.onChange(value);
+                };
+                return (
+                  <Group wrap="nowrap">
+                    <FileButton
+                      onChange={handleSelectChange}
+                      accept="image/png,image/jpeg"
+                    >
+                      {(props) => (
+                        <Button
+                          leftSection={<IconCloudUpload size="1.5rem" />}
+                          variant="outline"
+                          {...props}
+                        >
+                          อัพโหลดรูปประจำตัว
+                        </Button>
+                      )}
+                    </FileButton>
+                    <Text>
+                      {field.value instanceof File && field.value.name}
+                    </Text>
+                  </Group>
+                );
+              }}
+            />
           </Grid.Col>
         </Grid>
         <Card.Section withBorder inheritPadding py="sm" mt="lg">

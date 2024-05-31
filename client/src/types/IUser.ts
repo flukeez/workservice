@@ -14,7 +14,7 @@ export interface IUserForm {
   firstname: string;
   surname: string;
   nickname: string | null;
-  sex: number | null;
+  sex: string | null;
   birthday: string | null;
   address: string | null;
   province_id: string | null;
@@ -27,5 +27,5 @@ export interface IUserForm {
   username: string;
   password: string | null;
   con_password?: string | null;
-  image: string | null;
+  image: unknown | null;
 }

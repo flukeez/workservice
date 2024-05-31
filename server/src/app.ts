@@ -1,10 +1,13 @@
 import "module-alias";
 import fastify from "fastify";
+import multipart from "@fastify/multipart";
+
 import cors from "@fastify/cors";
 import routes from "./route";
 
 const app = fastify({
   logger: false,
+  bodyLimit: 90000001000,
 });
 
 // ฮุก onRequest จะทำงานเมื่อได้รับคำขอ
@@ -19,6 +22,8 @@ app.addHook("onRequest", (request, reply, done) => {
 app.register(cors, {
   origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
   credentials: true,
+  // allowedHeaders: ['Content-Type', 'Authorization'],
 });
+app.register(multipart);
 app.register(routes);
 export default app;

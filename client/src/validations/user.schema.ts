@@ -21,7 +21,7 @@ export const userYup = yup.object().shape({
     .notRequired()
     .default("")
     .max(200, "ห้ามเกิน 200 ตัวอักษร"),
-  sex: yup.number().nullable().default(null).max(3, "ข้อมูลไม่ถูกต้อง"),
+  sex: yup.string().nullable().default(null).max(3, "ข้อมูลไม่ถูกต้อง"),
   birthday: yup.string().nullable().default(null).typeError("วันที่ไม่ถูกต้อง"),
   address: yup
     .string()
@@ -83,7 +83,7 @@ export const userYup = yup.object().shape({
   con_password: yup
     .string()
     .notRequired()
-    .default("")
+    .default(null)
     .when((password, schema) => {
       if (password) {
         return schema
@@ -92,5 +92,22 @@ export const userYup = yup.object().shape({
       }
       return schema;
     }),
-  image: yup.string().notRequired().default(""),
+  image: yup
+    .mixed()
+    .test("fileSize", "ไฟล์รูปภาพขนาดห้ามเกิน 2 MB", (value) => {
+      if (!value) {
+        return true;
+      }
+      if (
+        value instanceof File && // ตรวจสอบว่า value เป็น instance ของ File หรือไม่
+        "size" in value &&
+        typeof value.size === "number"
+      ) {
+        return value.size <= 2 * 1024 * 1024;
+      } else {
+        return true;
+      }
+    })
+    .nullable()
+    .default(null),
 });

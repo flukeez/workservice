@@ -6,13 +6,19 @@ import { IUserForm } from "@/types/IUser";
 const url = "/users";
 export function useUserSave() {
   const queryClient = useQueryClient();
+
   const saveOne = async (formData: IUserForm) => {
     let response;
     delete formData.con_password;
+
+    // Create FormData object
+
     if (formData.id) {
       response = await axiosAuth.patch(`${url}/${formData.id}`, formData);
     } else {
-      response = await axiosAuth.post(`${url}/create`, formData);
+      response = await axiosAuth.post(`${url}/create`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
     }
     return response;
   };
@@ -27,6 +33,7 @@ export function useUserSave() {
   });
   return mutation;
 }
+
 export function useUserDelete() {
   const queryClient = useQueryClient();
   const deleteOne = async (id: string) => {
