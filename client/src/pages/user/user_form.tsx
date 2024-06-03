@@ -1,25 +1,20 @@
-import DropdownAmphure from "@/components/common/DropdownAmphure";
-import DropdownProvince from "@/components/common/DropdownProvince";
-import DropdownTumbol from "@/components/common/DropdownTumbol";
-import InputDate from "@/components/common/InputDate";
-import PageHeader from "@/components/common/PageHeader";
-import { useUser, useUserSave } from "@/hooks/user";
-import { IUserForm } from "@/types/IUser";
-import { checkThaiID } from "@/utils/checkThaiID";
-import { convertToNumberOrZero } from "@/utils/mynumber";
-import { userYup } from "@/validations/user.schema";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import {
   Button,
   Card,
   Divider,
   FileButton,
-  FileInput,
   Grid,
   Group,
+  Image,
   InputWrapper,
+  LoadingOverlay,
   PasswordInput,
   Select,
+  Stack,
   Text,
   Textarea,
   TextInput,
@@ -28,13 +23,20 @@ import {
   IconCloudUpload,
   IconDeviceFloppy,
   IconPlus,
-  IconUpload,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-
-import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
+import DropdownAmphure from "@/components/common/DropdownAmphure";
+import DropdownProvince from "@/components/common/DropdownProvince";
+import DropdownTumbol from "@/components/common/DropdownTumbol";
+import InputDate from "@/components/common/InputDate";
+import PageHeader from "@/components/common/PageHeader";
+import PasswordTooltip from "@/components/user/PasswordTooltip";
+import { checkThaiID } from "@/utils/checkThaiID";
+import { convertToNumberOrZero } from "@/utils/mynumber";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { userInitialValues, userYup } from "@/validations/user.schema";
+import { useUser, useUserSave } from "@/hooks/user";
+import { useImage } from "@/hooks/image";
+import type { IUserForm } from "@/types/IUser";
 
 const listItems = [
   { title: "รายชื่อผู้ใช้", href: "/user" },
@@ -45,11 +47,13 @@ const layout = {
   sm: 6,
   xs: 12,
 };
+
 export default function UserForm() {
   const navigate = useNavigate();
   const params = useParams();
   const id = convertToNumberOrZero(params.id);
-  const { data, isLoading } = useUser(id);
+  const { data, isLoading, setFilter } = useUser(id);
+  const imageFile = useImage("user", "");
   const mutationSave = useUserSave();
   const {
     control,
@@ -57,16 +61,19 @@ export default function UserForm() {
     watch,
     setValue,
     handleSubmit,
-    getValues,
+    reset,
     formState: { errors },
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(userYup),
+    defaultValues: userInitialValues,
   });
   const [title, setTitle] = useState("");
   const [birthday, setBirthday] = useState("");
   const handleNew = () => {
     navigate("/user/new");
+    setFilter(0);
+    imageFile.setFilter("");
   };
 
   const onSubmit: SubmitHandler<IUserForm> = async (formData) => {
@@ -79,6 +86,7 @@ export default function UserForm() {
       });
       return;
     }
+    console.log(formData.birthday);
     const { data } = await mutationSave.mutateAsync(formData);
     try {
       if (data.result) {
@@ -109,8 +117,23 @@ export default function UserForm() {
   useEffect(() => {
     setTitle(id ? "(รายละเอียด)" : "(เพิ่ม)");
   }, [id]);
+
+  useEffect(() => {
+    if (data && data.result) {
+      reset(data.result);
+      imageFile.setFilter(data.result.image);
+      setBirthday(data.result.birthday);
+    } else {
+      reset(userInitialValues);
+      setBirthday("");
+    }
+  }, [data]);
+
   return (
     <>
+      <LoadingOverlay
+        visible={isLoading || mutationSave.isPending || imageFile.isLoading}
+      />
       <PageHeader title={"ข้อมูลผู้ใช้ " + title} listItems={listItems} />
       <Card shadow="sm">
         <Card.Section withBorder inheritPadding py="md">
@@ -339,7 +362,18 @@ export default function UserForm() {
           </Grid.Col>
           <Grid.Col span={layout}>
             <PasswordInput
-              label="รหัสผ่าน"
+              label={
+                <Group>
+                  <Text>รหัสผ่าน</Text>
+                  {id ? (
+                    <PasswordTooltip />
+                  ) : (
+                    <Text fw={500} color="red">
+                      *
+                    </Text>
+                  )}
+                </Group>
+              }
               placeholder="กรอกรหัสผ่าน"
               {...register("password")}
               error={errors.password?.message}
@@ -349,6 +383,7 @@ export default function UserForm() {
             <PasswordInput
               label="ยืนยันรหัสผ่าน"
               placeholder="กรอกรหัสผ่าน"
+              required={!id}
               {...register("con_password")}
               error={errors.con_password?.message}
             />
@@ -365,46 +400,57 @@ export default function UserForm() {
           }
         />
         <Grid mt="sm">
-          {getValues("image") && (
-            <Grid.Col span={layout}>
-              <Text>รูปประจำตัวเดิม</Text>
-            </Grid.Col>
-          )}
-          <Grid.Col span={layout}>
-            <Controller
-              name="image"
-              control={control}
-              render={({ field }) => {
-                const handleSelectChange = (value: File | null) => {
-                  field.onChange(value);
-                };
-                return (
-                  <Group wrap="nowrap">
-                    <FileButton
-                      onChange={handleSelectChange}
-                      accept="image/png,image/jpeg"
-                    >
-                      {(props) => (
-                        <Button
-                          leftSection={<IconCloudUpload size="1.5rem" />}
-                          variant="outline"
-                          {...props}
-                        >
-                          อัพโหลดรูปประจำตัว
-                        </Button>
-                      )}
-                    </FileButton>
-                    <Text>
-                      {field.value instanceof File && field.value.name}
-                    </Text>
-                  </Group>
-                );
-              }}
-            />
+          <Grid.Col>
+            <Group align="flex-end">
+              {imageFile.data instanceof Blob && (
+                <Stack>
+                  <Text>รูปประจำตัวเดิม</Text>
+                  <Image
+                    radius="md"
+                    h={200}
+                    w="auto"
+                    src={URL.createObjectURL(imageFile.data)}
+                  />
+                </Stack>
+              )}
+              <Controller
+                name="image"
+                control={control}
+                render={({ field }) => {
+                  const handleSelectChange = (value: File | null) => {
+                    field.onChange(value);
+                  };
+                  return (
+                    <Group wrap="nowrap">
+                      <FileButton
+                        onChange={handleSelectChange}
+                        accept="image/png,image/jpeg"
+                      >
+                        {(props) => (
+                          <Button
+                            leftSection={<IconCloudUpload size="1.5rem" />}
+                            variant="outline"
+                            {...props}
+                          >
+                            อัพโหลดรูปประจำตัว
+                          </Button>
+                        )}
+                      </FileButton>
+                      <Text>
+                        {field.value instanceof File && field.value.name}
+                      </Text>
+                    </Group>
+                  );
+                }}
+              />
+            </Group>
           </Grid.Col>
         </Grid>
-        <Card.Section withBorder inheritPadding py="sm" mt="lg">
+        <Card.Section withBorder inheritPadding py="md" mt="lg">
           <Group justify="center">
+            <Button size="lg" color="gray" onClick={() => navigate("/user")}>
+              ยกเลิก
+            </Button>
             <Button
               leftSection={<IconDeviceFloppy />}
               size="lg"

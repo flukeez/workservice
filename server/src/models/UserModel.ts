@@ -12,10 +12,14 @@ export class UserModel {
     const { txtSearch, page, limit, sortField, sortDirection } = query;
     const offset = page * limit;
     const baseQuery = db(tbName)
-      .where("firstname", "LIKE", `%${txtSearch}%`)
-      .orWhere("surname", "LIKE", `%${txtSearch}%`)
-      .orWhere("nickname", "LIKE", `%${txtSearch}%`)
-      .orWhere("username", "LIKE", `%${txtSearch}%`);
+      .where((builder) => {
+        builder
+          .where("firstname", "LIKE", `%${txtSearch}%`)
+          .orWhere("surname", "LIKE", `%${txtSearch}%`)
+          .orWhere("nickname", "LIKE", `%${txtSearch}%`)
+          .orWhere("username", "LIKE", `%${txtSearch}%`);
+      })
+      .where("user_show", 0);
     try {
       const result = await baseQuery
         .clone()
@@ -44,7 +48,28 @@ export class UserModel {
   //find by id
   async findById(id: number): Promise<{ result: IUserData }> {
     try {
-      const result = await db(tbName).where({ id }).first();
+      const result = await db(tbName)
+        .select(
+          "id",
+          "id_card",
+          "firstname",
+          "surname",
+          "nickname",
+          "sex",
+          "birthday",
+          "address",
+          "province_id",
+          "amphure_id",
+          "tumbol_id",
+          "phone",
+          "email",
+          "line",
+          "line_token",
+          "username",
+          "image"
+        )
+        .where({ id })
+        .first();
       return { result };
     } catch (error) {
       console.error("Error in FindyById:", error);
@@ -54,15 +79,6 @@ export class UserModel {
   //create one
   async createOne(data: IUserForm): Promise<{ result: number }> {
     try {
-      const checkDuplicate = await this.checkDuplicate(
-        data.id_card,
-        data.firstname,
-        data.surname,
-        data.username
-      );
-      if (checkDuplicate) {
-        return { result: 0 };
-      }
       data = { ...data, password: encryptPassword(data.password!) };
       const result = await db(tbName).insert(data);
       return { result: result[0] };

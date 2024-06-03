@@ -1,3 +1,5 @@
+import type { UploadedFile } from "./ImageType";
+
 export type IUser = {
   id: number;
   image: string;
@@ -40,7 +42,8 @@ export type IUserForm = {
   email?: string;
   phone?: string;
   birthday?: string;
-  image?: string;
+  image?: UploadedFile[] | string;
+  imageName?: string;
   sex: string;
   address?: string;
   tumbol_id?: number;

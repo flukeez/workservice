@@ -5,6 +5,7 @@ import { DashboardLayout } from "./components/DashboardLayout";
 import Ctype from "./pages/ctype";
 import CustomerPage from "@/pages/customer";
 import CustomerFormPage from "@/pages/customer/customer_form";
+import Equipment from "./pages/equipment";
 const Faculty = lazy(() => import("@/pages/faculty"));
 const Issue = lazy(() => import("@/pages/issue"));
 const Position = lazy(() => import("@/pages/position"));
@@ -32,6 +33,7 @@ export function Router() {
             <Route path="new" element={<UserForm />} />
             <Route path=":id" element={<UserForm />} />
           </Route>
+          <Route path="/equipment" element={<Equipment />} />
           <Route path="/ctype" element={<Ctype />} />
           <Route path="/customer">
             <Route index element={<CustomerPage />} />

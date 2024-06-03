@@ -24,6 +24,8 @@ app.register(cors, {
   credentials: true,
   // allowedHeaders: ['Content-Type', 'Authorization'],
 });
-app.register(multipart);
+app.register(multipart, {
+  addToBody: true,
+});
 app.register(routes);
 export default app;

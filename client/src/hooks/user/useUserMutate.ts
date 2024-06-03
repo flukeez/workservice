@@ -11,10 +11,10 @@ export function useUserSave() {
     let response;
     delete formData.con_password;
 
-    // Create FormData object
-
     if (formData.id) {
-      response = await axiosAuth.patch(`${url}/${formData.id}`, formData);
+      response = await axiosAuth.patch(`${url}/${formData.id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
     } else {
       response = await axiosAuth.post(`${url}/create`, formData, {
         headers: { "Content-Type": "multipart/form-data" },

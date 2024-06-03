@@ -18,7 +18,7 @@ export default function UserInfo({
   const nicknameText = nickname ? " (" + String(nickname) + ")" : "";
   const name = String(firstname) + " " + String(surname) + nicknameText;
   const imageIcon = image ? (
-    <Avatar src="avatar.png" />
+    <Avatar src={`http://localhost:4000/api/images/user/${image}`} />
   ) : (
     <Avatar color="blue">{name.substring(0, 2)}</Avatar>
   );

@@ -14,4 +14,5 @@ export const queryKeys = {
   provinces: "Fetch Province",
   amphure: "Get Amphure",
   tumbol: "Get tumbol",
+  image: "Get Image",
 };

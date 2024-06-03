@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import {
   Button,
   Card,
   Grid,
   Group,
+  Highlight,
   Menu,
   ScrollArea,
   Text,
@@ -49,7 +51,31 @@ export default function User() {
   const handleUpdate = (id: string) => {
     navigate("/user/" + id);
   };
-  const handleDelete = (id: string) => {};
+  const handleDelete = async (id: string) => {
+    try {
+      const dialog = await Swal.fire({
+        title: "คุณต้องการลบรายการนี้ใช่หรือไม่",
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "ยกเลิก",
+        confirmButtonText: "ตกลง",
+      });
+      if (dialog.isConfirmed) {
+        await mutationDelete.mutateAsync(id);
+        Swal.fire({
+          title: "ลบข้อมูลสําเร็จ",
+          icon: "success",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
+      });
+    }
+  };
   const searchData = () => {
     setFilter(setCondition());
   };
@@ -126,6 +152,13 @@ export default function User() {
                 title: "ชื่อผู้ใช้ ",
                 width: "20%",
                 sortable: true,
+                render({ username }) {
+                  return (
+                    <Highlight highlight={userStore.txtSearch}>
+                      {String(username)}
+                    </Highlight>
+                  );
+                },
               },
               {
                 accessor: "phone",

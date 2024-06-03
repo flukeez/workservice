@@ -32,12 +32,12 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     ],
   },
   {
-    title: "อุปกรณ์",
+    title: "รายการอุปกรณ์",
     path: "/equipment",
     icon: IconArchiveFilled,
   },
   {
-    title: "ข้อมูลผู้ใช้",
+    title: "รายชื่อผู้ใช้",
     path: "/user",
     childPath: ["/user/new", "/user/:id"],
     icon: IconUserFilled,
@@ -48,11 +48,13 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     icon: IconStack2Filled,
     childPath: ["/issue", "/position", "priority", "status", "/faculty"],
     subMenuItems: [
-      { title: "ประเภทปัญหา", path: "/issue" },
-      { title: "ตำแหน่งงาน", path: "/position" },
-      { title: "ลําดับความสําคัญ", path: "/priority" },
+      { title: "ประเภทอุปกรณ์", path: "/category" },
+      { title: "สถานะอุปกรณ์", path: "/equip_status" },
       { title: "สถานะงาน", path: "/status" },
+      { title: "ลําดับความสําคัญ", path: "/priority" },
+      { title: "ประเภทปัญหา", path: "/issue" },
       { title: "หน่วยงาน", path: "/faculty" },
+      { title: "ตำแหน่งงาน", path: "/position" },
     ],
   },
 ];
