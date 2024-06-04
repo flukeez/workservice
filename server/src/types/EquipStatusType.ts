@@ -1,16 +1,14 @@
-export interface IFaculty {
+export interface IEquipStatus {
   id: number;
   name: string;
-  faculty_name: string;
 }
 
-export interface IFacultyForm {
+export interface IEquipStatusForm {
   name: string;
-  faculty_id: number;
   id?: number;
 }
 
-export interface IFacultyQuery {
+export interface IEquipStatusQuery {
   txtSearch: string;
   page: number;
   limit: number;

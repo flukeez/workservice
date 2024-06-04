@@ -1,6 +1,7 @@
 import db from "@/database";
 import type {
   IPosition,
+  IPositionAssign,
   IPositionForm,
   IPositionQuery,
 } from "@/types/PositionType";
@@ -121,6 +122,47 @@ export class PositionModel {
       return query ? 1 : 0;
     } catch (error) {
       console.error("Error:", error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  //ผู้ใช้และตำแหน่งงาน
+  async positionAssign(query: IPositionQuery): Promise<{
+    result: IPositionAssign[];
+    totalItem: number;
+    totalPage: number;
+  }> {
+    const { txtSearch, page, limit, sortField, sortDirection } = query;
+    const offset = page * limit;
+    const baseQuery = db("tb_user_position")
+      .join("tb_user", "tb_user_position.user_id", "tb_user.id")
+      .join("tb_position", "tb_user_position.pos_id", "tb_position.id")
+      .join("tb_faculty", "tb_position.faculty_id", "tb_faculty.id")
+      .where("tb_user.name", "LIKE", `%${txtSearch}%`)
+      .where("tb_user.user_show", 0)
+      .groupBy("tb_user.id");
+    try {
+      const result = await baseQuery
+        .clone()
+        .select(
+          db.raw(
+            "GROUP_CONCAT(tb_position.name SEPARATOR ', ' tb_faculty.name) as position"
+          ),
+          "tb_user.name",
+          "tb_user.id"
+        )
+        .orderBy(sortField, sortDirection)
+        .offset(offset)
+        .limit(limit);
+      const rowCount = await baseQuery
+        .clone()
+        .count({ countId: "tb_user.id" })
+        .first();
+      const totalItem = Number(rowCount?.countId || 0);
+      const totalPage = pagination(totalItem, limit);
+      return { result, totalItem, totalPage };
+    } catch (error) {
+      console.log(error);
       throw new Error("Internal server error");
     }
   }

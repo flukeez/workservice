@@ -37,6 +37,7 @@ import { userInitialValues, userYup } from "@/validations/user.schema";
 import { useUser, useUserSave } from "@/hooks/user";
 import { useImage } from "@/hooks/image";
 import type { IUserForm } from "@/types/IUser";
+import { dateToText } from "@/utils/mydate";
 
 const listItems = [
   { title: "รายชื่อผู้ใช้", href: "/user" },
@@ -86,7 +87,6 @@ export default function UserForm() {
       });
       return;
     }
-    console.log(formData.birthday);
     const { data } = await mutationSave.mutateAsync(formData);
     try {
       if (data.result) {
@@ -122,7 +122,7 @@ export default function UserForm() {
     if (data && data.result) {
       reset(data.result);
       imageFile.setFilter(data.result.image);
-      setBirthday(data.result.birthday);
+      setBirthday(dateToText(data.result.birthday));
     } else {
       reset(userInitialValues);
       setBirthday("");

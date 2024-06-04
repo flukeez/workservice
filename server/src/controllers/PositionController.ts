@@ -36,4 +36,12 @@ export default async function PositionController(fastify: FastifyInstance) {
     const result = await positionModel.deleteOne(id);
     res.send(result);
   });
+
+  fastify.get("/assign", async (req, res) => {
+    const query = req.query as IPositionQuery;
+    const { result, totalItem, totalPage } = await positionModel.positionAssign(
+      query
+    );
+    res.send({ rows: result, totalItem, totalPage });
+  });
 }

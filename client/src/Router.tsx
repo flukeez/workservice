@@ -10,6 +10,8 @@ const Faculty = lazy(() => import("@/pages/faculty"));
 const Issue = lazy(() => import("@/pages/issue"));
 const Position = lazy(() => import("@/pages/position"));
 const Priority = lazy(() => import("@/pages/priority"));
+const EquipStatus = lazy(() => import("@/pages/equip_status"));
+const Category = lazy(() => import("@/pages/category"));
 const Status = lazy(() => import("@/pages/status"));
 const User = lazy(() => import("@/pages/user"));
 const UserForm = lazy(() => import("@/pages/user/user_form"));
@@ -27,6 +29,8 @@ export function Router() {
           <Route path="/position" element={<Position />} />
           <Route path="/priority" element={<Priority />} />
           <Route path="/status" element={<Status />} />
+          <Route path="/equip_status" element={<EquipStatus />} />
+          <Route path="/category" element={<Category />} />
           <Route path="/user" element={<User />} />
           <Route path="/user">
             <Route index element={<User />} />

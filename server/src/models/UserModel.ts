@@ -2,6 +2,7 @@ import db from "@/database";
 import { pagination } from "@/utils/pagination";
 import type { IUser, IUserData, IUserForm, IUserQuery } from "@/types/UserType";
 import { encryptPassword } from "@/utils/encrypt";
+import { dateToMySql } from "@/utils/mydate";
 
 const tbName = "tb_user";
 export class UserModel {
@@ -79,6 +80,9 @@ export class UserModel {
   //create one
   async createOne(data: IUserForm): Promise<{ result: number }> {
     try {
+      if (data.birthday) {
+        data = { ...data, birthday: dateToMySql(data.birthday) };
+      }
       data = { ...data, password: encryptPassword(data.password!) };
       const result = await db(tbName).insert(data);
       return { result: result[0] };
@@ -90,15 +94,13 @@ export class UserModel {
   //update
   async update(id: number, data: IUserForm): Promise<{ result: number }> {
     try {
-      const checkDuplicate = await this.checkDuplicate(
-        data.id_card,
-        data.firstname,
-        data.surname,
-        data.username,
-        id
-      );
-      if (checkDuplicate) {
-        return { result: 0 };
+      if (data.birthday) {
+        console.log(data.birthday);
+        data = { ...data, birthday: dateToMySql(data.birthday) };
+        console.log(dateToMySql(data.birthday!));
+      }
+      if (data.password) {
+        data = { ...data, password: encryptPassword(data.password) };
       }
       const result = await db(tbName).where({ id }).update(data);
       return { result };

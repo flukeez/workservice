@@ -1,16 +1,16 @@
-export interface IFaculty {
+export interface ICategory {
   id: number;
+  code: string;
   name: string;
-  faculty_name: string;
 }
 
-export interface IFacultyForm {
+export interface ICategoryForm {
+  code: string;
   name: string;
-  faculty_id: number;
   id?: number;
 }
 
-export interface IFacultyQuery {
+export interface ICategoryQuery {
   txtSearch: string;
   page: number;
   limit: number;

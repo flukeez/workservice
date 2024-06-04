@@ -1,42 +1,42 @@
 import db from "@/database";
 import { pagination } from "@/utils/pagination";
 import type {
-  ICategory,
-  ICategoryForm,
-  ICategoryQuery,
-} from "@/types/CategoryType";
+  IEquipStatus,
+  IEquipStatusForm,
+  IEquipStatusQuery,
+} from "@/types/EquipStatusType";
 
-const tbName = "tb_category";
-export class CategoryModel {
+const tbName = "tb_equip_status";
+export class EquipStatusModel {
+  //ค้นหาทั้งหมด
   async findMany(
-    query: ICategoryQuery
-  ): Promise<{ result: ICategory[]; totalPage: number; totalItem: number }> {
+    query: IEquipStatusQuery
+  ): Promise<{ result: IEquipStatus[]; totalPage: number; totalItem: number }> {
     const { txtSearch, page, limit, sortField, sortDirection } = query;
     const offset = page * limit;
     const baseQuery = db(tbName)
-      .where((builder) => {
-        builder
-          .where("code", "LIKE", `%${txtSearch}%`)
-          .orWhere("name", "LIKE", `%${txtSearch}%`);
-      })
-      .where("cate_show", 0);
+      .where("name", "LIKE", `%${txtSearch}%`)
+      .andWhere("status_show", 0);
     try {
       const result = await baseQuery
         .clone()
         .orderBy(sortField, sortDirection)
-        .limit(limit)
-        .offset(offset);
-      const rowCount = await baseQuery.clone().count({ countId: "id" }).first();
+        .offset(offset)
+        .limit(limit);
+      const rowCount = await baseQuery
+        .clone()
+        .count({ countId: `${tbName}.id` })
+        .first();
       const totalItem = Number(rowCount?.countId || 0);
       const totalPage = await pagination(totalItem, limit);
       return { result, totalItem, totalPage };
     } catch (error) {
-      console.log("Error:", error);
-      throw new Error("Interal server error");
+      console.error("Error:", error);
+      throw new Error("Internal server error");
     }
   }
   //ค้นหาตามไอดี
-  async findById(id: number): Promise<{ result: ICategory }> {
+  async findById(id: number): Promise<{ result: IEquipStatus }> {
     try {
       const result = await db(tbName).where({ id }).first();
       return { result };
@@ -46,9 +46,9 @@ export class CategoryModel {
     }
   }
   //เพิ่มใหม่ 1 รายการ
-  async createOne(data: ICategoryForm): Promise<{ result: number }> {
+  async createOne(data: IEquipStatusForm): Promise<{ result: number }> {
     try {
-      const checkDuplicate = await this.checkDuplicate(data.code, data.name);
+      const checkDuplicate = await this.checkDuplicate(data.name);
       if (checkDuplicate) {
         return { result: 0 };
       }
@@ -60,13 +60,12 @@ export class CategoryModel {
     }
   }
   //อัพเดท
-  async update(id: number, data: ICategoryForm): Promise<{ result: number }> {
+  async update(
+    id: number,
+    data: IEquipStatusForm
+  ): Promise<{ result: number }> {
     try {
-      const checkDuplicate = await this.checkDuplicate(
-        data.code,
-        data.name,
-        id
-      );
+      const checkDuplicate = await this.checkDuplicate(data.name, id);
       if (checkDuplicate !== 0) {
         return { result: 0 };
       }
@@ -80,7 +79,7 @@ export class CategoryModel {
   //ลบ
   async deleteOne(id: number): Promise<{ result: number }> {
     try {
-      const result = await db(tbName).where({ id }).update("cate_show", 1);
+      const result = await db(tbName).where({ id }).update("status_show", 1);
       return { result };
     } catch (error) {
       console.error("Error in delete:", error);
@@ -88,14 +87,12 @@ export class CategoryModel {
     }
   }
   //เช็คซ้ำ
-  async checkDuplicate(code: string, name: string, id = 0): Promise<number> {
+  async checkDuplicate(name: string, id = 0): Promise<number> {
     try {
       const query = await db(tbName)
-        .where((builder) => {
-          builder.where({ name }).orWhere({ code });
-        })
+        .where({ name })
         .whereNot({ id })
-        .where("cate_show", 0)
+        .where("status_show", 0)
         .first();
       return query ? 1 : 0;
     } catch (error) {

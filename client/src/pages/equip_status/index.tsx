@@ -13,38 +13,37 @@ import {
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconChevronDown, IconPlus } from "@tabler/icons-react";
-import { usePriorityStore } from "@/stores/usePriorityStore";
-import { usePriorityDelete, usePrioritys } from "@/hooks/priority";
-import PriorityForm from "@/components/priority/PriorityForm";
-import PageHeader from "@/components/common/PageHeader";
+import { useEquipStatues, useEquipStatusDelete } from "@/hooks/equip_status";
+import { useEquipStatusStore } from "@/stores/useEquipStatusStore";
 import InputSearch from "@/components/common/InputSearch";
+import PageHeader from "@/components/common/PageHeader";
+import EquipStatusForm from "@/components/equip_status/EquipStatusForm";
 
-const title = "ลำดับความสำคัญ";
+const title = "สถานะอุปกรณ์";
 const listItems = [{ title: title, href: "#" }];
 const Page_size = 10;
-
-export default function Priority() {
-  const priorityStore = usePriorityStore();
-  const [debounce] = useDebouncedValue(priorityStore.txtSearch, 500);
+export default function EquipStatus() {
+  const equipStatusStore = useEquipStatusStore();
+  const [debounce] = useDebouncedValue(equipStatusStore.txtSearch, 500);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-    columnAccessor: priorityStore.sortField,
-    direction: priorityStore.sortDirection,
+    columnAccessor: equipStatusStore.sortField,
+    direction: equipStatusStore.sortDirection,
   });
   const [opened, setOpened] = useState(false);
   const [rowId, setRowId] = useState("0");
   const setCondition = () => {
     const condition = {
-      txtSearch: priorityStore.txtSearch,
-      sortField: priorityStore.sortField,
-      sortDirection: priorityStore.sortDirection,
-      page: priorityStore.page - 1,
+      txtSearch: equipStatusStore.txtSearch,
+      sortField: equipStatusStore.sortField,
+      sortDirection: equipStatusStore.sortDirection,
+      page: equipStatusStore.page - 1,
       limit: Page_size,
     };
     return condition;
   };
 
-  const { data, isLoading, setFilter } = usePrioritys(setCondition());
-  const mutationDelete = usePriorityDelete();
+  const { data, isLoading, setFilter } = useEquipStatues(setCondition());
+  const mutationDelete = useEquipStatusDelete();
   const handleNew = () => {
     setRowId("0");
     setOpened(true);
@@ -84,8 +83,8 @@ export default function Priority() {
   };
 
   const clearSearchData = () => {
-    priorityStore.setFilter({
-      ...priorityStore,
+    equipStatusStore.setFilter({
+      ...equipStatusStore,
       txtSearch: "",
       page: 1,
     });
@@ -93,7 +92,7 @@ export default function Priority() {
 
   useEffect(() => {
     searchData();
-  }, [debounce, priorityStore.page, sortStatus]);
+  }, [debounce, equipStatusStore.page, sortStatus]);
   return (
     <>
       <Drawer
@@ -103,7 +102,7 @@ export default function Priority() {
         position="right"
       >
         {opened ? (
-          <PriorityForm onClose={() => setOpened(false)} rowId={rowId} />
+          <EquipStatusForm onClose={() => setOpened(false)} id={rowId} />
         ) : null}
       </Drawer>
       <PageHeader title={title} listItems={listItems} />
@@ -123,17 +122,17 @@ export default function Priority() {
           <Grid mx="md" mt="md">
             <Grid.Col span={{ md: 4 }}>
               <InputSearch
-                placeholder="ค้นหาลำดับความสำคัญ"
+                placeholder="ค้นหาจากชื่อสถานะอุปกรณ์"
                 onChange={(e) =>
-                  priorityStore.setFilter({
-                    ...priorityStore,
+                  equipStatusStore.setFilter({
+                    ...equipStatusStore,
                     txtSearch: e.target.value,
                     page: 1,
                   })
                 }
                 onClearSearch={clearSearchData}
                 onSearchData={searchData}
-                value={priorityStore.txtSearch}
+                value={equipStatusStore.txtSearch}
               />
             </Grid.Col>
           </Grid>
@@ -150,12 +149,12 @@ export default function Priority() {
             columns={[
               {
                 accessor: "name",
-                title: "ชื่อลำดับความสำคัญ",
-                width: "35%",
+                title: "ชื่อสถานะอุปกรณ์",
+                width: "80%",
                 sortable: true,
                 render({ name }) {
                   return (
-                    <Highlight highlight={priorityStore.txtSearch}>
+                    <Highlight highlight={equipStatusStore.txtSearch}>
                       {String(name)}
                     </Highlight>
                   );
@@ -218,17 +217,17 @@ export default function Priority() {
             sortStatus={sortStatus}
             onSortStatusChange={(sort) => [
               setSortStatus(sort),
-              priorityStore.setFilter({
-                ...priorityStore,
+              equipStatusStore.setFilter({
+                ...equipStatusStore,
                 sortField: sort.columnAccessor,
                 sortDirection: sort.direction,
               }),
             ]}
             totalRecords={data?.totalItem || 0}
             recordsPerPage={Page_size}
-            page={priorityStore.page}
+            page={equipStatusStore.page}
             onPageChange={(p: number) =>
-              priorityStore.setFilter({ ...priorityStore, page: p })
+              equipStatusStore.setFilter({ ...equipStatusStore, page: p })
             }
             paginationText={({ from, to, totalRecords }) =>
               `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`

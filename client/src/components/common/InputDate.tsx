@@ -52,15 +52,12 @@ Props) => {
 
   const handleChangeText = (e: any) => {
     const day = dayjs(e.target.value, "DD/MM/YYYY", true).isValid();
-
     if (day) {
       const mydate = dateToMySql(e.target.value);
       setValue(new Date(mydate));
-
       setTextDate(e.target.value);
       onChangeText(e.target.value);
     }
-
     if (e.target.value === "") {
       setTextDate("");
       onChangeText("");

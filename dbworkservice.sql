@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2024-05-29 17:23:11
+Date: 2024-06-04 17:26:32
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -970,25 +970,23 @@ INSERT INTO `tb_amphure` VALUES ('9612', 'จะแนะ', '96');
 INSERT INTO `tb_amphure` VALUES ('9613', 'เจาะไอร้อง', '96');
 
 -- ----------------------------
--- Table structure for tb_ctype
+-- Table structure for tb_category
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_ctype`;
-CREATE TABLE `tb_ctype` (
+DROP TABLE IF EXISTS `tb_category`;
+CREATE TABLE `tb_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT NULL COMMENT 'ชื่อประเภท',
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='ประเภทสินค้า';
+  `code` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `cate_show` int(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
--- Records of tb_ctype
+-- Records of tb_category
 -- ----------------------------
-INSERT INTO `tb_ctype` VALUES ('1', 'ทะเบียนทรัพย์สิน  สอศ');
-INSERT INTO `tb_ctype` VALUES ('2', 'ทะเบียนทรัพย์สิน');
-INSERT INTO `tb_ctype` VALUES ('3', 'พัสดุ');
-INSERT INTO `tb_ctype` VALUES ('11', 'อาหารอวกาศ');
-INSERT INTO `tb_ctype` VALUES ('18', 'test1');
-INSERT INTO `tb_ctype` VALUES ('19', 'test2-update2');
+INSERT INTO `tb_category` VALUES ('1', 'aaa', 'คอมพิวเตอร์', '0');
+INSERT INTO `tb_category` VALUES ('2', '', 'โน๊ตบุ๊คddd', '1');
+INSERT INTO `tb_category` VALUES ('3', '999', 'โน๊ตบุ๊คddd', '0');
 
 -- ----------------------------
 -- Table structure for tb_equip
@@ -1010,18 +1008,18 @@ CREATE TABLE `tb_equip` (
   `equip_status_id` int(11) NOT NULL,
   `equip_show` int(11) NOT NULL,
   `shared` varchar(255) NOT NULL,
-  `equip_type_id` int(11) NOT NULL,
+  `cate_id` int(11) NOT NULL,
   `faculty_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_equip_status` (`equip_status_id`),
-  KEY `fk_equip_type` (`equip_type_id`),
+  KEY `fk_equip_type` (`cate_id`),
   KEY `fk_equip_dep` (`faculty_id`),
   KEY ` fk_equip_user` (`user_id`),
   CONSTRAINT ` fk_equip_user` FOREIGN KEY (`user_id`) REFERENCES `tb_user` (`id`),
   CONSTRAINT `fk_equip_fac` FOREIGN KEY (`faculty_id`) REFERENCES `tb_faculty` (`id`),
   CONSTRAINT `fk_equip_status` FOREIGN KEY (`equip_status_id`) REFERENCES `tb_equip_status` (`id`),
-  CONSTRAINT `fk_equip_type` FOREIGN KEY (`equip_type_id`) REFERENCES `tb_equip_type` (`id`)
+  CONSTRAINT `fk_equip_type` FOREIGN KEY (`cate_id`) REFERENCES `tb_category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
@@ -1035,27 +1033,16 @@ DROP TABLE IF EXISTS `tb_equip_status`;
 CREATE TABLE `tb_equip_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
+  `status_show` int(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_equip_status
 -- ----------------------------
-
--- ----------------------------
--- Table structure for tb_equip_type
--- ----------------------------
-DROP TABLE IF EXISTS `tb_equip_type`;
-CREATE TABLE `tb_equip_type` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- ----------------------------
--- Records of tb_equip_type
--- ----------------------------
+INSERT INTO `tb_equip_status` VALUES ('1', 'ใช้งาน', '1');
+INSERT INTO `tb_equip_status` VALUES ('2', 'ใช้งานๅ', '0');
+INSERT INTO `tb_equip_status` VALUES ('3', 'ใช้งาน', '0');
 
 -- ----------------------------
 -- Table structure for tb_faculty
@@ -1127,6 +1114,20 @@ INSERT INTO `tb_issue` VALUES ('6', 'test3sdf', '0', null, '0');
 INSERT INTO `tb_issue` VALUES ('7', 'sdfsdfsd', '1', '3', '0');
 
 -- ----------------------------
+-- Table structure for tb_login_log
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_login_log`;
+CREATE TABLE `tb_login_log` (
+  `user_id` int(11) NOT NULL,
+  `timestamp` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- ----------------------------
+-- Records of tb_login_log
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for tb_module
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_module`;
@@ -1169,7 +1170,7 @@ CREATE TABLE `tb_position` (
   PRIMARY KEY (`id`),
   KEY `fk_pos_fac` (`faculty_id`),
   CONSTRAINT `fk_pos_fac` FOREIGN KEY (`faculty_id`) REFERENCES `tb_faculty` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_position
@@ -1179,6 +1180,7 @@ INSERT INTO `tb_position` VALUES ('3', 'test1112', '8', '0');
 INSERT INTO `tb_position` VALUES ('5', 'บุคคลทั่วไป', '9', '1');
 INSERT INTO `tb_position` VALUES ('6', 'test1112546', '8', '0');
 INSERT INTO `tb_position` VALUES ('7', '12345', '19', '0');
+INSERT INTO `tb_position` VALUES ('8', '12345', '8', '0');
 
 -- ----------------------------
 -- Table structure for tb_priority
@@ -8941,32 +8943,33 @@ CREATE TABLE `tb_user` (
   `id_card` varchar(255) NOT NULL,
   `firstname` varchar(255) NOT NULL,
   `surname` varchar(255) NOT NULL,
-  `nickname` varchar(255) NOT NULL,
-  `line` varchar(255) NOT NULL,
-  `line_token` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `phone` varchar(255) NOT NULL,
-  `birthday` date NOT NULL,
-  `image` varchar(255) NOT NULL,
-  `sex` varchar(255) NOT NULL,
-  `address` varchar(255) NOT NULL,
-  `tumbol_id` int(11) NOT NULL DEFAULT 0,
-  `amphure_id` int(11) NOT NULL,
-  `provicne_id` int(11) NOT NULL,
+  `nickname` varchar(255) DEFAULT NULL,
+  `line` varchar(255) DEFAULT NULL,
+  `line_token` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `sex` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `tumbol_id` int(11) DEFAULT NULL,
+  `amphure_id` int(11) DEFAULT NULL,
+  `province_id` int(11) DEFAULT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL DEFAULT '',
-  `create_date` datetime NOT NULL,
-  `last_login` datetime NOT NULL,
+  `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `last_login` datetime DEFAULT NULL,
   `user_show` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_user
 -- ----------------------------
 INSERT INTO `tb_user` VALUES ('1', '1234567891012', 'admin', 'no', 'one', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', 'test3', '1', 'test4', '1', '1', '1', 'test5', 'test6', '0000-00-00 00:00:00', '2024-05-08 00:00:00', '');
 INSERT INTO `tb_user` VALUES ('2', '1234567891012', 'admin1', 'no', '', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', 'test3', '1', 'test4', '1', '1', '1', 'test5', 'test6', '0000-00-00 00:00:00', '2024-05-28 00:00:00', '');
-INSERT INTO `tb_user` VALUES ('3', '1234567891012', 'admin2', 'no', 'one', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', '', '1', 'test4', '1', '1', '1', 'test5', 'test6', '0000-00-00 00:00:00', '2023-06-28 00:00:00', '');
+INSERT INTO `tb_user` VALUES ('7', '1234567891011', 'นายสมมุติภ', 'เกิดมาเพื่อซื้อ', '', '', '', 'flukelalalalal@gmail.com', '0909823211', '2024-06-04', '{}', null, '109 หมู่ 7 บ้านหนองฟ้า\r\nโคกสว่าง', '0', '0', '0', 'Admin4', '', '2024-06-04 15:34:23', null, '0');
+INSERT INTO `tb_user` VALUES ('8', '1234567891011', 'test', 'test2', null, null, null, null, null, '2024-06-03', null, null, null, null, null, null, 'test3455', '', '2024-06-04 15:39:44', null, '0');
 
 -- ----------------------------
 -- Table structure for tb_user_position
@@ -8975,10 +8978,10 @@ DROP TABLE IF EXISTS `tb_user_position`;
 CREATE TABLE `tb_user_position` (
   `user_id` int(11) NOT NULL,
   `pos_id` int(11) NOT NULL,
-  `faculty_id` int(11) NOT NULL,
-  PRIMARY KEY (`user_id`,`pos_id`,`faculty_id`)
+  PRIMARY KEY (`user_id`,`pos_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_user_position
 -- ----------------------------
+INSERT INTO `tb_user_position` VALUES ('7', '2');

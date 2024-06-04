@@ -1,5 +1,6 @@
 import {
   IconArchiveFilled,
+  IconBriefcaseFilled,
   IconDashboard,
   IconNews,
   IconStack2Filled,
@@ -43,18 +44,27 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     icon: IconUserFilled,
   },
   {
+    title: "หน่วยงาน",
+    path: "#",
+    icon: IconBriefcaseFilled,
+    childPath: ["/faculty", "/position", "/assign"],
+    subMenuItems: [
+      { title: "หน่วยงาน", path: "/faculty" },
+      { title: "ตำแหน่งงาน", path: "/position" },
+      { title: "มอบหมายตำแหน่งงาน", path: "/assign" },
+    ],
+  },
+  {
     title: "ข้อมูลพื้นฐาน",
     path: "#",
     icon: IconStack2Filled,
-    childPath: ["/issue", "/position", "priority", "status", "/faculty"],
+    childPath: ["/category", "/equip_status", "/issue", "/priority", "/status"],
     subMenuItems: [
       { title: "ประเภทอุปกรณ์", path: "/category" },
       { title: "สถานะอุปกรณ์", path: "/equip_status" },
       { title: "สถานะงาน", path: "/status" },
       { title: "ลําดับความสําคัญ", path: "/priority" },
       { title: "ประเภทปัญหา", path: "/issue" },
-      { title: "หน่วยงาน", path: "/faculty" },
-      { title: "ตำแหน่งงาน", path: "/position" },
     ],
   },
 ];

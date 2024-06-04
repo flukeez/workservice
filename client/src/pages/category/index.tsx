@@ -13,38 +13,37 @@ import {
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconChevronDown, IconPlus } from "@tabler/icons-react";
-import { usePriorityStore } from "@/stores/usePriorityStore";
-import { usePriorityDelete, usePrioritys } from "@/hooks/priority";
-import PriorityForm from "@/components/priority/PriorityForm";
-import PageHeader from "@/components/common/PageHeader";
+import { useCategories, useCategoryDelete } from "@/hooks/category";
+import { useCategoryStore } from "@/stores/useCategoryStore";
+import CategoryForm from "@/components/category/CategoryForm";
 import InputSearch from "@/components/common/InputSearch";
+import PageHeader from "@/components/common/PageHeader";
 
-const title = "ลำดับความสำคัญ";
+const title = "ประเภทอุปกรณ์";
 const listItems = [{ title: title, href: "#" }];
 const Page_size = 10;
-
-export default function Priority() {
-  const priorityStore = usePriorityStore();
-  const [debounce] = useDebouncedValue(priorityStore.txtSearch, 500);
+export default function Category() {
+  const categoryStore = useCategoryStore();
+  const [debounce] = useDebouncedValue(categoryStore.txtSearch, 500);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-    columnAccessor: priorityStore.sortField,
-    direction: priorityStore.sortDirection,
+    columnAccessor: categoryStore.sortField,
+    direction: categoryStore.sortDirection,
   });
   const [opened, setOpened] = useState(false);
   const [rowId, setRowId] = useState("0");
   const setCondition = () => {
     const condition = {
-      txtSearch: priorityStore.txtSearch,
-      sortField: priorityStore.sortField,
-      sortDirection: priorityStore.sortDirection,
-      page: priorityStore.page - 1,
+      txtSearch: categoryStore.txtSearch,
+      sortField: categoryStore.sortField,
+      sortDirection: categoryStore.sortDirection,
+      page: categoryStore.page - 1,
       limit: Page_size,
     };
     return condition;
   };
 
-  const { data, isLoading, setFilter } = usePrioritys(setCondition());
-  const mutationDelete = usePriorityDelete();
+  const { data, isLoading, setFilter } = useCategories(setCondition());
+  const mutationDelete = useCategoryDelete();
   const handleNew = () => {
     setRowId("0");
     setOpened(true);
@@ -84,8 +83,8 @@ export default function Priority() {
   };
 
   const clearSearchData = () => {
-    priorityStore.setFilter({
-      ...priorityStore,
+    categoryStore.setFilter({
+      ...categoryStore,
       txtSearch: "",
       page: 1,
     });
@@ -93,7 +92,7 @@ export default function Priority() {
 
   useEffect(() => {
     searchData();
-  }, [debounce, priorityStore.page, sortStatus]);
+  }, [debounce, categoryStore.page, sortStatus]);
   return (
     <>
       <Drawer
@@ -103,7 +102,7 @@ export default function Priority() {
         position="right"
       >
         {opened ? (
-          <PriorityForm onClose={() => setOpened(false)} rowId={rowId} />
+          <CategoryForm onClose={() => setOpened(false)} id={rowId} />
         ) : null}
       </Drawer>
       <PageHeader title={title} listItems={listItems} />
@@ -123,17 +122,17 @@ export default function Priority() {
           <Grid mx="md" mt="md">
             <Grid.Col span={{ md: 4 }}>
               <InputSearch
-                placeholder="ค้นหาลำดับความสำคัญ"
+                placeholder="ค้นหาจากรหัส, ชื่อประเภทอุปกรณ์"
                 onChange={(e) =>
-                  priorityStore.setFilter({
-                    ...priorityStore,
+                  categoryStore.setFilter({
+                    ...categoryStore,
                     txtSearch: e.target.value,
                     page: 1,
                   })
                 }
                 onClearSearch={clearSearchData}
                 onSearchData={searchData}
-                value={priorityStore.txtSearch}
+                value={categoryStore.txtSearch}
               />
             </Grid.Col>
           </Grid>
@@ -150,13 +149,27 @@ export default function Priority() {
             columns={[
               {
                 accessor: "name",
-                title: "ชื่อลำดับความสำคัญ",
-                width: "35%",
+                title: "รหัสประเภทอุปกรณ์",
+                width: "15%",
+                sortable: true,
+                textAlign: "center",
+                render({ code }) {
+                  return (
+                    <Highlight highlight={categoryStore.txtSearch}>
+                      {String(code)}
+                    </Highlight>
+                  );
+                },
+              },
+              {
+                accessor: "issue_name",
+                title: "ชื่อประเภทอุปกรณ์",
+                width: "60%",
                 sortable: true,
                 render({ name }) {
                   return (
-                    <Highlight highlight={priorityStore.txtSearch}>
-                      {String(name)}
+                    <Highlight highlight={categoryStore.txtSearch}>
+                      {String(name || "")}
                     </Highlight>
                   );
                 },
@@ -218,17 +231,17 @@ export default function Priority() {
             sortStatus={sortStatus}
             onSortStatusChange={(sort) => [
               setSortStatus(sort),
-              priorityStore.setFilter({
-                ...priorityStore,
+              categoryStore.setFilter({
+                ...categoryStore,
                 sortField: sort.columnAccessor,
                 sortDirection: sort.direction,
               }),
             ]}
             totalRecords={data?.totalItem || 0}
             recordsPerPage={Page_size}
-            page={priorityStore.page}
+            page={categoryStore.page}
             onPageChange={(p: number) =>
-              priorityStore.setFilter({ ...priorityStore, page: p })
+              categoryStore.setFilter({ ...categoryStore, page: p })
             }
             paginationText={({ from, to, totalRecords }) =>
               `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
