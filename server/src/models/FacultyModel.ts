@@ -1,7 +1,7 @@
 import { pagination } from "@/utils/pagination";
 import db from "../database";
 
-import {
+import type {
   IFaculty,
   IFacultyForm,
   IFacultyOrgChart,
@@ -130,7 +130,12 @@ export class FacultyModel {
     const baseQuery = db("tb_user_position")
       .leftJoin("tb_user", "tb_user_position.user_id", "tb_user.id")
       .leftJoin("tb_position", "tb_user_position.pos_id", "tb_position.id")
-      .where("tb_user.firstname", "LIKE", `%${txtSearch}%`)
+      .where((builder) => {
+        builder
+          .where("tb_user.surname", "LIKE", `%${txtSearch}%`)
+          .orWhere("tb_user.firstname", "LIKE", `%${txtSearch}%`)
+          .orWhere("tb_position.name", "LIKE", `%${txtSearch}%`);
+      })
       .where("tb_user.user_show", 0)
       .andWhere({ fac_id });
     try {
@@ -173,6 +178,71 @@ export class FacultyModel {
       return { result };
     } catch (error) {
       console.log(error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  //เพิ่มตำแหน่งในหน่วยงาน
+  async createPosition(data: IFacultyPosition): Promise<{ result: number }> {
+    try {
+      const checkPosition = await this.checkDuplicatePosition(
+        data.fac_id,
+        data.user_id
+      );
+      if (checkPosition) {
+        return { result: 0 };
+      }
+      const result = await db("tb_user_position").insert(data);
+      return { result: 1 };
+    } catch (error) {
+      console.log(error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  // แก้ไขตำแหน่งในหน่วยงาน
+  async updatePosition(data: IFacultyPosition): Promise<{ result: number }> {
+    try {
+      const result = await db("tb_user_position")
+        .where({
+          fac_id: data.fac_id,
+          user_id: data.user_id,
+        })
+        .update(data);
+      return { result: 1 };
+    } catch (error) {
+      console.log(error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  //ลบตำแหน่งในหน่วยงาน
+  async deletePosition(
+    fac_id: number,
+    user_id: number
+  ): Promise<{ result: number }> {
+    try {
+      const result = await db("tb_user_position")
+        .where({ fac_id, user_id })
+        .del();
+      return { result };
+    } catch (error) {
+      console.log(error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  async checkDuplicatePosition(
+    fac_id: number,
+    user_id: number
+  ): Promise<number> {
+    try {
+      const query = await db("tb_user_position")
+        .where({ fac_id, user_id })
+        .first();
+      return query ? 1 : 0;
+    } catch (error) {
+      console.error("Error:", error);
       throw new Error("Internal server error");
     }
   }

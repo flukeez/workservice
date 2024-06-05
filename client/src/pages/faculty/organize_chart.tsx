@@ -1,10 +1,7 @@
-import InputSearch from "@/components/common/InputSearch";
-import PageHeader from "@/components/common/PageHeader";
-import FacultyPositionForm from "@/components/faculty/FacultyPositionForm";
-import UserInfo from "@/components/user/UserInfo";
-import { useOrgCharts } from "@/hooks/faculty/useFaculty";
-import { useOrgChartStore } from "@/stores/useOrgCharStore";
-import { convertToNumberOrZero } from "@/utils/mynumber";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useDebouncedValue } from "@mantine/hooks";
 import {
   Button,
   Card,
@@ -15,11 +12,16 @@ import {
   Menu,
   ScrollArea,
 } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
-import { IconChevronDown, IconPlus } from "@tabler/icons-react";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { IconChevronDown, IconPlus } from "@tabler/icons-react";
+import { convertToNumberOrZero } from "@/utils/mynumber";
+import InputSearch from "@/components/common/InputSearch";
+import PageHeader from "@/components/common/PageHeader";
+import FacultyPositionForm from "@/components/faculty/FacultyPositionForm";
+import UserInfo from "@/components/user/UserInfo";
+import { useOrgCharts } from "@/hooks/faculty/useFaculty";
+import { useFacultyPositionDelete } from "@/hooks/faculty/useFacultyMutate";
+import { useOrgChartStore } from "@/stores/useOrgCharStore";
 
 const listItems = [
   { title: "หน่วยงาน", href: "/faculty" },
@@ -49,6 +51,7 @@ export default function OrganizeChart() {
     return condition;
   };
   const { data, isLoading, setFilter } = useOrgCharts(id, setCondition());
+  const mutationDelete = useFacultyPositionDelete();
 
   const [title, setTitle] = useState("");
   const searchData = () => {
@@ -67,7 +70,31 @@ export default function OrganizeChart() {
     setType(1);
     setOpened(true);
   };
-  const handleDelete = (id: string) => {};
+  const handleDelete = async (user_id: string) => {
+    try {
+      const dialog = await Swal.fire({
+        title: "คุณต้องการลบรายการนี้ใช่หรือไม่",
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "ยกเลิก",
+        confirmButtonText: "ตกลง",
+      });
+      if (dialog.isConfirmed) {
+        await mutationDelete.mutateAsync({ id, user_id });
+        Swal.fire({
+          title: "ลบข้อมูลสําเร็จ",
+          icon: "success",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
+      });
+    }
+  };
   useEffect(() => {
     const title = data?.faculty_name
       ? `แผนผังองค์กร : ${data.faculty_name}`
@@ -155,15 +182,15 @@ export default function OrganizeChart() {
                 },
               },
               {
-                accessor: "position_name",
+                accessor: "name",
                 title: "ตำแหน่ง",
                 width: "20%",
                 sortable: true,
                 textAlign: "center",
-                render({ position_name }) {
+                render({ name }) {
                   return (
                     <Highlight highlight={orgChartStore.txtSearch}>
-                      {String(position_name || "")}
+                      {String(name || "")}
                     </Highlight>
                   );
                 },

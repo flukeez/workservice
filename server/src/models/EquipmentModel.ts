@@ -1,6 +1,6 @@
 import db from "@/database";
-import type { IEquip, IEquipQuery } from "@/types/EquipmentType";
 import { pagination } from "@/utils/pagination";
+import type { IEquip, IEquipQuery } from "@/types/EquipmentType";
 
 const tbName = "tb_equip";
 export class EquipmentModel {
@@ -48,6 +48,15 @@ export class EquipmentModel {
       const totalItem = Number(rowCount?.countId || 0);
       const totalPage = await pagination(totalItem, limit);
       return { result, totalItem, totalPage };
+    } catch (error) {
+      console.error("Error:", error);
+      throw new Error("Internal server error");
+    }
+  }
+  async findById(id: number): Promise<{ result: IEquip }> {
+    try {
+      const result = await db(tbName).where({ id }).first();
+      return { result };
     } catch (error) {
       console.error("Error:", error);
       throw new Error("Internal server error");

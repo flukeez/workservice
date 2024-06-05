@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import {
   Button,
@@ -13,12 +14,11 @@ import {
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconChevronDown, IconFolderOpen, IconPlus } from "@tabler/icons-react";
-import { useFacultyDelete, useFacultys } from "@/hooks/faculty";
-import { useFacultyStore } from "@/stores/useFacultyStore";
 import PageHeader from "@/components/common/PageHeader";
 import InputSearch from "@/components/common/InputSearch";
 import FacultyForm from "@/components/faculty/FacultyForm";
-import { useNavigate } from "react-router-dom";
+import { useFacultyDelete, useFacultys } from "@/hooks/faculty";
+import { useFacultyStore } from "@/stores/useFacultyStore";
 
 const title = "หน่วยงาน";
 const listItems = [{ title: title, href: "#" }];

@@ -53,17 +53,12 @@ export function useFacultyPositionSave() {
   const queryClient = useQueryClient();
   const saveOne = async (formData: IFacultyPositionForm) => {
     let response;
-    console.log(formData);
     if (formData.type) {
-      response = await axiosAuth.patch(
-        `${url}/org_chart/${formData.fac_id}/user/${formData.user_id}`,
-        formData
-      );
+      delete formData.type;
+      response = await axiosAuth.put(`${url}/org_chart/update`, formData);
     } else {
-      response = await axiosAuth.post(
-        `${url}/org_chart/${formData.fac_id}/user/create`,
-        formData
-      );
+      delete formData.type;
+      response = await axiosAuth.post(`${url}/org_chart/create`, formData);
     }
     return response;
   };
@@ -76,6 +71,25 @@ export function useFacultyPositionSave() {
       console.log("error");
     },
   });
+  return mutation;
+}
 
+//ลบคนในหน่วยงาน
+export function useFacultyPositionDelete() {
+  const queryClient = useQueryClient();
+  const deleteOne = async (id: number, user_id: string) => {
+    const response = await axiosAuth.delete(
+      `${url}/org_chart/del/${id}/user/${user_id}`
+    );
+    return response;
+  };
+
+  const mutation = useMutation({
+    mutationFn: ({ id, user_id }: { id: number; user_id: string }) =>
+      deleteOne(id, user_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKeys.org_charts] });
+    },
+  });
   return mutation;
 }

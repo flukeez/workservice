@@ -2,10 +2,7 @@ import { lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "./components/DashboardLayout";
 
-import Ctype from "./pages/ctype";
-import CustomerPage from "@/pages/customer";
-import CustomerFormPage from "@/pages/customer/customer_form";
-import Equipment from "./pages/equipment";
+const Equipment = lazy(() => import("@/pages/equipment"));
 const Faculty = lazy(() => import("@/pages/faculty"));
 const OrganizeChart = lazy(() => import("@/pages/faculty/organize_chart"));
 const Issue = lazy(() => import("@/pages/issue"));
@@ -23,8 +20,8 @@ export function Router() {
     <BrowserRouter>
       <Routes>
         <Route element={<DashboardLayout />}>
-          <Route path="/" element={<Ctype />} />
-          <Route path="/home" element={<Ctype />} />
+          <Route path="/" element={<Faculty />} />
+          <Route path="/home" element={<Faculty />} />
           <Route path="/faculty">
             <Route index element={<Faculty />} />
             <Route path="organize_chart/:id" element={<OrganizeChart />} />
@@ -42,12 +39,6 @@ export function Router() {
             <Route path=":id" element={<UserForm />} />
           </Route>
           <Route path="/equipment" element={<Equipment />} />
-          <Route path="/ctype" element={<Ctype />} />
-          <Route path="/customer">
-            <Route index element={<CustomerPage />} />
-            <Route path="new" element={<CustomerFormPage />} />
-          </Route>
-
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>

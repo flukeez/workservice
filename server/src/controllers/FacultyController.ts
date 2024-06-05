@@ -1,6 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { FacultyModel } from "@/models/FacultyModel";
-import { IFacultyForm, IFacultyQuery } from "@/types/FacultyType";
+import {
+  IFacultyForm,
+  IFacultyPosition,
+  IFacultyQuery,
+} from "@/types/FacultyType";
 
 export default async function FacultyController(fastify: FastifyInstance) {
   const facultyModel = new FacultyModel();
@@ -49,6 +53,25 @@ export default async function FacultyController(fastify: FastifyInstance) {
       user_id: number;
     };
     const result = await facultyModel.organizeChartPosition(fac_id, user_id);
+    res.send(result);
+  });
+  fastify.post("/org_chart/create", async (req, res) => {
+    console.log("test");
+    const formData = req.body as IFacultyPosition;
+    const result = await facultyModel.createPosition(formData);
+    res.send(result);
+  });
+  fastify.put("/org_chart/update", async (req, res) => {
+    const formData = req.body as IFacultyPosition;
+    const result = await facultyModel.updatePosition(formData);
+    res.send(result);
+  });
+  fastify.delete("/org_chart/del/:fac_id/user/:user_id", async (req, res) => {
+    const { fac_id, user_id } = req.params as {
+      fac_id: number;
+      user_id: number;
+    };
+    const result = await facultyModel.deletePosition(fac_id, user_id);
     res.send(result);
   });
 }

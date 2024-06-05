@@ -1,18 +1,18 @@
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Swal from "sweetalert2";
+import { Alert, Button, Group, LoadingOverlay, Stack } from "@mantine/core";
+import { IconAlertCircle } from "@tabler/icons-react";
 import { useOrgChart } from "@/hooks/faculty/useFaculty";
+import { useFacultyPositionSave } from "@/hooks/faculty/useFacultyMutate";
 import {
   facultyPositionInitialValues,
   facultyPositionYup,
 } from "@/validations/faculty.schema";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Alert, Button, Group, LoadingOverlay, Stack } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import DropdownUser from "../user/DropdownUser";
 import DropdownPosition from "../position/DropdownPosition";
 import type { IFacultyPositionForm } from "@/types/IFaculty";
-import { useFacultyPositionSave } from "@/hooks/faculty/useFacultyMutate";
-import Swal from "sweetalert2";
 
 interface FacultyPositionFormProps {
   onClose: () => void;
@@ -33,6 +33,7 @@ export default function FacultyPositionForm({
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: "onChange",
@@ -40,9 +41,8 @@ export default function FacultyPositionForm({
     defaultValues: facultyPositionInitialValues,
   });
 
-  const onSubmit: SubmitHandler<IFacultyPositionForm> = async (formData) => {
+  const onSubmit = async (formData: IFacultyPositionForm) => {
     const newFormData = { ...formData, type, fac_id: fac_id.toString() };
-    console.log(newFormData);
     const { data } = await mutationSave.mutateAsync(newFormData);
     try {
       if (data.result) {
@@ -67,6 +67,9 @@ export default function FacultyPositionForm({
       });
     }
   };
+  useEffect(() => {
+    setValue("fac_id", fac_id.toString());
+  }, []);
   useEffect(() => {
     if (data && data.result) {
       reset(data.result);
