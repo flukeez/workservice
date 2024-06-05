@@ -17,3 +17,14 @@ export interface IFacultyQuery {
   sortField: string;
   sortDirection: string;
 }
+
+export type IFacultyOrgChart = {
+  position_name?: string;
+  firstname: string;
+  surname: string;
+};
+export type IFacultyPosition = {
+  user_id: number;
+  fac_id: number;
+  pos_id: number | null;
+};

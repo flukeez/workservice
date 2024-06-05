@@ -4,7 +4,7 @@ interface UserInfoProps {
   firstname: unknown;
   surname: unknown;
   nickname: unknown;
-  image: unknown;
+  image?: unknown;
   highlight: string;
 }
 

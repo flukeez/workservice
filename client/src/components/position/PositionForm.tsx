@@ -1,10 +1,8 @@
-import { usePosition, usePositionSave } from "@/hooks/position";
-import type { IPositionForm } from "@/types/IPosition";
-import {
-  positionInitialValues,
-  positionYup,
-} from "@/validations/position.schema";
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { usePosition, usePositionSave } from "@/hooks/position";
 import {
   Alert,
   Button,
@@ -14,11 +12,12 @@ import {
   Stack,
   TextInput,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import DropdownFaculty from "../faculty/DropdownFaculty";
 import { IconAlertCircle } from "@tabler/icons-react";
-import Swal from "sweetalert2";
+import {
+  positionInitialValues,
+  positionYup,
+} from "@/validations/position.schema";
+import type { IPositionForm } from "@/types/IPosition";
 
 interface PositionProps {
   onClose: () => void;
@@ -33,7 +32,6 @@ export default function PositionForm({ rowId, onClose }: PositionProps) {
     register,
     reset,
     formState: { errors },
-    control,
     getValues,
   } = useForm({
     mode: "onChange",
@@ -58,7 +56,7 @@ export default function PositionForm({ rowId, onClose }: PositionProps) {
         setShowAlert(true);
       }
     } catch (error) {
-      console.error(error);
+      console.error("error");
       Swal.fire({
         icon: "error",
         title: "เกิดข้อผิดพลาด",
@@ -95,24 +93,6 @@ export default function PositionForm({ rowId, onClose }: PositionProps) {
           error={errors.name?.message}
           required
         />
-        <Controller
-          name="faculty_id"
-          control={control}
-          render={({ field }) => {
-            const handleSelectChange = (value: string | null) => {
-              field.onChange(value);
-            };
-            return (
-              <DropdownFaculty
-                faculty={field.value}
-                setFaculty={handleSelectChange}
-                label="หน่วยงาน"
-                error={errors.faculty_id?.message}
-              />
-            );
-          }}
-        />
-
         <Checkbox label="สิทธิ์หัวหน้างาน" {...register("super_admin")} />
         <Group justify="right" mt={20}>
           <Button color="gray" onClick={onClose}>

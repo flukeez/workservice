@@ -1,6 +1,8 @@
 export const queryKeys = {
   facultys: "Fetch Facultys",
   faculty: "Get Faculty",
+  org_charts: "Fetch Organize Chart",
+  org_chart: "Get Organize Chart",
   issues: "Fetch Issues",
   issue: "Get Issue",
   positions: "Fetch Positions",

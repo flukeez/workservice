@@ -1,7 +1,7 @@
-import { IFacultyForm } from "@/types/IFaculty";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosAuth } from "@/utils/axios";
 import { queryKeys } from "@/utils/queryKeys";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { IFacultyForm, IFacultyPositionForm } from "@/types/IFaculty";
 
 const url = "/facultys";
 
@@ -42,6 +42,38 @@ export function useFacultyDelete() {
     mutationFn: (id: string) => deleteOne(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.facultys] });
+    },
+  });
+
+  return mutation;
+}
+
+//เพิ่มคนในหน่วยงาน
+export function useFacultyPositionSave() {
+  const queryClient = useQueryClient();
+  const saveOne = async (formData: IFacultyPositionForm) => {
+    let response;
+    console.log(formData);
+    if (formData.type) {
+      response = await axiosAuth.patch(
+        `${url}/org_chart/${formData.fac_id}/user/${formData.user_id}`,
+        formData
+      );
+    } else {
+      response = await axiosAuth.post(
+        `${url}/org_chart/${formData.fac_id}/user/create`,
+        formData
+      );
+    }
+    return response;
+  };
+  const mutation = useMutation({
+    mutationFn: (formData: IFacultyPositionForm) => saveOne(formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKeys.org_charts] });
+    },
+    onError: () => {
+      console.log("error");
     },
   });
 

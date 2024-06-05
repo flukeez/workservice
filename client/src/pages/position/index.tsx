@@ -161,17 +161,11 @@ export default function Position() {
                 },
               },
               {
-                accessor: "faculty_name",
-                title: "หน่วยงาน",
-                width: "30%",
-                sortable: true,
-              },
-              {
                 accessor: "super_admin",
                 title: "สิทธิ์หัวหน้างาน",
                 textAlign: "center",
                 sortable: true,
-                width: "20%",
+                width: "5%",
                 render({ super_admin }) {
                   return super_admin ? <IconCheck color="green" /> : null;
                 },

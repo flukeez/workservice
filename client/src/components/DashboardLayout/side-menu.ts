@@ -47,7 +47,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     title: "หน่วยงาน",
     path: "#",
     icon: IconBriefcaseFilled,
-    childPath: ["/faculty", "/position", "/assign"],
+    childPath: ["/faculty", "/position", "/assign", "/faculty/organize_chart"],
     subMenuItems: [
       { title: "หน่วยงาน", path: "/faculty" },
       { title: "ตำแหน่งงาน", path: "/position" },

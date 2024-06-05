@@ -52,7 +52,9 @@ export default function MenuItem({
                   paddingLeft: 32,
                 }}
                 className={cx(classes.boxnav, {
-                  [classes.activeBox]: pathname === subItem.path,
+                  [classes.activeBox]:
+                    pathname === subItem.path ||
+                    (pathname.startsWith(subItem.path) && subItem.path !== "/"),
                 })}
               >
                 <NavLink
@@ -61,7 +63,10 @@ export default function MenuItem({
                   component={Link}
                   to={subItem.path}
                   className={cx(classes.subnavlink, {
-                    [classes.activeSubNavLink]: pathname === subItem.path,
+                    [classes.activeNavLink]:
+                      pathname === subItem.path ||
+                      (pathname.startsWith(subItem.path) &&
+                        subItem.path !== "/"),
                   })}
                 />
               </Box>

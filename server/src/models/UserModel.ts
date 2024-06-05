@@ -1,8 +1,8 @@
 import db from "@/database";
 import { pagination } from "@/utils/pagination";
-import type { IUser, IUserData, IUserForm, IUserQuery } from "@/types/UserType";
 import { encryptPassword } from "@/utils/encrypt";
 import { dateToMySql } from "@/utils/mydate";
+import type { IUser, IUserData, IUserForm, IUserQuery } from "@/types/UserType";
 
 const tbName = "tb_user";
 export class UserModel {

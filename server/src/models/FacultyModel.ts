@@ -1,7 +1,13 @@
 import { pagination } from "@/utils/pagination";
 import db from "../database";
 
-import { IFaculty, IFacultyForm, IFacultyQuery } from "../types/FacultyType";
+import {
+  IFaculty,
+  IFacultyForm,
+  IFacultyOrgChart,
+  IFacultyPosition,
+  IFacultyQuery,
+} from "../types/FacultyType";
 
 const tbName = "tb_faculty";
 export class FacultyModel {
@@ -106,6 +112,67 @@ export class FacultyModel {
       return query ? 1 : 0;
     } catch (error) {
       console.error("Error:", error);
+      throw new Error("Internal server error");
+    }
+  }
+  //ผู้ใช้และตำแหน่งงานทั้งหมดในหน่วยงาน
+  async organizeChart(
+    fac_id: number,
+    query: IFacultyQuery
+  ): Promise<{
+    result: IFacultyOrgChart[];
+    totalItem: number;
+    totalPage: number;
+    faculty_name: string;
+  }> {
+    const { txtSearch, page, limit, sortField, sortDirection } = query;
+    const offset = page * limit;
+    const baseQuery = db("tb_user_position")
+      .leftJoin("tb_user", "tb_user_position.user_id", "tb_user.id")
+      .leftJoin("tb_position", "tb_user_position.pos_id", "tb_position.id")
+      .where("tb_user.firstname", "LIKE", `%${txtSearch}%`)
+      .where("tb_user.user_show", 0)
+      .andWhere({ fac_id });
+    try {
+      const result = await baseQuery
+        .clone()
+        .select(
+          "tb_position.name",
+          "tb_user.firstname",
+          "tb_user.surname",
+          "tb_user.id"
+        )
+        .orderBy(sortField, sortDirection)
+        .offset(offset)
+        .limit(limit);
+      const rowCount = await baseQuery
+        .clone()
+        .count({ countId: "tb_user.id" })
+        .first();
+      const totalItem = Number(rowCount?.countId || 0);
+      const totalPage = pagination(totalItem, limit);
+      const faculty = await db(tbName)
+        .select("name")
+        .where({ id: fac_id })
+        .first();
+      return { result, totalItem, totalPage, faculty_name: faculty.name };
+    } catch (error) {
+      console.log(error);
+      throw new Error("Internal server error");
+    }
+  }
+  //ผู้ใช้และตำแหน่ง 1 แถว ในหน่วยงาน
+  async organizeChartPosition(
+    fac_id: number,
+    user_id: number
+  ): Promise<{ result: IFacultyPosition }> {
+    try {
+      const result = await db("tb_user_position")
+        .where({ fac_id, user_id })
+        .first();
+      return { result };
+    } catch (error) {
+      console.log(error);
       throw new Error("Internal server error");
     }
   }

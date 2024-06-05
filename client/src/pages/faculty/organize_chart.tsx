@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { DataTable, DataTableSortStatus } from "mantine-datatable";
+import InputSearch from "@/components/common/InputSearch";
+import PageHeader from "@/components/common/PageHeader";
+import FacultyPositionForm from "@/components/faculty/FacultyPositionForm";
+import UserInfo from "@/components/user/UserInfo";
+import { useOrgCharts } from "@/hooks/faculty/useFaculty";
+import { useOrgChartStore } from "@/stores/useOrgCharStore";
+import { convertToNumberOrZero } from "@/utils/mynumber";
 import {
   Button,
   Card,
@@ -12,85 +16,68 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconChevronDown, IconFolderOpen, IconPlus } from "@tabler/icons-react";
-import { useFacultyDelete, useFacultys } from "@/hooks/faculty";
-import { useFacultyStore } from "@/stores/useFacultyStore";
-import PageHeader from "@/components/common/PageHeader";
-import InputSearch from "@/components/common/InputSearch";
-import FacultyForm from "@/components/faculty/FacultyForm";
-import { useNavigate } from "react-router-dom";
+import { IconChevronDown, IconPlus } from "@tabler/icons-react";
+import { DataTable, DataTableSortStatus } from "mantine-datatable";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-const title = "หน่วยงาน";
-const listItems = [{ title: title, href: "#" }];
+const listItems = [
+  { title: "หน่วยงาน", href: "/faculty" },
+  { title: "แผนผังองค์กร", href: "#" },
+];
 const Page_size = 10;
-export default function Faculty() {
-  const navigate = useNavigate();
-  const facultyStore = useFacultyStore();
-  const [debounce] = useDebouncedValue(facultyStore.txtSearch, 500);
+export default function OrganizeChart() {
+  const params = useParams();
+  const orgChartStore = useOrgChartStore();
+  const id = convertToNumberOrZero(params.id);
+  const [debounce] = useDebouncedValue(orgChartStore.txtSearch, 500);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-    columnAccessor: facultyStore.sortField,
-    direction: facultyStore.sortDirection,
+    columnAccessor: orgChartStore.sortField,
+    direction: orgChartStore.sortDirection,
   });
   const [opened, setOpened] = useState(false);
   const [rowId, setRowId] = useState("0");
-
+  const [type, setType] = useState(0);
   const setCondition = () => {
     const condition = {
-      txtSearch: facultyStore.txtSearch,
-      page: facultyStore.page - 1,
+      txtSearch: orgChartStore.txtSearch,
+      page: orgChartStore.page - 1,
       limit: Page_size,
       sortField: sortStatus.columnAccessor,
       sortDirection: sortStatus.direction,
     };
     return condition;
   };
+  const { data, isLoading, setFilter } = useOrgCharts(id, setCondition());
 
-  const { data, isLoading, setFilter } = useFacultys(setCondition());
-  const mutationDelete = useFacultyDelete();
-
-  const handleNew = () => {
-    setRowId("0");
-    setOpened(true);
-  };
-  const handleUpdate = (id: string) => {
-    setRowId(id);
-    setOpened(true);
-  };
-  const handleDelete = async (id: string) => {
-    try {
-      const dialog = await Swal.fire({
-        title: "คุณต้องการลบรายการนี้ใช่หรือไม่",
-        icon: "warning",
-        showCancelButton: true,
-        cancelButtonText: "ยกเลิก",
-        confirmButtonText: "ตกลง",
-      });
-      if (dialog.isConfirmed) {
-        await mutationDelete.mutateAsync(id);
-        Swal.fire({
-          title: "ลบข้อมูลสําเร็จ",
-          icon: "success",
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
-      });
-    }
-  };
+  const [title, setTitle] = useState("");
   const searchData = () => {
     setFilter(setCondition());
   };
   const clearSearchData = () => {
-    facultyStore.setFilter({ ...facultyStore, txtSearch: "", page: 1 });
+    orgChartStore.setFilter({ ...orgChartStore, txtSearch: "" });
   };
+  const handleNew = () => {
+    setRowId("0");
+    setType(0);
+    setOpened(true);
+  };
+  const handleUpdate = (id: string) => {
+    setRowId(id);
+    setType(1);
+    setOpened(true);
+  };
+  const handleDelete = (id: string) => {};
+  useEffect(() => {
+    const title = data?.faculty_name
+      ? `แผนผังองค์กร : ${data.faculty_name}`
+      : "ไม่พบหน่วยงาน";
+    setTitle(title);
+  }, [data]);
 
   useEffect(() => {
     searchData();
-  }, [debounce, facultyStore.page, sortStatus]);
+  }, [debounce, orgChartStore.page, sortStatus]);
 
   return (
     <>
@@ -101,7 +88,12 @@ export default function Faculty() {
         position="right"
       >
         {opened ? (
-          <FacultyForm onClose={() => setOpened(false)} id={rowId} />
+          <FacultyPositionForm
+            onClose={() => setOpened(false)}
+            id={rowId}
+            fac_id={id}
+            type={type}
+          />
         ) : null}
       </Drawer>
       <PageHeader title={title} listItems={listItems} />
@@ -121,17 +113,17 @@ export default function Faculty() {
           <Grid mx="md" mt="md">
             <Grid.Col span={{ md: 4 }}>
               <InputSearch
-                placeholder="ค้นหาจากชื่อหน่วยงาน, หน่วยงานต้นสังกัด"
+                placeholder="ค้นหาจากชื่อบุคคล, ตำแหน่งาน"
                 onChange={(e) =>
-                  facultyStore.setFilter({
-                    ...facultyStore,
+                  orgChartStore.setFilter({
+                    ...orgChartStore,
                     txtSearch: e.target.value,
                     page: 1,
                   })
                 }
                 onClearSearch={clearSearchData}
                 onSearchData={searchData}
-                value={facultyStore.txtSearch}
+                value={orgChartStore.txtSearch}
               />
             </Grid.Col>
           </Grid>
@@ -147,46 +139,32 @@ export default function Faculty() {
             records={data?.rows}
             columns={[
               {
-                accessor: "name",
-                title: "ชื่อหน่วยงาน",
+                accessor: "firstname",
+                title: "ชื่อ - นามสกุล",
                 width: "45%",
                 sortable: true,
-                render({ name }) {
+                render({ firstname, surname, nickname }) {
                   return (
-                    <Highlight highlight={facultyStore.txtSearch}>
-                      {String(name)}
-                    </Highlight>
+                    <UserInfo
+                      firstname={firstname}
+                      surname={surname}
+                      nickname={nickname}
+                      highlight={orgChartStore.txtSearch}
+                    />
                   );
                 },
               },
               {
-                accessor: "faculty_name",
-                title: "หน่วยงงานต้นสังกัด",
+                accessor: "position_name",
+                title: "ตำแหน่ง",
                 width: "20%",
                 sortable: true,
-                render({ faculty_name }) {
-                  return (
-                    <Highlight highlight={facultyStore.txtSearch}>
-                      {String(faculty_name || "")}
-                    </Highlight>
-                  );
-                },
-              },
-              {
-                accessor: "org_chart",
-                title: "แผนผังองค์กร",
-                width: "10%",
                 textAlign: "center",
-                render({ id }) {
+                render({ position_name }) {
                   return (
-                    <Button
-                      leftSection={<IconFolderOpen size="1.25rem" />}
-                      color="cyan"
-                      size="xs"
-                      onClick={() => navigate("organize_chart/" + id)}
-                    >
-                      เรียกดู
-                    </Button>
+                    <Highlight highlight={orgChartStore.txtSearch}>
+                      {String(position_name || "")}
+                    </Highlight>
                   );
                 },
               },
@@ -247,17 +225,17 @@ export default function Faculty() {
             sortStatus={sortStatus}
             onSortStatusChange={(sort) => {
               setSortStatus(sort);
-              facultyStore.setFilter({
-                ...facultyStore,
+              orgChartStore.setFilter({
+                ...orgChartStore,
                 sortField: sort.columnAccessor,
                 sortDirection: sort.direction,
               });
             }}
             totalRecords={data?.totalItem || 0}
             recordsPerPage={Page_size}
-            page={facultyStore.page}
+            page={orgChartStore.page}
             onPageChange={(p: number) =>
-              facultyStore.setFilter({ ...facultyStore, page: p })
+              orgChartStore.setFilter({ ...orgChartStore, page: p })
             }
             paginationText={({ from, to, totalRecords }) =>
               `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`

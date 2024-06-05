@@ -7,6 +7,7 @@ import CustomerPage from "@/pages/customer";
 import CustomerFormPage from "@/pages/customer/customer_form";
 import Equipment from "./pages/equipment";
 const Faculty = lazy(() => import("@/pages/faculty"));
+const OrganizeChart = lazy(() => import("@/pages/faculty/organize_chart"));
 const Issue = lazy(() => import("@/pages/issue"));
 const Position = lazy(() => import("@/pages/position"));
 const Priority = lazy(() => import("@/pages/priority"));
@@ -24,7 +25,10 @@ export function Router() {
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<Ctype />} />
           <Route path="/home" element={<Ctype />} />
-          <Route path="/faculty" element={<Faculty />} />
+          <Route path="/faculty">
+            <Route index element={<Faculty />} />
+            <Route path="organize_chart/:id" element={<OrganizeChart />} />
+          </Route>
           <Route path="/issue" element={<Issue />} />
           <Route path="/position" element={<Position />} />
           <Route path="/priority" element={<Priority />} />

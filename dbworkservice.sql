@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2024-06-04 17:26:32
+Date: 2024-06-05 17:29:29
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -1165,22 +1165,20 @@ DROP TABLE IF EXISTS `tb_position`;
 CREATE TABLE `tb_position` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `faculty_id` int(11) NOT NULL,
   `super_admin` tinyint(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_pos_fac` (`faculty_id`),
-  CONSTRAINT `fk_pos_fac` FOREIGN KEY (`faculty_id`) REFERENCES `tb_faculty` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_position
 -- ----------------------------
-INSERT INTO `tb_position` VALUES ('2', 'test481', '9', '1');
-INSERT INTO `tb_position` VALUES ('3', 'test1112', '8', '0');
-INSERT INTO `tb_position` VALUES ('5', 'บุคคลทั่วไป', '9', '1');
-INSERT INTO `tb_position` VALUES ('6', 'test1112546', '8', '0');
-INSERT INTO `tb_position` VALUES ('7', '12345', '19', '0');
-INSERT INTO `tb_position` VALUES ('8', '12345', '8', '0');
+INSERT INTO `tb_position` VALUES ('2', 'test481', '1');
+INSERT INTO `tb_position` VALUES ('3', 'test111244', '0');
+INSERT INTO `tb_position` VALUES ('5', 'บุคคลทั่วไป', '1');
+INSERT INTO `tb_position` VALUES ('6', 'test1112546', '0');
+INSERT INTO `tb_position` VALUES ('7', '12345', '0');
+INSERT INTO `tb_position` VALUES ('8', '12345', '0');
+INSERT INTO `tb_position` VALUES ('9', 'wertwerew', '1');
 
 -- ----------------------------
 -- Table structure for tb_priority
@@ -8977,11 +8975,11 @@ INSERT INTO `tb_user` VALUES ('8', '1234567891011', 'test', 'test2', null, null,
 DROP TABLE IF EXISTS `tb_user_position`;
 CREATE TABLE `tb_user_position` (
   `user_id` int(11) NOT NULL,
-  `pos_id` int(11) NOT NULL,
-  PRIMARY KEY (`user_id`,`pos_id`)
+  `pos_id` int(11) DEFAULT NULL,
+  `fac_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_user_position
 -- ----------------------------
-INSERT INTO `tb_user_position` VALUES ('7', '2');
+INSERT INTO `tb_user_position` VALUES ('7', null, '8');
