@@ -8,12 +8,14 @@ interface UserProps {
   setUser: (position: string | null) => void;
   label?: string;
   error?: string;
+  required?: boolean;
 }
 export default function DropdownUser({
   user,
   setUser,
   label,
   error,
+  required,
 }: UserProps) {
   const condition: IConditionFilter = {
     txtSearch: "",
@@ -39,7 +41,7 @@ export default function DropdownUser({
       }
       searchable
       clearable
-      required
+      required={required}
       error={error}
       nothingFoundMessage="ไม่พบข้อมูล"
     />

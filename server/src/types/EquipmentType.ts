@@ -21,4 +21,6 @@ export type IEquipQuery = {
   limit: number;
   sortField: string;
   sortDirection: string;
+  faculty_id: string | null;
+  user_id: string | null;
 };

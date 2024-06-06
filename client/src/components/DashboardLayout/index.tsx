@@ -36,7 +36,9 @@ export function DashboardLayout() {
         main: {
           background: theme.colors.gray[0],
         },
-
+        header: {
+          backgroundColor: theme.colors.blue[7],
+        },
         navbar: {
           backgroundColor: theme.colors.dark[9],
         },
@@ -49,20 +51,23 @@ export function DashboardLayout() {
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Group>
-            <ThemeIcon variant="light" color="gray" hiddenFrom="sm">
+            <ThemeIcon variant="light" color="white" hiddenFrom="sm">
               <Burger opened={mobileOpened} onClick={toggleMobile} size="sm" />
             </ThemeIcon>
-            <ThemeIcon variant="light" color="gray" visibleFrom="sm">
+            <ThemeIcon variant="light" color="white" visibleFrom="sm">
               <Burger
                 opened={desktopOpened}
                 onClick={toggleDesktop}
+                color="white"
                 size="sm"
               />
             </ThemeIcon>
 
             {/* <MantineLogo size={30} />
              */}
-            <Text fw={700}>WorkService</Text>
+            <Text fw={500} color="white">
+              WorkService
+            </Text>
             <Code>1.0.0</Code>
           </Group>
           <TextInput

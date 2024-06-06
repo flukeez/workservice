@@ -2,7 +2,7 @@ import { EquipmentModel } from "@/models/EquipmentModel";
 import type { IEquipQuery } from "@/types/EquipmentType";
 import { FastifyInstance } from "fastify";
 
-export function EquipmentController(fastify: FastifyInstance) {
+export default async function EquipmentController(fastify: FastifyInstance) {
   const equipmentModel = new EquipmentModel();
   fastify.get("/", async (req, res) => {
     const query = req.query as IEquipQuery;

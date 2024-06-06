@@ -101,6 +101,7 @@ export default function FacultyPositionForm({
               <DropdownUser
                 user={field.value}
                 setUser={handleSelectChange}
+                required={true}
                 error={errors.user_id?.message}
               />
             );

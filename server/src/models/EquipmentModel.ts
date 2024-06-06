@@ -7,7 +7,15 @@ export class EquipmentModel {
   async findMany(
     query: IEquipQuery
   ): Promise<{ result: IEquip[]; totalItem: number; totalPage: number }> {
-    const { txtSearch, page, limit, sortField, sortDirection } = query;
+    const {
+      txtSearch,
+      page,
+      limit,
+      sortField,
+      sortDirection,
+      faculty_id,
+      user_id,
+    } = query;
     const offset = page * limit;
     const baseQuery = db(tbName)
       .leftJoin("tb_faculty", `${tbName}.faculty_id`, "tb_faculty.id")
@@ -17,7 +25,18 @@ export class EquipmentModel {
         `${tbName}.equip_status_id`,
         "tb_equip_status.id"
       )
-      .where(`${tbName}.name`, "LIKE", `%${txtSearch}%`)
+      .leftJoin("tb_user", `${tbName}.user_id`, "tb_user.id")
+      .where((builder) => {
+        builder
+          .where(`${tbName}.name`, "LIKE", `%${txtSearch}%`)
+          .orWhere(`${tbName}.code`, "LIKE", `%${txtSearch}%`)
+          .orWhere(`${tbName}.serial`, "LIKE", `%${txtSearch}%`);
+      })
+      .where((builder) => {
+        if (faculty_id) builder.where(`${tbName}.faculty_id`, faculty_id);
+        if (user_id) builder.where(`${tbName}.user_id`, user_id);
+      })
+
       .andWhere(`${tbName}.equip_show`, 0);
     try {
       const result = await baseQuery
@@ -29,14 +48,15 @@ export class EquipmentModel {
           `${tbName}.serial`,
           `${tbName}.price`,
           `${tbName}.shared`,
+          `${tbName}.date_start`,
           `${tbName}.warranty`,
-          `${tbName}.warranty_start`,
           `${tbName}.warranty_end`,
           `${tbName}.image`,
-          "tb_equip_status.name",
-          "tb_category.name",
-          "tb_faculty.name",
-          "tb_user.name"
+          "tb_equip_status.name as equip_status_name",
+          "tb_category.name as category_name",
+          "tb_faculty.name as faculty_name",
+          "tb_user.firstname",
+          "tb_user.surname"
         )
         .orderBy(sortField, sortDirection)
         .offset(offset)

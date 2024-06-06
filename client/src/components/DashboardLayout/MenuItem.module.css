@@ -27,7 +27,7 @@
 .activeNavLink {
     background-color: var(--mantine-color-dark-6);
     color: var(--mantine-color-gray-0);
-    border-left: 5px solid #1567ff;
+    border-left: 5px solid var(--mantine-color-blue-7);
 }
 
 .activeBox {
@@ -38,7 +38,7 @@
 .activeSubNavLink {
     background-color: var(--mantine-color-dark-6);
     color: var(--mantine-color-gray-0);
-    border-left: 5px solid #1567ff;
+    border-left: 5px solid var(--mantine-color-blue-7);
 }
 
 .boxnav:hover .subnavlink {

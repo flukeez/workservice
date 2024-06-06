@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "./components/DashboardLayout";
 
 const Equipment = lazy(() => import("@/pages/equipment"));
+const EquipmentForm = lazy(() => import("@/pages/equipment/equipment_form"));
 const Faculty = lazy(() => import("@/pages/faculty"));
 const OrganizeChart = lazy(() => import("@/pages/faculty/organize_chart"));
 const Issue = lazy(() => import("@/pages/issue"));
@@ -38,7 +39,11 @@ export function Router() {
             <Route path="new" element={<UserForm />} />
             <Route path=":id" element={<UserForm />} />
           </Route>
-          <Route path="/equipment" element={<Equipment />} />
+          <Route path="/equipment">
+            <Route index element={<Equipment />} />
+            <Route path="create" element={<EquipmentForm />} />
+            <Route path=":id" element={<EquipmentForm />} />
+          </Route>
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Routes>

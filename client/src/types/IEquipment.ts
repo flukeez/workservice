@@ -14,3 +14,13 @@ export type IEquip = {
   faculty_name: string | null;
   user_name: string | null;
 };
+
+export type IEquipmentQuery = {
+  txtSearch: string;
+  page: number;
+  sortField: string;
+  sortDirection: "asc" | "desc";
+  limit?: number;
+  faculty_id: string | null;
+  user_id: string | null;
+};

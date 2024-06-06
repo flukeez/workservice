@@ -32,8 +32,20 @@ function dateToText(dateSql: any) {
   return result;
 }
 //เช็ควจำนวนวันตั้งแต่ล่าสุดจนถึงปัจจุบัน
+//เมื่อกี่วันที่แล้ว
 function timeFormNow(dateSql: string) {
   return dayjs(dateSql).fromNow();
+}
+//เช็คจำนวนวันจากปัจจุบันไปวันที่กำหนด
+//อีกกี่วัน
+function timeToNow(dateSql: string) {
+  return dayjs(dateSql).toNow();
+}
+
+//เช็คจำนวนวัน
+function dateDiff(dateSql: string) {
+  const today = dayjs();
+  return today.diff(dayjs(dateSql), "day");
 }
 //สำหรับเช็ครูปแบบวันที่ว่าถูกต้องหรือไม่
 function convertDate(dateSql: string) {
@@ -90,6 +102,8 @@ function dayThai(dateSql: any, short = false) {
 
 export {
   timeFormNow,
+  timeToNow,
+  dateDiff,
   dateToMySql,
   dateToText,
   dateThai,

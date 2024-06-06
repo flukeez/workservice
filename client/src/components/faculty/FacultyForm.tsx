@@ -100,6 +100,7 @@ export default function FacultyForm({ onClose, id }: FacultyFormProps) {
             };
             return (
               <DropdownFaculty
+                label="หน่วยงานต้นสังกัด"
                 faculty={field.value}
                 setFaculty={handleSelectChange}
                 error={errors.faculty_id?.message}

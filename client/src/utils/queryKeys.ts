@@ -21,4 +21,6 @@ export const queryKeys = {
   amphure: "Get Amphure",
   tumbol: "Get tumbol",
   image: "Get Image",
+  equipments: "Fetch Equipments",
+  equipment: "Get Equipment",
 };

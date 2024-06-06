@@ -1,22 +1,22 @@
+import { useCategories } from "@/hooks/category";
+import { IConditionFilter } from "@/types/IConditionFilter";
+import { ICategory } from "@/types/ICategory";
 import { Select } from "@mantine/core";
-import { useFacultys } from "@/hooks/faculty";
-import type { IConditionFilter } from "@/types/IConditionFilter";
-import type { IFaculty } from "@/types/IFaculty";
 
-interface FacultyProps {
-  faculty: string | null;
-  setFaculty: (faculty: string | null) => void;
+interface CategoryProps {
+  category: string | null;
+  setCategory: (category: string | null) => void;
   label?: string;
   error?: string;
   required?: boolean;
 }
-export default function DropdownFaculty({
-  faculty,
-  setFaculty,
+export default function DropdownCategory({
+  category,
+  setCategory,
   label,
   error,
   required,
-}: FacultyProps) {
+}: CategoryProps) {
   const condition: IConditionFilter = {
     txtSearch: "",
     page: 0,
@@ -25,16 +25,16 @@ export default function DropdownFaculty({
     sortField: "name",
   };
 
-  const { data } = useFacultys(condition);
+  const { data } = useCategories(condition);
   return (
     <Select
       label={label}
-      placeholder="เลือกหน่วยงาน"
-      value={faculty?.toString()}
-      onChange={setFaculty}
+      placeholder="เลือกหมวดหมู่อุปกรณ์"
+      value={category?.toString()}
+      onChange={setCategory}
       data={
         data?.rows &&
-        data.rows.map((field: IFaculty) => ({
+        data.rows.map((field: ICategory) => ({
           value: field.id.toString(),
           label: field.name,
         }))
