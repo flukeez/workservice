@@ -1,7 +1,7 @@
-import { useCategories } from "@/hooks/category";
-import { IConditionFilter } from "@/types/IConditionFilter";
-import { ICategory } from "@/types/ICategory";
 import { Select } from "@mantine/core";
+import { useCategories } from "@/hooks/category";
+import type { IConditionFilter } from "@/types/IConditionFilter";
+import type { ICategory } from "@/types/ICategory";
 
 interface CategoryProps {
   category: string | null;
@@ -26,11 +26,12 @@ export default function DropdownCategory({
   };
 
   const { data } = useCategories(condition);
+
   return (
     <Select
       label={label}
       placeholder="เลือกหมวดหมู่อุปกรณ์"
-      value={category?.toString()}
+      value={category?.toString() || null}
       onChange={setCategory}
       data={
         data?.rows &&

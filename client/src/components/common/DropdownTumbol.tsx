@@ -23,7 +23,7 @@ export default function DropdownTumbol({
       key={amphure}
       label="ตำบล"
       placeholder="เลือกตำบล"
-      value={tumbol?.toString() || ""}
+      value={tumbol?.toString() || null}
       onChange={setTumbol}
       data={
         data?.rows &&

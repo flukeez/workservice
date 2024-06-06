@@ -1,22 +1,24 @@
 import { Select } from "@mantine/core";
-import { useUsers } from "@/hooks/user";
+import { useOrgCharts } from "@/hooks/faculty/useFaculty";
 import type { IConditionFilter } from "@/types/IConditionFilter";
 import type { User } from "@/types/IUser";
 
-interface UserProps {
+interface FacultyUserProps {
   user: string | null;
   setUser: (position: string | null) => void;
+  faculty: string | null;
   label?: string;
   error?: string;
   required?: boolean;
 }
-export default function DropdownUser({
+export default function DropdownFacultyUser({
   user,
   setUser,
+  faculty,
   label,
   error,
   required,
-}: UserProps) {
+}: FacultyUserProps) {
   const condition: IConditionFilter = {
     txtSearch: "",
     page: 0,
@@ -25,9 +27,10 @@ export default function DropdownUser({
     sortField: "firstname",
   };
 
-  const { data } = useUsers(condition);
+  const { data } = useOrgCharts(Number(faculty), condition);
   return (
     <Select
+      key={faculty}
       label={label || "บุคคล"}
       placeholder="เลือกรายชื่อบุคคล"
       value={user?.toString() || null}

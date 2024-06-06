@@ -24,3 +24,20 @@ export type IEquipmentQuery = {
   faculty_id: string | null;
   user_id: string | null;
 };
+
+export type IEquipmentForm = {
+  id: number | null;
+  name: string;
+  code: string | null;
+  serial: string | null;
+  cate_id: string | null;
+  price: number;
+  date_start: string;
+  details: string | null;
+  faculty_id: string | null;
+  user_id: string | null;
+  warranty: string | null;
+  warranty_start: string | null;
+  warranty_end: string | null;
+  image: unknown;
+};

@@ -17,7 +17,7 @@ export default function DropdownProvince({
     <Select
       label="จังหวัด"
       placeholder="เลือกจังหวัด"
-      value={province?.toString()}
+      value={province?.toString() || null}
       onChange={setProvince}
       data={
         data?.rows &&

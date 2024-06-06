@@ -1,6 +1,11 @@
 import db from "@/database";
 import { pagination } from "@/utils/pagination";
-import type { IEquip, IEquipQuery } from "@/types/EquipmentType";
+import type {
+  IEquip,
+  IEquipmentForm,
+  IEquipQuery,
+} from "@/types/EquipmentType";
+import { dateToMySql } from "@/utils/mydate";
 
 const tbName = "tb_equip";
 export class EquipmentModel {
@@ -75,8 +80,43 @@ export class EquipmentModel {
   }
   async findById(id: number): Promise<{ result: IEquip }> {
     try {
-      const result = await db(tbName).where({ id }).first();
+      const result = await db(tbName)
+        .select("*", "image as image_old")
+        .where({ id })
+        .first();
       return { result };
+    } catch (error) {
+      console.error("Error:", error);
+      throw new Error("Internal server error");
+    }
+  }
+  async createOne(data: IEquipmentForm): Promise<{ result: number }> {
+    const formData = {
+      ...data,
+      date_start: dateToMySql(data.date_start),
+      warranty_start: dateToMySql(data.warranty_start),
+      warranty_end: dateToMySql(data.warranty_end),
+    };
+    console.log("test", formData);
+    const result = await db(tbName).insert(formData);
+
+    return { result: result[0] };
+  }
+  async checkDuplicate(
+    name: string,
+    code: string,
+    serial: string,
+    id = 0
+  ): Promise<number> {
+    try {
+      const query = await db(tbName)
+        .where((builder) => {
+          if (serial) builder.where({ serial });
+        })
+        .orWhere({ code, name })
+        .whereNot({ id })
+        .first();
+      return query ? 1 : 0;
     } catch (error) {
       console.error("Error:", error);
       throw new Error("Internal server error");

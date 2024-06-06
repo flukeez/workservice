@@ -31,7 +31,7 @@ export default async function UserController(fastify: FastifyInstance) {
       return;
     }
     if (Array.isArray(data.image)) {
-      const image = await saveFile(data.image[0]);
+      const image = await saveFile("user", data.image[0]);
       data = { ...data, image: image };
     }
     const result = await userModel.createOne(data);
@@ -55,7 +55,7 @@ export default async function UserController(fastify: FastifyInstance) {
       return;
     }
     if (Array.isArray(data.image)) {
-      const image = await saveFile(data.image[0]);
+      const image = await saveFile("user", data.image[0]);
       data = { ...data, image: image };
     }
     const result = await userModel.update(id, data);

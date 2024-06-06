@@ -24,7 +24,7 @@ export default function DropdownAmphure({
       key={province}
       label="อำเภอ"
       placeholder="เลือกอำเภอ"
-      value={amphure?.toString() || ""}
+      value={amphure?.toString() || null}
       onChange={setAmphure}
       data={
         data?.rows &&
