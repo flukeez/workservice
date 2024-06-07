@@ -5,7 +5,6 @@ import {
   Card,
   Grid,
   Group,
-  Highlight,
   Menu,
   NumberFormatter,
   ScrollArea,
@@ -23,6 +22,7 @@ import PageHeader from "@/components/common/PageHeader";
 import WarrantyLabel from "@/components/equipment/WarrantyLabel";
 import DropdownFaculty from "@/components/faculty/DropdownFaculty";
 import DropdownUser from "@/components/user/DropdownUser";
+import EquipmentLabel from "@/components/equipment/EquipmentLabel";
 
 const title = "รายการอุปกรณ์";
 const listItems = [{ title: title, href: "#" }];
@@ -150,19 +150,12 @@ export default function Equipment() {
                 sortable: true,
                 render({ code, name, serial }) {
                   return (
-                    <Group wrap="nowrap">
-                      <Highlight highlight={equipmentStore.txtSearch}>
-                        {String(code) + " - " + String(name)}
-                      </Highlight>
-                      {serial ? (
-                        <Highlight
-                          highlight={equipmentStore.txtSearch}
-                          c="dimmed"
-                        >
-                          {"[" + String(serial) + "]"}
-                        </Highlight>
-                      ) : null}
-                    </Group>
+                    <EquipmentLabel
+                      code={String(code)}
+                      serial={String(serial)}
+                      name={String(name)}
+                      highlight={equipmentStore.txtSearch}
+                    />
                   );
                 },
               },

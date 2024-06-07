@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : condb
+Source Server         : db
 Source Server Version : 50505
 Source Host           : localhost:3306
 Source Database       : dbworkservice
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2024-06-06 23:25:06
+Date: 2024-06-07 17:20:41
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,7 +24,7 @@ CREATE TABLE `tb_amphure` (
   `amphure_name` varchar(100) NOT NULL DEFAULT '',
   `province_id` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`,`province_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=tis620;
+) ENGINE=MyISAM DEFAULT CHARSET=tis620 COLLATE=tis620_thai_ci;
 
 -- ----------------------------
 -- Records of tb_amphure
@@ -979,7 +979,7 @@ CREATE TABLE `tb_category` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `cate_show` int(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_category
@@ -997,8 +997,8 @@ CREATE TABLE `tb_equip` (
   `code` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `serial` varchar(255) DEFAULT '',
-  `price` decimal(10,0) NOT NULL,
-  `date_start` date NOT NULL DEFAULT '0000-00-00',
+  `price` varchar(255) NOT NULL,
+  `date_start` date NOT NULL,
   `date_end` date DEFAULT NULL,
   `warranty` varchar(255) DEFAULT '',
   `warranty_start` date DEFAULT NULL,
@@ -1013,24 +1013,21 @@ CREATE TABLE `tb_equip` (
   `user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_equip_status` (`equip_status_id`),
-  KEY `fk_equip_cate` (`cate_id`) USING BTREE,
-  KEY `fk_equip_fac` (`faculty_id`) USING BTREE,
-  KEY `fk_equip_user` (`user_id`),
-  CONSTRAINT `fk_equip_cate` FOREIGN KEY (`cate_id`) REFERENCES `tb_category` (`id`),
+  KEY `fk_equip_type` (`cate_id`),
+  KEY `fk_equip_dep` (`faculty_id`),
+  KEY ` fk_equip_user` (`user_id`),
+  CONSTRAINT ` fk_equip_user` FOREIGN KEY (`user_id`) REFERENCES `tb_user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `fk_equip_fac` FOREIGN KEY (`faculty_id`) REFERENCES `tb_faculty` (`id`),
   CONSTRAINT `fk_equip_status` FOREIGN KEY (`equip_status_id`) REFERENCES `tb_equip_status` (`id`),
-  CONSTRAINT `fk_equip_user` FOREIGN KEY (`user_id`) REFERENCES `tb_user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_equip_type` FOREIGN KEY (`cate_id`) REFERENCES `tb_category` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_equip
 -- ----------------------------
-INSERT INTO `tb_equip` VALUES ('1', '0001', 'คอมพิวเตอร์', '12345678', '159000', '2024-06-07', null, '3 ปี', '2024-06-06', '2024-06-03', null, null, '1', '0', null, '1', '14', null);
-INSERT INTO `tb_equip` VALUES ('8', '', 'sdfsdfsdfsd', '', '11110', '2024-06-17', null, '', '0000-00-00', '0000-00-00', '', null, '1', '0', null, null, null, null);
-INSERT INTO `tb_equip` VALUES ('9', '123', 'sdfsdfsdfsd', '', '0', '2024-06-05', null, '', '0000-00-00', '0000-00-00', '', null, '1', '0', null, null, null, null);
-INSERT INTO `tb_equip` VALUES ('10', '123', 'sdfsdfsdfsd', '234', '0', '2024-06-04', null, '', '0000-00-00', '0000-00-00', '', null, '1', '0', null, null, null, null);
-INSERT INTO `tb_equip` VALUES ('11', '23423', 'sdfsdfsdfsd', '2343432', '0', '2024-06-05', null, '', '0000-00-00', '0000-00-00', '', null, '1', '0', null, null, null, null);
-INSERT INTO `tb_equip` VALUES ('12', '1', '2', '3', '40', '2024-06-05', null, '7', '2024-06-08', '2024-06-09', '6', '1717690922882-728532366.jpg', '1', '0', null, '1', '8', '7');
+INSERT INTO `tb_equip` VALUES ('1', '0001', 'คอมพิวเตอร์', '12345678', '159000', '2024-06-07', null, '3 ปี', '2024-06-06', '2024-06-03', null, null, '1', '0', null, '1', '14', '1');
+INSERT INTO `tb_equip` VALUES ('5', '', 'sdfsdfsdfsd', '', '11110', '2024-06-17', null, '', '0000-00-00', '0000-00-00', '', null, '1', '0', null, null, null, null);
+INSERT INTO `tb_equip` VALUES ('6', '', 'dfsdfsdfsd', '', '1000', '2024-06-03', null, '', '0000-00-00', '0000-00-00', '', '1717738497978-331674867.jpg', '1', '0', null, null, null, null);
 
 -- ----------------------------
 -- Table structure for tb_equip_status
@@ -1041,7 +1038,7 @@ CREATE TABLE `tb_equip_status` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `status_show` int(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_equip_status
@@ -1062,7 +1059,7 @@ CREATE TABLE `tb_faculty` (
   `faculty_id` int(255) DEFAULT NULL,
   `faculty_show` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_faculty
@@ -1091,7 +1088,7 @@ CREATE TABLE `tb_faculty_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_faculty_type
@@ -1109,7 +1106,7 @@ CREATE TABLE `tb_issue` (
   `issue_show` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `fk_issue_issue` (`issue_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_issue
@@ -1130,7 +1127,7 @@ CREATE TABLE `tb_login_log` (
   `user_id` int(11) NOT NULL,
   `timestamp` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_login_log
@@ -1144,7 +1141,7 @@ CREATE TABLE `tb_module` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_module
@@ -1161,7 +1158,7 @@ CREATE TABLE `tb_module_con` (
   KEY `fk_moudle_pos` (`pos_role_id`),
   CONSTRAINT `fk_module` FOREIGN KEY (`module_id`) REFERENCES `tb_module` (`id`),
   CONSTRAINT `fk_moudle_pos` FOREIGN KEY (`pos_role_id`) REFERENCES `tb_position` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_module_con
@@ -1176,7 +1173,7 @@ CREATE TABLE `tb_position` (
   `name` varchar(255) NOT NULL,
   `super_admin` tinyint(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_position
@@ -1198,7 +1195,7 @@ CREATE TABLE `tb_priority` (
   `name` varchar(255) NOT NULL,
   `priority_show` tinyint(4) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_priority
@@ -1220,7 +1217,7 @@ CREATE TABLE `tb_province` (
   `province_name` varchar(100) NOT NULL DEFAULT '',
   `region` int(2) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=tis620;
+) ENGINE=MyISAM DEFAULT CHARSET=tis620 COLLATE=tis620_thai_ci;
 
 -- ----------------------------
 -- Records of tb_province
@@ -1335,7 +1332,7 @@ CREATE TABLE `tb_request` (
   CONSTRAINT `fk_req_status` FOREIGN KEY (`status_id`) REFERENCES `tb_status` (`id`),
   CONSTRAINT `fk_req_sub_issue` FOREIGN KEY (`sub_issue_id`) REFERENCES `tb_issue` (`id`),
   CONSTRAINT `fk_req_user` FOREIGN KEY (`user_id`) REFERENCES `tb_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_request
@@ -1359,7 +1356,7 @@ CREATE TABLE `tb_request_details` (
   PRIMARY KEY (`id`),
   KEY `fk_req_detail_req` (`request_id`),
   CONSTRAINT `fk_req_detail_req` FOREIGN KEY (`request_id`) REFERENCES `tb_request` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_request_details
@@ -1376,7 +1373,7 @@ CREATE TABLE `tb_request_equip_list` (
   KEY `fk_req_equip_req` (`request_id`),
   CONSTRAINT `fk_req_equip_equip` FOREIGN KEY (`equip_id`) REFERENCES `tb_equip` (`id`),
   CONSTRAINT `fk_req_equip_req` FOREIGN KEY (`request_id`) REFERENCES `tb_request` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_request_equip_list
@@ -1396,7 +1393,7 @@ CREATE TABLE `tb_request_history` (
   KEY `fk_req_his_status` (`status_id`),
   CONSTRAINT `fk_req_his_req` FOREIGN KEY (`request_id`) REFERENCES `tb_request` (`id`),
   CONSTRAINT `fk_req_his_status` FOREIGN KEY (`status_id`) REFERENCES `tb_status` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_request_history
@@ -1411,7 +1408,7 @@ CREATE TABLE `tb_status` (
   `name` varchar(255) DEFAULT NULL,
   `status_show` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_status
@@ -1433,7 +1430,7 @@ CREATE TABLE `tb_tumbol` (
   `amphure_id` int(4) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `amphur_id` (`amphure_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=tis620;
+) ENGINE=MyISAM DEFAULT CHARSET=tis620 COLLATE=tis620_thai_ci;
 
 -- ----------------------------
 -- Records of tb_tumbol
@@ -8968,14 +8965,14 @@ CREATE TABLE `tb_user` (
   `last_login` datetime DEFAULT NULL,
   `user_show` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_user
 -- ----------------------------
 INSERT INTO `tb_user` VALUES ('1', '1234567891012', 'admin', 'no', 'one', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', 'test3', '1', 'test4', '1', '1', '1', 'test5', 'test6', '0000-00-00 00:00:00', '2024-05-08 00:00:00', '');
 INSERT INTO `tb_user` VALUES ('2', '1234567891012', 'admin1', 'no', '', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', 'test3', '1', 'test4', '1', '1', '1', 'test5', 'test6', '0000-00-00 00:00:00', '2024-05-28 00:00:00', '');
-INSERT INTO `tb_user` VALUES ('7', '1234567891011', 'นายสมมุติภ', 'เกิดมาเพื่อซื้อ', '', '', '', 'flukelalalalal@gmail.com', '0909823211', '2024-06-05', '{}', '2', '109 หมู่ 7 บ้านหนองฟ้า\r\nโคกสว่าง', '810201', '8102', '81', 'Admin4', '', '2024-06-06 21:55:44', null, '0');
+INSERT INTO `tb_user` VALUES ('7', '1234567891011', 'นายสมมุติภ', 'เกิดมาเพื่อซื้อ', '', '', '', 'flukelalalalal@gmail.com', '0909823211', '0000-00-00', '1717745903852-219944249.jpg', null, '109 หมู่ 7 บ้านหนองฟ้า\r\nโคกสว่าง', '0', '0', '0', 'Admin4', '', '2024-06-07 14:38:23', null, '0');
 INSERT INTO `tb_user` VALUES ('8', '1234567891011', 'test', 'test2', null, null, null, null, null, '2024-06-03', null, null, null, null, null, null, 'test3455', '', '2024-06-04 15:39:44', null, '0');
 
 -- ----------------------------
@@ -8986,7 +8983,7 @@ CREATE TABLE `tb_user_position` (
   `user_id` int(11) NOT NULL,
   `pos_id` int(11) DEFAULT NULL,
   `fac_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- ----------------------------
 -- Records of tb_user_position

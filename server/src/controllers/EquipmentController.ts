@@ -37,4 +37,24 @@ export default async function EquipmentController(fastify: FastifyInstance) {
     const result = await equipmentModel.createOne(data);
     res.send(result);
   });
+
+  fastify.patch("/:id", async (req, res) => {
+    let data = req.body as IEquipmentForm;
+    const { id } = req.params as { id: number };
+    const checkDuplicate = await equipmentModel.checkDuplicate(
+      data.name,
+      data.code,
+      data.serial,
+      id
+    );
+    if (checkDuplicate) {
+      res.send({ result: 0 });
+      return;
+    }
+
+    // if(Array.isArray(data.image)) {
+    //   const image = await saveFile("equipment", data.image[0]);
+    //   data = {...data, image: image}
+    // }
+  });
 }

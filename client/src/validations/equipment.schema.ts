@@ -14,6 +14,7 @@ export const equipmentInitialValues = {
   warranty_start: "",
   warranty_end: "",
   image: null,
+  image_old: null,
 };
 export const equipmentYup = yup.object().shape({
   id: yup.number().default(null).nullable(),
@@ -77,4 +78,5 @@ export const equipmentYup = yup.object().shape({
     })
     .nullable()
     .default(null),
+  image_old: yup.string().notRequired().default(null),
 });

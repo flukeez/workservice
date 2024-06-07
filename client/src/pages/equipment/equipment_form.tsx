@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  ActionIcon,
   Badge,
   Button,
   Card,
@@ -9,17 +10,20 @@ import {
   FileButton,
   Grid,
   Group,
+  Image,
   InputWrapper,
   LoadingOverlay,
   NumberInput,
   Text,
   Textarea,
   TextInput,
+  Tooltip,
 } from "@mantine/core";
 import {
   IconCloudUpload,
   IconDeviceFloppy,
   IconPlus,
+  IconTrash,
 } from "@tabler/icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEquipment } from "@/hooks/equipment";
@@ -37,6 +41,8 @@ import DropdownFaculty from "@/components/faculty/DropdownFaculty";
 import DropdownFacultyUser from "@/components/faculty/DropdownFacultyUser";
 import { useEquipmentSave } from "@/hooks/equipment/useEquipmentMutate";
 import Swal from "sweetalert2";
+import { BASE_URL } from "@/config";
+import ImagePreview from "@/components/common/ImagePreview";
 
 const listItems = [
   { title: "รายอุปกรณ์", href: "/user" },
@@ -66,6 +72,7 @@ export default function EquipmentForm() {
     setValue,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = useForm({
     mode: "onChange",
@@ -126,6 +133,7 @@ export default function EquipmentForm() {
   }, [data]);
   return (
     <>
+      {JSON.stringify(watch("image"))}
       <LoadingOverlay visible={isLoading} />
       <PageHeader title={"ข้อมูลอุปกรณ์ " + title} listItems={listItems} />
       <Card shadow="sm">
@@ -354,6 +362,11 @@ export default function EquipmentForm() {
           }
         />
         <Grid mt="sm">
+          {getValues("image") && (
+            <Grid.Col span={layout}>
+             <ImagePreview image={getValues("image") || }
+            </Grid.Col>
+          )}
           <Grid.Col span={layout}>
             <Controller
               name="image"
@@ -361,9 +374,13 @@ export default function EquipmentForm() {
               render={({ field }) => {
                 const handleSelectChange = (value: File | null) => {
                   field.onChange(value);
+                  console.log(value);
+                };
+                const handleDelete = () => {
+                  handleSelectChange(null);
                 };
                 return (
-                  <Group wrap="nowrap">
+                  <Group>
                     <FileButton
                       onChange={handleSelectChange}
                       accept="image/png,image/jpeg"
@@ -379,8 +396,20 @@ export default function EquipmentForm() {
                       )}
                     </FileButton>
                     <Text>
-                      {field.value instanceof File && field.value.name}
+                      {field.value instanceof File
+                        ? field.value.name
+                        : String(field.value)}
                     </Text>
+                    <Tooltip label="ลบรูปภาพ">
+                      <ActionIcon
+                        variant="light"
+                        color="red"
+                        radius="xl"
+                        onClick={handleDelete}
+                      >
+                        <IconTrash size="1rem" />
+                      </ActionIcon>
+                    </Tooltip>
                   </Group>
                 );
               }}
@@ -389,7 +418,11 @@ export default function EquipmentForm() {
         </Grid>
         <Card.Section withBorder inheritPadding py="md" mt="lg">
           <Group justify="center">
-            <Button size="lg" color="gray" onClick={() => navigate("/user")}>
+            <Button
+              size="lg"
+              color="gray"
+              onClick={() => navigate("/equipment")}
+            >
               ยกเลิก
             </Button>
             <Button

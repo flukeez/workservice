@@ -97,7 +97,6 @@ export class EquipmentModel {
       warranty_start: dateToMySql(data.warranty_start),
       warranty_end: dateToMySql(data.warranty_end),
     };
-    console.log("test", formData);
     const result = await db(tbName).insert(formData);
 
     return { result: result[0] };
