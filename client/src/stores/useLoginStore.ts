@@ -1,7 +1,14 @@
 import { StateCreator, create } from "zustand";
 import { persist, PersistOptions } from "zustand/middleware";
-import type { IFilter } from "@/types/IFilter";
 
+interface IFilter {
+  username: string;
+  password: string;
+  token: string;
+  refresh_token: string;
+  fullname: string;
+  image: string | null;
+}
 interface Actions {
   setFilter: (filter: IFilter) => void;
   resetFilter: () => void;
@@ -15,13 +22,15 @@ type MyPersist = (
 ) => StateCreator<FilterStore>;
 
 const initialState: IFilter = {
-  txtSearch: "",
-  page: 1,
-  sortDirection: "asc",
-  sortField: "firstname",
+  username: "",
+  password: "",
+  token: "",
+  refresh_token: "",
+  fullname: "",
+  image: "",
 };
 
-export const useOrgChartStore = create<FilterStore>()(
+export const useLoginStore = create<FilterStore>()(
   (persist as MyPersist)(
     (set): FilterStore => ({
       ...initialState,
@@ -29,7 +38,7 @@ export const useOrgChartStore = create<FilterStore>()(
       resetFilter: () => set(() => ({ ...initialState })),
     }),
     {
-      name: "org-chart-filter",
+      name: "login-filter",
       version: 1,
     }
   )

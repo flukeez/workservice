@@ -14,6 +14,7 @@ import ImageController from "./controllers/ImageController";
 import CategoryController from "./controllers/CategoryController";
 import EquipStatusController from "./controllers/EquipStatusController";
 import EquipmentController from "./controllers/EquipmentController";
+import LoginController from "./controllers/LoginController";
 
 const routes = async (fastify: FastifyInstance) => {
   //DEFAULT ROUTE
@@ -40,6 +41,7 @@ const routes = async (fastify: FastifyInstance) => {
   fastify.register(AmphureController, { prefix: "/api/amphures" });
   fastify.register(TumbolController, { prefix: "/api/tumbols" });
   fastify.register(ImageController, { prefix: "/api/images" });
+  fastify.register(LoginController, { prefix: "/api/login" });
 };
 
 export default routes;

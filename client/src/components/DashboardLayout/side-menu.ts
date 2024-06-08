@@ -1,7 +1,9 @@
 import {
   IconArchiveFilled,
+  IconArticleFilled,
   IconBriefcaseFilled,
   IconHomeFilled,
+  IconLocationFilled,
   IconStack2Filled,
   IconUserFilled,
 } from "@tabler/icons-react";
@@ -10,6 +12,8 @@ import { SideNavItem } from "./types";
 
 export const SIDENAV_ITEMS: SideNavItem[] = [
   { title: "หน้าหลัก", path: "/", icon: IconHomeFilled },
+  { title: "แจ้งซ่อม", path: "/request", icon: IconLocationFilled },
+  { title: "รายการแจ้งซ่อม", path: "/request", icon: IconArticleFilled },
   {
     title: "รายการอุปกรณ์",
     path: "/equipment",
@@ -30,6 +34,11 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: "หน่วยงาน", path: "/faculty" },
       { title: "ตำแหน่งงาน", path: "/position" },
     ],
+  },
+  {
+    title: "รายชื่อผู้ซอม",
+    path: "/supervisor",
+    icon: IconUserFilled,
   },
   {
     title: "ข้อมูลพื้นฐาน",

@@ -1,6 +1,7 @@
 import "module-alias";
 import fastify from "fastify";
 import multipart from "@fastify/multipart";
+import fastifyCookie from "@fastify/cookie";
 
 import cors from "@fastify/cors";
 import routes from "./route";
@@ -26,6 +27,9 @@ app.register(cors, {
 });
 app.register(multipart, {
   addToBody: true,
+});
+app.register(fastifyCookie, {
+  secret: "test",
 });
 app.register(routes);
 export default app;

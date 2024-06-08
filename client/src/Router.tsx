@@ -1,6 +1,9 @@
 import { lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DashboardLayout } from "./components/DashboardLayout";
+import { LoadingLayout } from "./components/login/LoadingLayout";
+import ProtectRoute from "./components/protect_route/ProtectRoute";
+import PublicRoute from "./components/protect_route/PublicRoute";
 
 const Equipment = lazy(() => import("@/pages/equipment"));
 const EquipmentForm = lazy(() => import("@/pages/equipment/equipment_form"));
@@ -14,38 +17,47 @@ const Category = lazy(() => import("@/pages/category"));
 const Status = lazy(() => import("@/pages/status"));
 const User = lazy(() => import("@/pages/user"));
 const UserForm = lazy(() => import("@/pages/user/user_form"));
+const Login = lazy(() => import("@/pages/login"));
 const PageNotFound = lazy(() => import("@/pages/notfound"));
 
 export function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<DashboardLayout />}>
-          <Route path="/" element={<Faculty />} />
-          <Route path="/home" element={<Faculty />} />
-          <Route path="/faculty">
-            <Route index element={<Faculty />} />
-            <Route path="organize_chart/:id" element={<OrganizeChart />} />
+        <Route element={<PublicRoute />}>
+          <Route element={<LoadingLayout />}>
+            <Route path="/login" element={<Login />} />
           </Route>
-          <Route path="/issue" element={<Issue />} />
-          <Route path="/position" element={<Position />} />
-          <Route path="/priority" element={<Priority />} />
-          <Route path="/status" element={<Status />} />
-          <Route path="/equip_status" element={<EquipStatus />} />
-          <Route path="/category" element={<Category />} />
-          <Route path="/user" element={<User />} />
-          <Route path="/user">
-            <Route index element={<User />} />
-            <Route path="new" element={<UserForm />} />
-            <Route path=":id" element={<UserForm />} />
-          </Route>
-          <Route path="/equipment">
-            <Route index element={<Equipment />} />
-            <Route path="create" element={<EquipmentForm />} />
-            <Route path=":id" element={<EquipmentForm />} />
-          </Route>
-          <Route path="*" element={<PageNotFound />} />
         </Route>
+        <Route element={<ProtectRoute />}>
+          <Route element={<DashboardLayout />}>
+            <Route path="/" element={<Faculty />} />
+            <Route path="/home" element={<Faculty />} />
+            <Route path="/faculty">
+              <Route index element={<Faculty />} />
+              <Route path="organize_chart/:id" element={<OrganizeChart />} />
+            </Route>
+            <Route path="/issue" element={<Issue />} />
+            <Route path="/position" element={<Position />} />
+            <Route path="/priority" element={<Priority />} />
+            <Route path="/status" element={<Status />} />
+            <Route path="/equip_status" element={<EquipStatus />} />
+            <Route path="/category" element={<Category />} />
+            <Route path="/user" element={<User />} />
+            <Route path="/user">
+              <Route index element={<User />} />
+              <Route path="new" element={<UserForm />} />
+              <Route path=":id" element={<UserForm />} />
+            </Route>
+            <Route element={<UserForm />} path="/profile" />
+            <Route path="/equipment">
+              <Route index element={<Equipment />} />
+              <Route path="create" element={<EquipmentForm />} />
+              <Route path=":id" element={<EquipmentForm />} />
+            </Route>
+          </Route>
+        </Route>
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   );

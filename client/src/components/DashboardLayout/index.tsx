@@ -59,9 +59,6 @@ export function DashboardLayout() {
                 size="sm"
               />
             </ThemeIcon>
-
-            {/* <MantineLogo size={30} />
-             */}
             <Text fw={700}>WorkService</Text>
             <Code>1.0.0</Code>
           </Group>
