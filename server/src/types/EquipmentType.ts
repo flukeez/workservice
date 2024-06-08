@@ -40,5 +40,6 @@ export type IEquipmentForm = {
   warranty: string;
   warranty_start: string;
   warranty_end: string;
-  image: unknown;
+  image: File | null | string;
+  image_old?: string;
 };

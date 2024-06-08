@@ -39,8 +39,8 @@ export default function IssueForm({ onClose, rowId }: IssueFormProps) {
   });
   const [showAlert, setShowAlert] = useState(false);
   const onSubmit: SubmitHandler<IIssueForm> = async (formData) => {
-    const { data } = await mutationSave.mutateAsync(formData);
     try {
+      const { data } = await mutationSave.mutateAsync(formData);
       if (data.result) {
         setShowAlert(false);
         Swal.fire({

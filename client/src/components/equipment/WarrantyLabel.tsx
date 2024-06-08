@@ -15,7 +15,7 @@ export default function WarrantyLabel({
   const toNow = dateDiff(String(warranty_end));
 
   const getWarrantyText = () => {
-    if (toNow < 0) {
+    if (toNow < 0 && toNow > -31) {
       return (
         <Text size="sm" color="red">
           หมดประกัน

@@ -33,7 +33,7 @@ export function useEquipmentSave() {
 export function useEquipmentDelete() {
   const queryClient = useQueryClient();
   const deleteOne = async (id: string) => {
-    const response = await axiosAuth.patch(`${url}/del/${id}`);
+    const response = await axiosAuth.delete(`${url}/del/${id}`);
     return response;
   };
 

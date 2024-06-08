@@ -6,24 +6,17 @@ import {
   Button,
   Card,
   Divider,
-  FileButton,
   Grid,
   Group,
-  Image,
   InputWrapper,
   LoadingOverlay,
   PasswordInput,
   Select,
-  Stack,
   Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
-import {
-  IconCloudUpload,
-  IconDeviceFloppy,
-  IconPlus,
-} from "@tabler/icons-react";
+import { IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import DropdownAmphure from "@/components/common/DropdownAmphure";
 import DropdownProvince from "@/components/common/DropdownProvince";
@@ -38,6 +31,8 @@ import { useUser, useUserSave } from "@/hooks/user";
 import { useImage } from "@/hooks/image";
 import { userInitialValues, userYup } from "@/validations/user.schema";
 import type { IUserForm } from "@/types/IUser";
+import ImagePreview from "@/components/common/ImagePreview";
+import ButtonFileUpload from "@/components/common/ButtonFileUpload";
 
 const listItems = [
   { title: "รายชื่อผู้ใช้", href: "/user" },
@@ -87,8 +82,8 @@ export default function UserForm() {
       });
       return;
     }
-    const { data } = await mutationSave.mutateAsync(formData);
     try {
+      const { data } = await mutationSave.mutateAsync(formData);
       if (data.result) {
         Swal.fire({
           icon: "success",
@@ -106,7 +101,6 @@ export default function UserForm() {
         });
       }
     } catch (error) {
-      console.error(error);
       Swal.fire({
         icon: "error",
         title: "เกิดข้อผิดพลาด",
@@ -400,50 +394,31 @@ export default function UserForm() {
           }
         />
         <Grid mt="sm">
-          <Grid.Col>
-            <Group align="flex-end">
-              {imageFile.data instanceof Blob && (
-                <Stack>
-                  <Text>รูปประจำตัวเดิม</Text>
-                  <Image
-                    radius="md"
-                    h={200}
-                    w="auto"
-                    src={URL.createObjectURL(imageFile.data)}
+          {watch("image") && (
+            <Grid.Col span={layout}>
+              <ImagePreview folder="user" image={watch("image")} />
+            </Grid.Col>
+          )}
+          <Grid.Col span={layout}>
+            <Controller
+              name="image"
+              control={control}
+              render={({ field }) => {
+                const handleSelectChange = (value: File | null) => {
+                  field.onChange(value);
+                };
+                const handleDelete = () => {
+                  handleSelectChange(null);
+                };
+                return (
+                  <ButtonFileUpload
+                    file={field.value}
+                    setFile={handleSelectChange}
+                    setDelete={handleDelete}
                   />
-                </Stack>
-              )}
-              <Controller
-                name="image"
-                control={control}
-                render={({ field }) => {
-                  const handleSelectChange = (value: File | null) => {
-                    field.onChange(value);
-                  };
-                  return (
-                    <Group wrap="nowrap">
-                      <FileButton
-                        onChange={handleSelectChange}
-                        accept="image/png,image/jpeg"
-                      >
-                        {(props) => (
-                          <Button
-                            leftSection={<IconCloudUpload size="1.5rem" />}
-                            variant="outline"
-                            {...props}
-                          >
-                            อัพโหลดรูปประจำตัว
-                          </Button>
-                        )}
-                      </FileButton>
-                      <Text>
-                        {field.value instanceof File && field.value.name}
-                      </Text>
-                    </Group>
-                  );
-                }}
-              />
-            </Group>
+                );
+              }}
+            />
           </Grid.Col>
         </Grid>
         <Card.Section withBorder inheritPadding py="md" mt="lg">

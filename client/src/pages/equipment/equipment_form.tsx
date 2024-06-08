@@ -1,48 +1,38 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import {
-  ActionIcon,
   Badge,
   Button,
   Card,
   Divider,
-  FileButton,
   Grid,
   Group,
-  Image,
   InputWrapper,
   LoadingOverlay,
   NumberInput,
   Text,
   Textarea,
   TextInput,
-  Tooltip,
 } from "@mantine/core";
-import {
-  IconCloudUpload,
-  IconDeviceFloppy,
-  IconPlus,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEquipment } from "@/hooks/equipment";
+import { useEquipment, useEquipmentSave } from "@/hooks/equipment";
 import {
   equipmentInitialValues,
   equipmentYup,
 } from "@/validations/equipment.schema";
 import { convertToNumberOrZero } from "@/utils/mynumber";
 import { dateToText } from "@/utils/mydate";
-import type { IEquipmentForm } from "@/types/IEquipment";
 import DropdownCategory from "@/components/category/DropdownCategory";
 import InputDate from "@/components/common/InputDate";
 import PageHeader from "@/components/common/PageHeader";
 import DropdownFaculty from "@/components/faculty/DropdownFaculty";
 import DropdownFacultyUser from "@/components/faculty/DropdownFacultyUser";
-import { useEquipmentSave } from "@/hooks/equipment/useEquipmentMutate";
-import Swal from "sweetalert2";
-import { BASE_URL } from "@/config";
 import ImagePreview from "@/components/common/ImagePreview";
+import ButtonFileUpload from "@/components/common/ButtonFileUpload";
+import type { IEquipmentForm } from "@/types/IEquipment";
 
 const listItems = [
   { title: "รายอุปกรณ์", href: "/user" },
@@ -72,7 +62,6 @@ export default function EquipmentForm() {
     setValue,
     handleSubmit,
     reset,
-    getValues,
     formState: { errors },
   } = useForm({
     mode: "onChange",
@@ -83,8 +72,8 @@ export default function EquipmentForm() {
   const mutationSave = useEquipmentSave();
 
   const onSubmit = async (formData: IEquipmentForm) => {
-    const { data } = await mutationSave.mutateAsync(formData);
     try {
+      const { data } = await mutationSave.mutateAsync(formData);
       if (data.result) {
         Swal.fire({
           icon: "success",
@@ -133,7 +122,6 @@ export default function EquipmentForm() {
   }, [data]);
   return (
     <>
-      {JSON.stringify(watch("image"))}
       <LoadingOverlay visible={isLoading} />
       <PageHeader title={"ข้อมูลอุปกรณ์ " + title} listItems={listItems} />
       <Card shadow="sm">
@@ -191,7 +179,6 @@ export default function EquipmentForm() {
               render={({ field }) => {
                 const handleSelectChange = (value: string | null) => {
                   field.onChange(value);
-                  setValue("cate_id", value || "");
                 };
                 return (
                   <DropdownCategory
@@ -273,7 +260,6 @@ export default function EquipmentForm() {
               render={({ field }) => {
                 const handleSelectChange = (value: string | null) => {
                   field.onChange(value || "");
-                  setValue("faculty_id", value || "");
                   setValue("user_id", "");
                 };
                 return (
@@ -294,7 +280,6 @@ export default function EquipmentForm() {
               render={({ field }) => {
                 const handleSelectChange = (value: string | null) => {
                   field.onChange(value || "");
-                  setValue("user_id", value || "");
                 };
                 return (
                   <DropdownFacultyUser
@@ -362,9 +347,9 @@ export default function EquipmentForm() {
           }
         />
         <Grid mt="sm">
-          {getValues("image") && (
+          {watch("image") && (
             <Grid.Col span={layout}>
-             <ImagePreview image={getValues("image") || }
+              <ImagePreview folder="equipment" image={watch("image")} />
             </Grid.Col>
           )}
           <Grid.Col span={layout}>
@@ -374,43 +359,16 @@ export default function EquipmentForm() {
               render={({ field }) => {
                 const handleSelectChange = (value: File | null) => {
                   field.onChange(value);
-                  console.log(value);
                 };
                 const handleDelete = () => {
                   handleSelectChange(null);
                 };
                 return (
-                  <Group>
-                    <FileButton
-                      onChange={handleSelectChange}
-                      accept="image/png,image/jpeg"
-                    >
-                      {(props) => (
-                        <Button
-                          leftSection={<IconCloudUpload size="1.5rem" />}
-                          variant="outline"
-                          {...props}
-                        >
-                          อัพโหลดรูปภาพ
-                        </Button>
-                      )}
-                    </FileButton>
-                    <Text>
-                      {field.value instanceof File
-                        ? field.value.name
-                        : String(field.value)}
-                    </Text>
-                    <Tooltip label="ลบรูปภาพ">
-                      <ActionIcon
-                        variant="light"
-                        color="red"
-                        radius="xl"
-                        onClick={handleDelete}
-                      >
-                        <IconTrash size="1rem" />
-                      </ActionIcon>
-                    </Tooltip>
-                  </Group>
+                  <ButtonFileUpload
+                    file={field.value}
+                    setFile={handleSelectChange}
+                    setDelete={handleDelete}
+                  />
                 );
               }}
             />

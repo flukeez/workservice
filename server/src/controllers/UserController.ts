@@ -1,7 +1,7 @@
 import { upload } from "@/middlewares/multer";
 import { UserModel } from "@/models/UserModel";
 import { IUserForm, IUserQuery } from "@/types/UserType";
-import { saveFile } from "@/utils/imagefile";
+import { deleteFile, saveFile } from "@/utils/imagefile";
 import { FastifyInstance } from "fastify";
 
 export default async function UserController(fastify: FastifyInstance) {
@@ -25,17 +25,20 @@ export default async function UserController(fastify: FastifyInstance) {
       data.surname,
       data.username
     );
-
     if (checkDuplicate) {
       res.send({ result: 0 });
       return;
     }
-    if (Array.isArray(data.image)) {
-      const image = await saveFile("user", data.image[0]);
-      data = { ...data, image: image };
+    try {
+      if (Array.isArray(data.image)) {
+        const image = await saveFile("user", data.image[0]);
+        data = { ...data, image: image };
+      }
+    } catch (error) {
+      console.error("Error processing images:", error);
+      return res.status(500).send({ error: "Error processing images" });
     }
     const result = await userModel.createOne(data);
-
     res.send(result);
   });
 
@@ -49,21 +52,37 @@ export default async function UserController(fastify: FastifyInstance) {
       data.username,
       id
     );
-
     if (checkDuplicate) {
       res.send({ result: 0 });
       return;
     }
-    if (Array.isArray(data.image)) {
-      const image = await saveFile("user", data.image[0]);
-      data = { ...data, image: image };
+    try {
+      if (!data.image && data.image_old) {
+        // ไม่มีรูปภาพใหม่แต่มีชื่อภาพเก่า
+        await deleteFile("user", data.image_old);
+        delete data.image_old;
+      } else if (Array.isArray(data.image)) {
+        if (data.image_old) {
+          await deleteFile("user", data.image_old);
+          delete data.image_old;
+        }
+        const image = await saveFile("user", data.image[0]);
+        data.image = image;
+      }
+    } catch (error) {
+      console.error("Error processing images:", error);
+      return res.status(500).send({ error: "Error processing images" });
     }
+
     const result = await userModel.update(id, data);
     res.send(result);
   });
   fastify.patch("/del/:id", async (req, res) => {
     const { id } = req.params as { id: number };
-    const result = await userModel.deleteOne(id);
+    const { result, image } = await userModel.deleteOne(id);
+    if (image) {
+      await deleteFile("user", image);
+    }
     res.send(result);
   });
 }

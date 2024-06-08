@@ -38,8 +38,8 @@ export default function EquipStatusForm({ onClose, id }: EquipStatusFormProps) {
   });
   const [showAlert, setShowAlert] = useState(false);
   const onSubmit: SubmitHandler<IEquipStatusForm> = async (formData) => {
-    const { data } = await mutationSave.mutateAsync(formData);
     try {
+      const { data } = await mutationSave.mutateAsync(formData);
       if (data.result) {
         setShowAlert(false);
         Swal.fire({

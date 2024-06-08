@@ -67,7 +67,8 @@ export class UserModel {
           "line",
           "line_token",
           "username",
-          "image"
+          "image",
+          "image as image_old"
         )
         .where({ id })
         .first();
@@ -81,9 +82,9 @@ export class UserModel {
   async createOne(data: IUserForm): Promise<{ result: number }> {
     try {
       if (data.birthday) {
-        data = { ...data, birthday: dateToMySql(data.birthday) };
+        data.birthday = dateToMySql(data.birthday);
       }
-      data = { ...data, password: encryptPassword(data.password!) };
+      data.password = encryptPassword(data.password);
       const result = await db(tbName).insert(data);
       return { result: result[0] };
     } catch (error) {
@@ -95,12 +96,10 @@ export class UserModel {
   async update(id: number, data: IUserForm): Promise<{ result: number }> {
     try {
       if (data.birthday) {
-        console.log(data.birthday);
-        data = { ...data, birthday: dateToMySql(data.birthday) };
-        console.log(dateToMySql(data.birthday!));
+        data.birthday = dateToMySql(data.birthday);
       }
       if (data.password) {
-        data = { ...data, password: encryptPassword(data.password) };
+        data.password = encryptPassword(data.password);
       }
       const result = await db(tbName).where({ id }).update(data);
       return { result };
@@ -110,10 +109,11 @@ export class UserModel {
     }
   }
   //delete
-  async deleteOne(id: number): Promise<{ result: number }> {
+  async deleteOne(id: number): Promise<{ result: number; image: string }> {
     try {
+      const data = await db(tbName).select("image").where({ id }).first();
       const result = await db(tbName).where({ id }).update("user_show", 1);
-      return { result };
+      return { result, image: data?.image || "" };
     } catch (error) {
       console.error("Error in update:", error);
       throw error;

@@ -40,8 +40,8 @@ export default function PositionForm({ rowId, onClose }: PositionProps) {
   });
   const [showAlert, setShowAlert] = useState(false);
   const onSubmit: SubmitHandler<IPositionForm> = async (formData) => {
-    const { data } = await mutationSave.mutateAsync(formData);
     try {
+      const { data } = await mutationSave.mutateAsync(formData);
       if (data.result) {
         setShowAlert(false);
         Swal.fire({

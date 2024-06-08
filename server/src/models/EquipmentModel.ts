@@ -91,15 +91,46 @@ export class EquipmentModel {
     }
   }
   async createOne(data: IEquipmentForm): Promise<{ result: number }> {
-    const formData = {
-      ...data,
-      date_start: dateToMySql(data.date_start),
-      warranty_start: dateToMySql(data.warranty_start),
-      warranty_end: dateToMySql(data.warranty_end),
-    };
-    const result = await db(tbName).insert(formData);
+    try {
+      const formData = {
+        ...data,
+        date_start: dateToMySql(data.date_start),
+        warranty_start: dateToMySql(data.warranty_start),
+        warranty_end: dateToMySql(data.warranty_end),
+      };
+      const result = await db(tbName).insert(formData);
 
-    return { result: result[0] };
+      return { result: result[0] };
+    } catch (error) {
+      console.error("Error:", error);
+      throw new Error("Internal server error");
+    }
+  }
+  async update(id: number, data: IEquipmentForm): Promise<{ result: number }> {
+    try {
+      const formData = {
+        ...data,
+        date_start: dateToMySql(data.date_start),
+        warranty_start: dateToMySql(data.warranty_start),
+        warranty_end: dateToMySql(data.warranty_end),
+      };
+      const result = await db(tbName).update(formData).where({ id });
+      return { result };
+    } catch (error) {
+      console.error("Error:", error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  async delete(id: number): Promise<{ result: number; image: string }> {
+    try {
+      const data = await db(tbName).select("image").where({ id }).first();
+      const result = await db(tbName).delete().where({ id });
+      return { result, image: data?.image || "" };
+    } catch (error) {
+      console.error("Error:", error);
+      throw new Error("Internal server error");
+    }
   }
   async checkDuplicate(
     name: string,
@@ -111,8 +142,8 @@ export class EquipmentModel {
       const query = await db(tbName)
         .where((builder) => {
           if (serial) builder.where({ serial });
+          builder.orWhere({ code, name });
         })
-        .orWhere({ code, name })
         .whereNot({ id })
         .first();
       return query ? 1 : 0;

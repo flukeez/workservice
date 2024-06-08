@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { EquipmentModel } from "@/models/EquipmentModel";
 import type { IEquipmentForm, IEquipQuery } from "@/types/EquipmentType";
-import { saveFile } from "@/utils/imagefile";
+import { deleteFile, saveFile } from "@/utils/imagefile";
 
 export default async function EquipmentController(fastify: FastifyInstance) {
   const equipmentModel = new EquipmentModel();
@@ -51,10 +51,32 @@ export default async function EquipmentController(fastify: FastifyInstance) {
       res.send({ result: 0 });
       return;
     }
-
-    // if(Array.isArray(data.image)) {
-    //   const image = await saveFile("equipment", data.image[0]);
-    //   data = {...data, image: image}
-    // }
+    try {
+      if (!data.image && data.image_old) {
+        // ไม่มีรูปภาพใหม่แต่มีชื่อภาพเก่า
+        await deleteFile("equipment", data.image_old);
+        delete data.image_old;
+      } else if (Array.isArray(data.image)) {
+        if (data.image_old) {
+          await deleteFile("equipment", data.image_old);
+          delete data.image_old;
+        }
+        const image = await saveFile("equipment", data.image[0]);
+        data.image = image;
+      }
+    } catch (error) {
+      console.error("Error processing images:", error);
+      return res.status(500).send({ error: "Error processing images" });
+    }
+    const result = await equipmentModel.update(id, data);
+    res.send(result);
+  });
+  fastify.delete("/del/:id", async (req, res) => {
+    const { id } = req.params as { id: number };
+    const { result, image } = await equipmentModel.delete(id);
+    if (image) {
+      await deleteFile("equipment", image);
+    }
+    res.send(result);
   });
 }
