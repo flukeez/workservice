@@ -19,16 +19,14 @@ export class LoginModel {
       return { result };
     }
     const user = await db(tbName)
-      .select("password")
+      .select("password", "id", "firstname", "surname", "image")
       .where({ username })
       .first();
     if (user) {
       const passwordCheck = comparePassword(password, user.password);
       if (passwordCheck) {
-        const result = await db(tbName)
-          .select("id", "firstname", "surname", "image")
-          .where({ username })
-          .first();
+        //ลบคีย์password ออก
+        const { password, ...result } = user;
         const now = new Date();
         await db(tbName).update({ last_login: now }).where({ id: result.id });
         await db("tb_login_log").insert({ user_id: result.id, timestamp: now });

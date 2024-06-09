@@ -10,6 +10,8 @@ export type IIssueQuery = {
   limit: number;
   sortField: string;
   sortDirection: string;
+  issue_type: string;
+  issue_id: string;
 };
 
 export type IIssueForm = {

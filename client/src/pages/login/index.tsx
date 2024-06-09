@@ -54,7 +54,6 @@ export default function Login() {
         loginStore.setFilter({
           ...loginStore,
           token: user.token,
-          refresh_token: user.refresh_token,
           fullname: userData.firstname + " " + userData.surname,
           image: userData.image,
         });

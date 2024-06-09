@@ -104,6 +104,7 @@ export default function IssueForm({ onClose, rowId }: IssueFormProps) {
                 issue={field.value ? field.value : null}
                 setIssue={handleSelectChange}
                 error={errors.issue_id?.message}
+                issue_type="0"
               />
             );
           }}

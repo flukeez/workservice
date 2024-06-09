@@ -5,7 +5,6 @@ interface IFilter {
   username: string;
   password: string;
   token: string;
-  refresh_token: string;
   fullname: string;
   image: string | null;
 }
@@ -25,7 +24,6 @@ const initialState: IFilter = {
   username: "",
   password: "",
   token: "",
-  refresh_token: "",
   fullname: "",
   image: "",
 };
@@ -35,7 +33,10 @@ export const useLoginStore = create<FilterStore>()(
     (set): FilterStore => ({
       ...initialState,
       setFilter: (filter: IFilter) => set(() => ({ ...filter })),
-      resetFilter: () => set(() => ({ ...initialState })),
+      resetFilter: () => {
+        set(() => ({ ...initialState }));
+        localStorage.clear();
+      },
     }),
     {
       name: "login-filter",

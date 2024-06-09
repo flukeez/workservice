@@ -19,10 +19,10 @@ import InputSearch from "@/components/common/InputSearch";
 import FacultyForm from "@/components/faculty/FacultyForm";
 import { useFacultyDelete, useFacultys } from "@/hooks/faculty";
 import { useFacultyStore } from "@/stores/useFacultyStore";
+import { PAGE_SIZE } from "@/config";
 
 const title = "หน่วยงาน";
 const listItems = [{ title: title, href: "#" }];
-const Page_size = 10;
 export default function Faculty() {
   const navigate = useNavigate();
   const facultyStore = useFacultyStore();
@@ -38,7 +38,7 @@ export default function Faculty() {
     const condition = {
       txtSearch: facultyStore.txtSearch,
       page: facultyStore.page - 1,
-      limit: Page_size,
+      limit: PAGE_SIZE,
       sortField: sortStatus.columnAccessor,
       sortDirection: sortStatus.direction,
     };
@@ -254,7 +254,7 @@ export default function Faculty() {
               });
             }}
             totalRecords={data?.totalItem || 0}
-            recordsPerPage={Page_size}
+            recordsPerPage={PAGE_SIZE}
             page={facultyStore.page}
             onPageChange={(p: number) =>
               facultyStore.setFilter({ ...facultyStore, page: p })

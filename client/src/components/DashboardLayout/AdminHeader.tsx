@@ -30,13 +30,7 @@ export function AdminHeader() {
   const loginStore = useLoginStore();
 
   const logout = () => {
-    loginStore.setFilter({
-      ...loginStore,
-      token: "",
-      refresh_token: "",
-      fullname: "",
-      image: "",
-    });
+    loginStore.resetFilter();
     navigate("/login");
   };
   return (

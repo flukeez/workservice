@@ -9,3 +9,8 @@ export type IIssueForm = {
   name: string;
   issue_id: string | null;
 };
+
+export interface IIssueFilter {
+  issueType?: string;
+  issueId?: string;
+}

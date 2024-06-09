@@ -5,6 +5,7 @@ import { LoadingLayout } from "./components/login/LoadingLayout";
 import ProtectRoute from "./components/protect_route/ProtectRoute";
 import PublicRoute from "./components/protect_route/PublicRoute";
 
+const RequestForm = lazy(() => import("@/pages/request/request_form"));
 const Equipment = lazy(() => import("@/pages/equipment"));
 const EquipmentForm = lazy(() => import("@/pages/equipment/equipment_form"));
 const Faculty = lazy(() => import("@/pages/faculty"));
@@ -32,6 +33,7 @@ export function Router() {
         <Route element={<ProtectRoute />}>
           <Route element={<DashboardLayout />}>
             <Route path="/" element={<Faculty />} />
+            <Route path="/service_request" element={<RequestForm />} />
             <Route path="/home" element={<Faculty />} />
             <Route path="/faculty">
               <Route index element={<Faculty />} />

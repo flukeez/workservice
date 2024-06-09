@@ -12,7 +12,7 @@ import { SideNavItem } from "./types";
 
 export const SIDENAV_ITEMS: SideNavItem[] = [
   { title: "หน้าหลัก", path: "/", icon: IconHomeFilled },
-  { title: "แจ้งซ่อม", path: "/request", icon: IconLocationFilled },
+  { title: "แจ้งซ่อม", path: "/service_request", icon: IconLocationFilled },
   { title: "รายการแจ้งซ่อม", path: "/request", icon: IconArticleFilled },
   {
     title: "รายการอุปกรณ์",
@@ -36,7 +36,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
     ],
   },
   {
-    title: "รายชื่อผู้ซอม",
+    title: "รายชื่อผู้ซ่อม",
     path: "/supervisor",
     icon: IconUserFilled,
   },
