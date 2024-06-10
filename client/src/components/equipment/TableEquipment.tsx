@@ -28,8 +28,8 @@ export default function TableEquipment({
   const setCondition = () => {
     const condition: IEquipmentQuery = {
       txtSearch: txtSearch,
-      page: page - 1,
-      limit: PAGE_SIZE,
+      page: 0,
+      limit: 10,
       sortField: sortStatus.columnAccessor,
       sortDirection: sortStatus.direction,
       user_id: "",
@@ -40,12 +40,13 @@ export default function TableEquipment({
   const { data, isLoading, setFilter } = useEquipments(setCondition());
 
   const handleSelectRow = (selectedRecords: Record<string, unknown>[]) => {
-    const selectID = selectedRecords
-      .map((record) => record.id as string | undefined)
-      .filter((id): id is string => id !== undefined); // กรองค่า undefined ออก
+    console.log("select row add", selectedRecords);
     setSelectRow(selectedRecords as IEquip[]);
-    console.log(selectID);
+  };
+  const handleSetRowID = () => {
+    const selectID = selectRow.map((record) => record.code!.toString());
     setEquip(selectID);
+    console.log("set equip", selectID);
   };
 
   const searchData = () => {
@@ -58,8 +59,10 @@ export default function TableEquipment({
   useEffect(() => {
     searchData();
   }, [page, debounce, sortStatus]);
+
   return (
     <>
+      {JSON.stringify(equip)}
       <Grid>
         <Grid.Col>
           <InputSearch
@@ -109,7 +112,7 @@ export default function TableEquipment({
         sortStatus={sortStatus}
         onSortStatusChange={setSortStatus}
         totalRecords={data?.totalItem || 0}
-        recordsPerPage={PAGE_SIZE}
+        recordsPerPage={1}
         page={page}
         onPageChange={(p: number) => setPage(p)}
         paginationText={({ from, to, totalRecords }) =>
@@ -125,8 +128,13 @@ export default function TableEquipment({
       />
 
       <Group justify="right" mt="md">
-        <Button size="sm" disabled>
-          เลือก {equip.length} รายการ
+        <Button
+          size="sm"
+          disabled={selectRow?.length === 0}
+          onClick={handleSetRowID}
+          color="blue"
+        >
+          เลือก {selectRow?.length || 0} รายการ
         </Button>
       </Group>
     </>

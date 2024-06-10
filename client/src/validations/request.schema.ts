@@ -8,7 +8,11 @@ export const requestYup = yup.object().shape({
   issue_id: yup.string().required("กรุณาเลือกประเภทงาน"),
   issue_sub_id: yup.string().default("").notRequired(),
   priority_id: yup.string().required("กรุณาเลือกความเร่งด่วน"),
-  equip_id: yup.array().of(yup.string()).required("กรุณาเลือกอุปกรณ์"),
+  equip_id: yup
+    .array()
+    .of(yup.string())
+    .required("กรุณาเลือกอุปกรณ์")
+    .default(["61"]),
   details: yup
     .string()
     .max(500, "ห้ามเกิน 500 ตัวอักษร")
