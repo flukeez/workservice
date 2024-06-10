@@ -49,7 +49,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
       { title: "ประเภทอุปกรณ์", path: "/category" },
       { title: "สถานะอุปกรณ์", path: "/equip_status" },
       { title: "สถานะงาน", path: "/status" },
-      { title: "ลําดับความสําคัญ", path: "/priority" },
+      { title: "ความเร่งด่วน", path: "/priority" },
       { title: "ประเภทปัญหา", path: "/issue" },
     ],
   },

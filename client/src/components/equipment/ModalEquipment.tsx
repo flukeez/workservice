@@ -1,30 +1,21 @@
-import {
-  ActionIcon,
-  Button,
-  FocusTrap,
-  Group,
-  Input,
-  Modal,
-  Select,
-  TextInput,
-  ThemeIcon,
-} from "@mantine/core";
+import { ActionIcon, Group, Modal, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconList, IconTable, IconX } from "@tabler/icons-react";
+import { IconList, IconX } from "@tabler/icons-react";
+import TableEquipment from "./TableEquipment";
 
-export default function ModalEquipment() {
+interface ModalEquipmentProps {
+  equip: string[];
+  setEquip: (value: string[]) => void;
+}
+export default function ModalEquipment({
+  equip,
+  setEquip,
+}: ModalEquipmentProps) {
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <>
       <Modal opened={opened} onClose={close} title="รายการอุปกรณ์" size="70rem">
-        <FocusTrap.InitialFocus />
-        <TextInput label="First input" placeholder="First input" />
-        <TextInput
-          data-autofocus
-          label="Input with initial focus"
-          placeholder="It has data-autofocus attribute"
-          mt="md"
-        />
+        <TableEquipment equip={equip} setEquip={setEquip} />
       </Modal>
 
       <TextInput

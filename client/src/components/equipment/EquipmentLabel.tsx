@@ -17,9 +17,9 @@ export default function EquipmentLabel({
   return (
     <Group>
       <Highlight highlight={highlight}>{label}</Highlight>
-      {serial && (
+      {serial !== "null" ? (
         <Highlight highlight={highlight} c="dimmed">{`[${serial}]`}</Highlight>
-      )}
+      ) : null}
     </Group>
   );
 }

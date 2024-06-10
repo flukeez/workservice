@@ -84,9 +84,9 @@ export default function PriorityForm({ rowId, onClose }: PriorityProps) {
       )}
       <Stack>
         <TextInput
-          label="ชื่อความสำคัญ"
+          label="ชื่อความเร่งด่วน"
           {...register("name")}
-          placeholder="กรอกชื่อความสำคัญ"
+          placeholder="กรอกชื่อความเร่งด่วน"
           error={errors.name?.message}
           required
         />

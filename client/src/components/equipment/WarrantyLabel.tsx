@@ -46,7 +46,7 @@ export default function WarrantyLabel({
     >
       <Text>{dateThaiLong(String(date_start))}</Text>
       {warranty && (
-        <Text fs="italic" size="sm">
+        <Text fs="italic" size="sm" c="gray">
           การรับประกัน : {warranty}
         </Text>
       )}

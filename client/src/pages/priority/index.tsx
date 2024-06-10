@@ -19,7 +19,7 @@ import PriorityForm from "@/components/priority/PriorityForm";
 import PageHeader from "@/components/common/PageHeader";
 import InputSearch from "@/components/common/InputSearch";
 
-const title = "ลำดับความสำคัญ";
+const title = "ความเร่งด่วน";
 const listItems = [{ title: title, href: "#" }];
 const Page_size = 10;
 
@@ -123,7 +123,7 @@ export default function Priority() {
           <Grid mx="md" mt="md">
             <Grid.Col span={{ md: 4 }}>
               <InputSearch
-                placeholder="ค้นหาลำดับความสำคัญ"
+                placeholder="ค้นหาความเร่งด่วน"
                 onChange={(e) =>
                   priorityStore.setFilter({
                     ...priorityStore,
@@ -150,7 +150,7 @@ export default function Priority() {
             columns={[
               {
                 accessor: "name",
-                title: "ชื่อลำดับความสำคัญ",
+                title: "ชื่อความเร่งด่วน",
                 width: "35%",
                 sortable: true,
                 render({ name }) {

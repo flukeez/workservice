@@ -7,11 +7,12 @@ interface IssueProps {
   issue: string | null;
   setIssue: (issue: string | null) => void;
   error?: string;
-  issue_type?: string;
-  issue_id?: string;
+  issue_type?: string; //แสดงประเภทหมวดหมู่หลักหรือย่อย
+  issue_id?: string; //ไอดีของหมวดหมู่หลัก
   required?: boolean;
   label?: string;
   placeholder?: string;
+  keys?: string; //ไว้รเรนเดอร์
 }
 
 export default function DropdownIssue({
@@ -23,6 +24,7 @@ export default function DropdownIssue({
   required,
   label,
   placeholder,
+  keys,
 }: IssueProps) {
   const condition: IConditionFilter & IIssueFilter = {
     txtSearch: "",
@@ -39,8 +41,9 @@ export default function DropdownIssue({
   return (
     <Select
       label={label || "ประเภทปัญหา"}
+      key={keys || "issue_id"}
       placeholder={placeholder || "เลือกประเภทปัญหา"}
-      value={issue}
+      value={issue?.toString() || null}
       onChange={setIssue}
       data={
         data?.rows &&
