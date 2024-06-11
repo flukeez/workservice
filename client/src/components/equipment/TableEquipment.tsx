@@ -10,11 +10,15 @@ import InputSearch from "../common/InputSearch";
 interface TableEquipmentProps {
   equip: string[];
   setEquip: (value: string[]) => void;
+  onClose: () => void;
+  setEquipName: (value: string[]) => void;
 }
 
 export default function TableEquipment({
   equip,
   setEquip,
+  onClose,
+  setEquipName,
 }: TableEquipmentProps) {
   const [page, setPage] = useState(1);
   const [txtSearch, setTxtSearch] = useState("");
@@ -40,10 +44,16 @@ export default function TableEquipment({
   const { data, isLoading, setFilter } = useEquipments(setCondition());
 
   const handleSelectRow = (selectedRecords: Record<string, unknown>[]) => {
-    setSelectRow(selectedRecords as IEquip[]);
+    const selected = selectedRecords as IEquip[];
+    setSelectRow(selected);
+    if (selected.length > 0) {
+      const selectedNames = selected.map((record) => record.name);
+      setEquipName(selectedNames);
+    }
   };
   const handleSetRowID = () => {
     setEquip(selectRowID);
+    onClose();
   };
 
   const handleClickCheckbox = (id: string) => {
@@ -53,6 +63,21 @@ export default function TableEquipment({
     } else {
       //ถ้าไม่มีเพิ่มเข้าไป
       setSelectRowID([...selectRowID, id]);
+    }
+  };
+
+  const handleClickSelectAll = () => {
+    if (data?.rows) {
+      const allID = data.rows.map((row: IEquip) => row.id.toString());
+      if (allID.every((id: string) => selectRowID.includes(id))) {
+        setSelectRowID(selectRowID.filter((id) => !allID.includes(id)));
+      } else {
+        //เพิมไอดีที่ยังไม่มีลงไป
+        const newSelectID = allID.filter(
+          (id: string) => !selectRowID.includes(id)
+        );
+        setSelectRowID([...selectRowID, ...newSelectID]);
+      }
     }
   };
 
@@ -68,8 +93,8 @@ export default function TableEquipment({
   }, [page, debounce, sortStatus]);
 
   useEffect(() => {
-    setSelectRowID(equip);
     if (data?.rows && equip) {
+      setSelectRowID(equip);
       const initialSelect = data.rows.filter((row: IEquip) =>
         equip.includes(row.id.toString())
       );
@@ -121,7 +146,16 @@ export default function TableEquipment({
             textAlign: "center",
             width: "0%",
             render({ id }) {
-              return <Button size="xs">เลือก</Button>;
+              return (
+                <Button
+                  size="xs"
+                  onClick={() => {
+                    setEquip([String(id)]), onClose();
+                  }}
+                >
+                  เลือก
+                </Button>
+              );
             },
           },
         ]}
@@ -144,6 +178,9 @@ export default function TableEquipment({
         getRecordSelectionCheckboxProps={(record: Record<string, unknown>) => ({
           onClick: () => handleClickCheckbox(String(record.id)),
         })}
+        allRecordsSelectionCheckboxProps={{
+          onClick: () => handleClickSelectAll(),
+        }}
       />
 
       <Group justify="right" mt="md">
