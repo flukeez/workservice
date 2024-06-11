@@ -1,4 +1,3 @@
-import { PAGE_SIZE } from "@/config";
 import { useEquipments } from "@/hooks/equipment";
 import type { IEquip, IEquipmentQuery } from "@/types/IEquipment";
 import { Button, Grid, Group } from "@mantine/core";
@@ -25,10 +24,11 @@ export default function TableEquipment({
     direction: "asc",
   });
   const [selectRow, setSelectRow] = useState<IEquip[]>([]);
+  const [selectRowID, setSelectRowID] = useState<string[]>([]);
   const setCondition = () => {
     const condition: IEquipmentQuery = {
       txtSearch: txtSearch,
-      page: 0,
+      page: page - 1,
       limit: 10,
       sortField: sortStatus.columnAccessor,
       sortDirection: sortStatus.direction,
@@ -40,13 +40,20 @@ export default function TableEquipment({
   const { data, isLoading, setFilter } = useEquipments(setCondition());
 
   const handleSelectRow = (selectedRecords: Record<string, unknown>[]) => {
-    console.log("select row add", selectedRecords);
     setSelectRow(selectedRecords as IEquip[]);
   };
   const handleSetRowID = () => {
-    const selectID = selectRow.map((record) => record.code!.toString());
-    setEquip(selectID);
-    console.log("set equip", selectID);
+    setEquip(selectRowID);
+  };
+
+  const handleClickCheckbox = (id: string) => {
+    if (selectRowID.includes(id)) {
+      //ถ้ามีลบออก
+      setSelectRowID(selectRowID.filter((item) => item !== id));
+    } else {
+      //ถ้าไม่มีเพิ่มเข้าไป
+      setSelectRowID([...selectRowID, id]);
+    }
   };
 
   const searchData = () => {
@@ -60,9 +67,18 @@ export default function TableEquipment({
     searchData();
   }, [page, debounce, sortStatus]);
 
+  useEffect(() => {
+    setSelectRowID(equip);
+    if (data?.rows && equip) {
+      const initialSelect = data.rows.filter((row: IEquip) =>
+        equip.includes(row.id.toString())
+      );
+      setSelectRow(initialSelect);
+    }
+  }, [data, equip]);
+
   return (
     <>
-      {JSON.stringify(equip)}
       <Grid>
         <Grid.Col>
           <InputSearch
@@ -125,16 +141,19 @@ export default function TableEquipment({
         fetching={isLoading}
         selectedRecords={selectRow}
         onSelectedRecordsChange={handleSelectRow}
+        getRecordSelectionCheckboxProps={(record: Record<string, unknown>) => ({
+          onClick: () => handleClickCheckbox(String(record.id)),
+        })}
       />
 
       <Group justify="right" mt="md">
         <Button
           size="sm"
-          disabled={selectRow?.length === 0}
+          disabled={selectRow?.length === 0 && equip?.length === 0}
           onClick={handleSetRowID}
           color="blue"
         >
-          เลือก {selectRow?.length || 0} รายการ
+          เลือก {selectRowID?.length} รายการ
         </Button>
       </Group>
     </>
