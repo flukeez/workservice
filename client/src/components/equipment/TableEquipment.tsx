@@ -70,6 +70,7 @@ export default function TableEquipment({
     if (data?.rows) {
       const allID = data.rows.map((row: IEquip) => row.id.toString());
       if (allID.every((id: string) => selectRowID.includes(id))) {
+        //ลบออก
         setSelectRowID(selectRowID.filter((id) => !allID.includes(id)));
       } else {
         //เพิมไอดีที่ยังไม่มีลงไป
@@ -84,7 +85,7 @@ export default function TableEquipment({
   const searchData = () => {
     setFilter(setCondition());
   };
-  const clearSeachData = () => {
+  const clearSearchData = () => {
     setTxtSearch("");
     setPage(1);
   };
@@ -93,15 +94,19 @@ export default function TableEquipment({
   }, [page, debounce, sortStatus]);
 
   useEffect(() => {
-    if (data?.rows && equip) {
+    if (equip) {
       setSelectRowID(equip);
+    }
+  }, [equip]);
+
+  useEffect(() => {
+    if (data?.rows) {
       const initialSelect = data.rows.filter((row: IEquip) =>
-        equip.includes(row.id.toString())
+        selectRowID.includes(row.id.toString())
       );
       setSelectRow(initialSelect);
     }
-  }, [data, equip]);
-
+  }, [data, selectRowID]);
   return (
     <>
       <Grid>
@@ -111,7 +116,7 @@ export default function TableEquipment({
             placeholder="ค้นหาจากรหัส, ซีเรียลนัมเบอร์, ชื่ออุปกรณ์"
             onChange={(e) => [setPage(1), setTxtSearch(e.target.value)]}
             onSearchData={searchData}
-            onClearSearch={clearSeachData}
+            onClearSearch={clearSearchData}
           />
         </Grid.Col>
       </Grid>
@@ -186,7 +191,7 @@ export default function TableEquipment({
       <Group justify="right" mt="md">
         <Button
           size="sm"
-          disabled={selectRow?.length === 0 && equip?.length === 0}
+          disabled={selectRowID?.length === 0}
           onClick={handleSetRowID}
           color="blue"
         >
