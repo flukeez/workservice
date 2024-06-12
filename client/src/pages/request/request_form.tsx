@@ -1,9 +1,11 @@
+import ButtonFileUploadMultiple from "@/components/common/ButtonFileUploadMultiple";
+import ImageAlbumPreview from "@/components/common/ImageAlbumPreview";
 import PageHeader from "@/components/common/PageHeader";
 import ModalEquipment from "@/components/equipment/ModalEquipment";
 import DropdownIssue from "@/components/issue/DropdownIssue";
 import DropdownPriority from "@/components/priority/DropdownPriority";
 import type { IRequest } from "@/types/IRequest";
-import { requestYup } from "@/validations/request.schema";
+import { requestInitialValues, requestYup } from "@/validations/request.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
@@ -17,12 +19,13 @@ import {
 } from "@mantine/core";
 import { IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
 import { Controller, useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 
 const title = "แจ้งซ่อม";
 const listItems = [{ title: title, href: "#" }];
 const layout = {
   md: 4,
-  sm: 6,
+  sm: 12,
   xs: 12,
 };
 export default function RequestForm() {
@@ -38,6 +41,7 @@ export default function RequestForm() {
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(requestYup),
+    defaultValues: requestInitialValues,
   });
 
   const onSubmit = (formData: IRequest) => {
@@ -127,6 +131,7 @@ export default function RequestForm() {
                     priority={field.value}
                     setPriority={handleSelectChange}
                     required={true}
+                    error={errors.priority_id?.message}
                   />
                 );
               }}
@@ -139,13 +144,20 @@ export default function RequestForm() {
               name="equip_id"
               control={control}
               render={({ field }) => {
-                const handleSelectChange = (value: string[] | null) => {
+                const handleSelectChange = (value: string[]) => {
                   field.onChange(value);
                 };
+
+                // กรองค่า undefined ออกจาก field.value
+                const equipValues = (field.value ?? []).filter(
+                  (value): value is string => value !== undefined
+                );
+
                 return (
                   <ModalEquipment
-                    equip={field.value}
+                    equip={equipValues}
                     setEquip={handleSelectChange}
+                    error={errors.equip_id?.message}
                   />
                 );
               }}
@@ -154,12 +166,13 @@ export default function RequestForm() {
         </Grid>
         <Grid mt="md">
           <Grid.Col>
-            <Textarea label="รายการอุปกรณ์" variant="filled" rows={5} />
-          </Grid.Col>
-        </Grid>
-        <Grid mt="md">
-          <Grid.Col>
-            <Textarea label="หมายเหตุ" rows={3} />
+            <Textarea
+              label="หมายเหตุ"
+              rows={3}
+              placeholder="ระบุรายละเอียดงานซ่อม"
+              {...register("details")}
+              error={errors.details?.message}
+            />
           </Grid.Col>
         </Grid>
         <Divider
@@ -172,6 +185,43 @@ export default function RequestForm() {
             </Text>
           }
         />
+        <Grid mt="sm">
+          {watch("image") && (
+            <Grid.Col span={layout}>
+              <ImageAlbumPreview folder="request" images={watch("image")} />
+            </Grid.Col>
+          )}
+          <Grid.Col span={layout}>
+            <Controller
+              name="image"
+              control={control}
+              render={({ field }) => {
+                const handleSelectChange = (value: File[] | null) => {
+                  if (value === null) return;
+                  //เช็คจำนวนภาพ
+                  if (value.length + field.value.length > 5) {
+                    return Swal.fire({
+                      icon: "error",
+                      title: "ไม่สามารถเพิ่มได้",
+                      text: "สามารถเพิ่มได้ไม่เกิน 5 รูป",
+                    });
+                  }
+                  field.onChange([...field.value, ...value]);
+                };
+                const handleDelete = (index: number) => {
+                  field.onChange(field.value.filter((_, i) => i !== index));
+                };
+                return (
+                  <ButtonFileUploadMultiple
+                    file={field.value}
+                    setFile={handleSelectChange}
+                    setDelete={handleDelete}
+                  />
+                );
+              }}
+            />
+          </Grid.Col>
+        </Grid>
         <Card.Section withBorder inheritPadding py="md" mt="lg">
           <Group justify="center">
             <Button
@@ -184,7 +234,7 @@ export default function RequestForm() {
             <Button
               leftSection={<IconDeviceFloppy />}
               size="lg"
-              // onClick={handleSubmit(onSubmit)}
+              onClick={handleSubmit(onSubmit)}
             >
               บันทึกข้อมูล
             </Button>

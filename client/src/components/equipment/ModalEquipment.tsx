@@ -1,4 +1,4 @@
-import { ActionIcon, Flex, Group, Modal, Textarea } from "@mantine/core";
+import { ActionIcon, Group, Modal, Textarea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconList, IconX } from "@tabler/icons-react";
 import TableEquipment from "./TableEquipment";
@@ -6,11 +6,13 @@ import { useState } from "react";
 
 interface ModalEquipmentProps {
   equip: string[];
-  setEquip: (value: string[]) => void;
+  setEquip: (equip: string[]) => void;
+  error?: string;
 }
 export default function ModalEquipment({
   equip,
   setEquip,
+  error,
 }: ModalEquipmentProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [equipment, setEquipment] = useState<string[]>([]);
@@ -43,7 +45,6 @@ export default function ModalEquipment({
           onClose={close}
         />
       </Modal>
-
       <Textarea
         label="อุปกร์ที่แจ้งซ่อม"
         placeholder="เลือกอุปกรณ์ที่แจ้งซ่อม"
@@ -51,31 +52,33 @@ export default function ModalEquipment({
         value={equipment.join(", ")}
         autosize
         maxRows={5}
+        // rightSectionProps={{
+        //   style: {
+        //     display: "flex",
+        //     alignItems: "flex-start",
+        //     marginTop: "0.1rem",
+        //     marginRight: "0.5rem",
+        //   },
+        // }}
         rightSection={
-          <Flex
-            justify="flex-start"
-            align="center"
-            direction="row"
-            wrap="nowrap"
-          >
-            <Group gap={3} align="top">
-              <ActionIcon onClick={open} variant="light">
-                <IconList size={18} />
-              </ActionIcon>
-              <ActionIcon
-                onClick={() => {
-                  setEquip([]), setEquipment([]);
-                }}
-                variant="light"
-                color="gray"
-              >
-                <IconX size={18} />
-              </ActionIcon>
-            </Group>
-          </Flex>
+          <Group gap={3} align="top">
+            <ActionIcon onClick={open} variant="light">
+              <IconList size={18} />
+            </ActionIcon>
+            <ActionIcon
+              onClick={() => {
+                setEquip([]), setEquipment([]);
+              }}
+              variant="light"
+              color="gray"
+            >
+              <IconX size={18} />
+            </ActionIcon>
+          </Group>
         }
         rightSectionWidth={90}
         required
+        error={error}
       />
     </>
   );

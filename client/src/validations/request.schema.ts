@@ -1,5 +1,15 @@
 import * as yup from "yup";
 
+export const requestInitialValues = {
+  name: "",
+  issue_id: "",
+  issue_sub_id: "",
+  priority_id: "",
+  equip_id: [] as string[],
+  details: "",
+  image: [] as object,
+};
+
 export const requestYup = yup.object().shape({
   name: yup
     .string()
@@ -12,7 +22,9 @@ export const requestYup = yup.object().shape({
     .array()
     .of(yup.string())
     .required("กรุณาเลือกอุปกรณ์")
-    .default(["61"]),
+    .test("hasValidItem", "กรุณาเลือกอุปกรณ์อย่างน้อยหนึ่งชิ้น", (value) => {
+      return value && value.length > 0 && value[0] !== "";
+    }),
   details: yup
     .string()
     .max(500, "ห้ามเกิน 500 ตัวอักษร")
@@ -21,24 +33,21 @@ export const requestYup = yup.object().shape({
   image: yup
     .array()
     .of(
-      yup
-        .mixed()
-        .test("fileSize", "ไฟล์รูปภาพขนาดห้ามเกิน 2 MB", (value) => {
-          if (!value) {
-            return true;
-          }
-          if (
-            value instanceof File &&
-            "size" in value &&
-            typeof value.size === "number"
-          ) {
-            return value.size <= 2 * 1024 * 1024; // ตรวจสอบขนาดไฟล์ไม่เกิน 2 MB
-          } else {
-            return true;
-          }
-        })
-        .nullable()
+      yup.mixed().test("fileSize", "ไฟล์รูปภาพขนาดห้ามเกิน 2 MB", (value) => {
+        if (!value) {
+          return true;
+        }
+        if (
+          value instanceof File &&
+          "size" in value &&
+          typeof value.size === "number"
+        ) {
+          return value.size <= 2 * 1024 * 1024; // ตรวจสอบขนาดไฟล์ไม่เกิน 2 MB
+        } else {
+          return true;
+        }
+      })
     )
-    .max(5, "สามารถอัปโหลดได้สูงสุด 5 รูป")
+    .nullable()
     .default([]),
 });
