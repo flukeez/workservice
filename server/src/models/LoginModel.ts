@@ -13,27 +13,48 @@ export class LoginModel {
       const result = {
         id: 999,
         firstname: "admin",
-        surname: "bypaass",
+        surname: "bypass",
         image: "",
+        position: [
+          {
+            pos_id: "99",
+            fac_id: "99",
+          },
+        ],
       };
       return { result };
     }
-    const user = await db(tbName)
-      .select("password", "id", "firstname", "surname", "image")
-      .where({ username })
-      .first();
-    if (user) {
-      const passwordCheck = comparePassword(password, user.password);
-      if (passwordCheck) {
-        //ลบคีย์password ออก
-        const { password, ...result } = user;
-        const now = new Date();
-        await db(tbName).update({ last_login: now }).where({ id: result.id });
-        await db("tb_login_log").insert({ user_id: result.id, timestamp: now });
+    try {
+      const user = await db(tbName)
+        .select("password", "id", "firstname", "surname", "image")
+        .where({ username })
+        .first();
+      if (user) {
+        const passwordCheck = comparePassword(password, user.password);
+        if (passwordCheck) {
+          //ดึงตำแหน่ง
+          const position = await db("tb_user_position")
+            .select("pos_id", "fac_id")
+            .where("user_id", user.id);
 
-        return { result };
+          //ลบคีย์password ออก
+          const { password, ...userWithoutPassword } = user;
+          // รวมข้อมูลตำแหน่งงานเข้ากับข้อมูลผู้ใช้
+          const result = { ...userWithoutPassword, position };
+
+          const now = new Date();
+          await db(tbName).update({ last_login: now }).where({ id: result.id });
+          await db("tb_login_log").insert({
+            user_id: result.id,
+            timestamp: now,
+          });
+          return { result };
+        }
       }
+      return { result: 0 };
+    } catch (error) {
+      console.log(error);
+      throw new Error("Internal server error");
     }
-    return { result: 0 };
   }
 }

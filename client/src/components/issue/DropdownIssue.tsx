@@ -2,6 +2,7 @@ import { useIssues } from "@/hooks/issue";
 import { IConditionFilter } from "@/types/IConditionFilter";
 import type { IIssue, IIssueFilter } from "@/types/IIssue";
 import { Select } from "@mantine/core";
+import { useEffect } from "react";
 
 interface IssueProps {
   issue: string | null;
@@ -24,24 +25,28 @@ export default function DropdownIssue({
   required,
   label,
   placeholder,
-  keys,
 }: IssueProps) {
-  const condition: IConditionFilter & IIssueFilter = {
-    txtSearch: "",
-    page: 0,
-    limit: 1000,
-    sortDirection: "asc",
-    sortField: "name",
-    issueId: issue_id,
-    issueType: issue_type,
+  const setCondition = () => {
+    const condition: IConditionFilter & IIssueFilter = {
+      txtSearch: "",
+      page: 0,
+      limit: 1000,
+      sortDirection: "asc",
+      sortField: "name",
+      issueId: issue_id,
+      issueType: issue_type,
+    };
+    return condition;
   };
 
-  const { data } = useIssues(condition);
+  const { data, setFilter } = useIssues(setCondition());
 
+  useEffect(() => {
+    setFilter(setCondition());
+  }, [issue_id]);
   return (
     <Select
       label={label || "ประเภทปัญหา"}
-      key={keys || "issue_id"}
       placeholder={placeholder || "เลือกประเภทปัญหา"}
       value={issue?.toString() || null}
       onChange={setIssue}

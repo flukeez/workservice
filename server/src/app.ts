@@ -37,7 +37,7 @@ app.register(cors, {
     "Access-Control-Allow-Origin",
     "X-Requested-With",
   ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   // allowedHeaders: ['Content-Type', 'Authorization'],
 });
 

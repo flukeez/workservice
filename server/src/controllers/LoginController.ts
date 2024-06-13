@@ -16,6 +16,7 @@ export default async function LoginController(fastify: FastifyInstance) {
         key: refresh_key,
       });
       setCookie("refresh_token", refresh_token, res);
+      console.log("test");
       res.send({ result: { token } });
     } else {
       res.send({ result });

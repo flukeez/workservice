@@ -67,7 +67,7 @@ export default function ModalEquipment({
             </ActionIcon>
             <ActionIcon
               onClick={() => {
-                setEquip([]), setEquipment([]);
+                setEquip([""]), setEquipment([]);
               }}
               variant="light"
               color="gray"

@@ -49,6 +49,7 @@ export default function RequestForm() {
   };
   return (
     <>
+      {JSON.stringify(errors)}
       <PageHeader title={title} listItems={listItems} />
       <Card shadow="sm">
         <Card.Section withBorder inheritPadding py="md">
@@ -112,7 +113,6 @@ export default function RequestForm() {
                     issue_type={"1"}
                     error={errors.issue_sub_id?.message}
                     issue_id={watch("issue_id")}
-                    keys={"issue_sub_id" + watch("issue_id")}
                   />
                 );
               }}
@@ -147,15 +147,9 @@ export default function RequestForm() {
                 const handleSelectChange = (value: string[]) => {
                   field.onChange(value);
                 };
-
-                // กรองค่า undefined ออกจาก field.value
-                const equipValues = (field.value ?? []).filter(
-                  (value): value is string => value !== undefined
-                );
-
                 return (
                   <ModalEquipment
-                    equip={equipValues}
+                    equip={field.value}
                     setEquip={handleSelectChange}
                     error={errors.equip_id?.message}
                   />
@@ -186,7 +180,7 @@ export default function RequestForm() {
           }
         />
         <Grid mt="sm">
-          {watch("image") && (
+          {Array.isArray(watch("image")) && watch("image").length > 0 && (
             <Grid.Col span={layout}>
               <ImageAlbumPreview folder="request" images={watch("image")} />
             </Grid.Col>

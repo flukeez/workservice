@@ -58,13 +58,10 @@ export default async function UserController(fastify: FastifyInstance) {
     }
     try {
       if (!data.image && data.image_old) {
-        // ไม่มีรูปภาพใหม่แต่มีชื่อภาพเก่า
         await deleteFile("user", data.image_old);
-        delete data.image_old;
       } else if (Array.isArray(data.image)) {
         if (data.image_old) {
           await deleteFile("user", data.image_old);
-          delete data.image_old;
         }
         const image = await saveFile("user", data.image[0]);
         data.image = image;
@@ -74,6 +71,9 @@ export default async function UserController(fastify: FastifyInstance) {
       return res.status(500).send({ error: "Error processing images" });
     }
 
+    if (data.image_old) {
+      delete data.image_old;
+    }
     const result = await userModel.update(id, data);
     res.send(result);
   });
