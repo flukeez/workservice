@@ -111,8 +111,12 @@ export default function OrganizeChart() {
       <Drawer
         opened={opened}
         onClose={() => setOpened(false)}
-        title={title}
+        title={`${title} ${rowId !== "0" ? "(แก้ไข)" : "(เพิ่ม)"}`}
+        size="lg"
         position="right"
+        closeOnClickOutside={false}
+        offset={8}
+        radius="md"
       >
         {opened ? (
           <FacultyPositionForm
@@ -201,51 +205,23 @@ export default function OrganizeChart() {
                 width: "0%",
                 textAlign: "center",
                 render: ({ id }) => (
-                  <>
-                    <Menu withArrow position="bottom">
-                      <Menu.Target>
-                        <Button
-                          hiddenFrom="md"
-                          color="blue"
-                          rightSection={
-                            <IconChevronDown size="1.05rem" stroke={1.5} />
-                          }
-                          pr={12}
-                          size="xs"
-                        >
-                          จัดการ
-                        </Button>
-                      </Menu.Target>
-                      <Menu.Dropdown>
-                        <Menu.Item onClick={() => handleUpdate(String(id))}>
-                          แก้ไข
-                        </Menu.Item>
-                        <Menu.Item
-                          onClick={() => {
-                            handleDelete(String(id));
-                          }}
-                        >
-                          ลบ
-                        </Menu.Item>
-                      </Menu.Dropdown>
-                    </Menu>
-                    <Group justify="center" visibleFrom="md" wrap="nowrap">
-                      <Button
-                        size="xs"
-                        mx="xs"
-                        onClick={() => handleUpdate(String(id))}
-                      >
-                        แก้ไข
-                      </Button>
-                      <Button
-                        color="red"
-                        size="xs"
-                        onClick={() => handleDelete(String(id))}
-                      >
-                        ลบ
-                      </Button>
-                    </Group>
-                  </>
+                  <Group justify="center" gap={3} wrap="nowrap">
+                    <Button
+                      variant="subtle"
+                      size="compact-md"
+                      onClick={() => handleUpdate(String(id))}
+                    >
+                      <IconEdit size={"18"} />
+                    </Button>
+                    <Button
+                      variant="subtle"
+                      size="compact-md"
+                      color="red"
+                      onClick={() => handleDelete(String(id), String(name))}
+                    >
+                      <IconTrash size={"18"} />
+                    </Button>
+                  </Group>
                 ),
               },
             ]}
@@ -259,7 +235,7 @@ export default function OrganizeChart() {
               });
             }}
             totalRecords={data?.totalItem || 0}
-            recordsPerPage={Page_size}
+            recordsPerPage={PAGE_SIZE}
             page={orgChartStore.page}
             onPageChange={(p: number) =>
               orgChartStore.setFilter({ ...orgChartStore, page: p })

@@ -14,7 +14,7 @@ export const useCategories = (condition: IConditionFilter) => {
       ["sortField", filter.sortField || "name"],
       ["sortDirection", filter.sortDirection || "asc"],
       ["page", filter.page.toString()],
-      ["limit", filter.limit.toString()],
+      ["limit", filter.limit?.toString() || "20"],
     ]);
 
     const { data } = await axiosAuth.get(url, { params });

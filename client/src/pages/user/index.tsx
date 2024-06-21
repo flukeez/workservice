@@ -52,28 +52,24 @@ export default function User() {
     navigate("/user/" + id);
   };
   const handleDelete = async (id: string) => {
-    try {
-      const dialog = await Swal.fire({
-        title: "คุณต้องการลบรายการนี้ใช่หรือไม่",
-        icon: "warning",
-        showCancelButton: true,
-        cancelButtonText: "ยกเลิก",
-        confirmButtonText: "ตกลง",
-      });
-      if (dialog.isConfirmed) {
-        await mutationDelete.mutateAsync(id);
-        Swal.fire({
-          title: "ลบข้อมูลสําเร็จ",
-          icon: "success",
+    const isConfirmed = await ConfirmDeleteDialog({
+      html: `คุณต้องการลบรายการนี่ใช่หรือไม่<p>${name}</p>`,
+    });
+
+    if (isConfirmed) {
+      try {
+        const { data } = await mutationDelete.mutateAsync(id);
+        if (data.message === "failed") {
+          // จัดการกรณีลบไม่สำเร็จ (ถ้ามี)
+          await AlertErrorDialog({ title: "ลบข้อมูลไม่สำเร็จ !!" });
+        } else {
+          await AlertSuccessDialog({ title: "ลบข้อมูลสำเร็จ" });
+        }
+      } catch (error) {
+        await AlertErrorDialog({
+          html: "ลบข้อมูลไม่สำเร็จ เนื่องจากหมดเวลาเชื่อมต่อ ให้ออกจากระบบ แล้วเข้าใหม่",
         });
       }
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
-      });
     }
   };
   const searchData = () => {
@@ -92,13 +88,7 @@ export default function User() {
       <Card shadow="sm">
         <Card.Section withBorder inheritPadding py="md">
           <Group justify="right">
-            <Button
-              color="green"
-              leftSection={<IconPlus />}
-              onClick={handleNew}
-            >
-              เพิ่มข้อมูล
-            </Button>
+            <ButtonNew onClick={handleNew}>เพิ่มข้อมูล</ButtonNew>
           </Group>
         </Card.Section>
         <Card.Section>
@@ -185,51 +175,23 @@ export default function User() {
                 width: "0%",
                 textAlign: "center",
                 render: ({ id }) => (
-                  <>
-                    <Menu withArrow position="bottom">
-                      <Menu.Target>
-                        <Button
-                          hiddenFrom="md"
-                          color="blue"
-                          rightSection={
-                            <IconChevronDown size="1.05rem" stroke={1.5} />
-                          }
-                          pr={12}
-                          size="xs"
-                        >
-                          จัดการ
-                        </Button>
-                      </Menu.Target>
-                      <Menu.Dropdown>
-                        <Menu.Item onClick={() => handleUpdate(String(id))}>
-                          แก้ไข
-                        </Menu.Item>
-                        <Menu.Item
-                          onClick={() => {
-                            handleDelete(String(id));
-                          }}
-                        >
-                          ลบ
-                        </Menu.Item>
-                      </Menu.Dropdown>
-                    </Menu>
-                    <Group justify="center" visibleFrom="md" wrap="nowrap">
-                      <Button
-                        size="xs"
-                        mx="xs"
-                        onClick={() => handleUpdate(String(id))}
-                      >
-                        แก้ไข
-                      </Button>
-                      <Button
-                        color="red"
-                        size="xs"
-                        onClick={() => handleDelete(String(id))}
-                      >
-                        ลบ
-                      </Button>
-                    </Group>
-                  </>
+                  <Group justify="center" gap={3} wrap="nowrap">
+                    <Button
+                      variant="subtle"
+                      size="compact-md"
+                      onClick={() => handleUpdate(String(id))}
+                    >
+                      <IconEdit size={"18"} />
+                    </Button>
+                    <Button
+                      variant="subtle"
+                      size="compact-md"
+                      color="red"
+                      onClick={() => handleDelete(String(id), String(name))}
+                    >
+                      <IconTrash size={"18"} />
+                    </Button>
+                  </Group>
                 ),
               },
             ]}
@@ -243,7 +205,7 @@ export default function User() {
               }),
             ]}
             totalRecords={data?.totalItem || 0}
-            recordsPerPage={Page_size}
+            recordsPerPage={PAGE_SIZE}
             page={userStore.page}
             onPageChange={(p: number) =>
               userStore.setFilter({ ...userStore, page: p })

@@ -127,13 +127,7 @@ export default function EquipmentForm() {
       <Card shadow="sm">
         <Card.Section withBorder inheritPadding py="md">
           <Group justify="right">
-            <Button
-              color="green"
-              leftSection={<IconPlus />}
-              onClick={handleNew}
-            >
-              เพิ่มข้อมูล
-            </Button>
+            <ButtonNew onClick={handleNew}>เพิ่มข้อมูล</ButtonNew>
           </Group>
         </Card.Section>
         <Divider

@@ -36,13 +36,13 @@ export function DashboardLayout() {
           background: theme.colors.gray[0],
         },
 
-        navbar: {
-          backgroundColor: theme.colors.dark[9],
-        },
-        section: {
-          backgroundColor: theme.colors.dark[7],
-          color: theme.colors.gray[5],
-        },
+        // navbar: {
+        //   backgroundColor: theme.colors.dark[9],
+        // },
+        // section: {
+        //   backgroundColor: theme.colors.dark[7],
+        //   color: theme.colors.gray[5],
+        // },
       }}
     >
       <AppShell.Header>

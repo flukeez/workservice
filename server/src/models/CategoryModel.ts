@@ -91,9 +91,7 @@ export class CategoryModel {
   async checkDuplicate(code: string, name: string, id = 0): Promise<number> {
     try {
       const query = await db(tbName)
-        .where((builder) => {
-          builder.where({ name }).orWhere({ code });
-        })
+        .where({ code })
         .whereNot({ id })
         .where("cate_show", 0)
         .first();

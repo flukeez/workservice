@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import {
   Alert,
   Button,
@@ -17,6 +16,8 @@ import {
   equipStatusYup,
 } from "@/validations/equipstatus.schema";
 import type { IEquipStatusForm } from "@/types/IEquipStatus";
+import AlertSuccessDialog from "../common/AlertSuccessDialog";
+import AlertErrorDialog from "../common/AlertErrorDialog";
 
 interface EquipStatusFormProps {
   onClose: () => void;
@@ -38,27 +39,23 @@ export default function EquipStatusForm({ onClose, id }: EquipStatusFormProps) {
   });
   const [showAlert, setShowAlert] = useState(false);
   const onSubmit: SubmitHandler<IEquipStatusForm> = async (formData) => {
+    setShowAlert(false);
+
     try {
       const { data } = await mutationSave.mutateAsync(formData);
-      if (data.result) {
-        setShowAlert(false);
-        Swal.fire({
-          icon: "success",
-          title: "บันทึกข้อมูลสําเร็จ",
-        }).then((results) => {
-          if (results.isConfirmed) {
-            onClose();
-          }
-        });
-      } else {
+      console.log(data.result);
+      if (!data.result) {
         setShowAlert(true);
+        return true;
       }
+
+      const isConfirmed = await AlertSuccessDialog({
+        title: "บันทึกข้อมูลสำเร็จ",
+      });
+      if (isConfirmed) onClose();
     } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
+      await AlertErrorDialog({
+        html: "บันทึกข้อมูลไม่สำเร็จ ให้ลองออกจากระบบ แล้วเข้าสู่ระบบใหม่",
       });
     }
   };
@@ -85,7 +82,6 @@ export default function EquipStatusForm({ onClose, id }: EquipStatusFormProps) {
       <Stack>
         <TextInput
           label="ชื่อสถานะอุปกรณ์"
-          placeholder="กรอกชื่อสถานะอุปกรณ์"
           {...register("name")}
           error={errors.name?.message}
           required
