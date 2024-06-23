@@ -1,11 +1,8 @@
-import { promises as fsPromises } from "fs";
 import path from "path";
+import { promises as fsPromises } from "fs";
+import type { IFile } from "@/types/FileUploadType";
 
-interface FileUpload {
-  filename: string;
-  data: Buffer;
-}
-export const saveFile = async (folder: string, file: FileUpload) => {
+export const saveFile = async (folder: string, file: IFile) => {
   const extension = path.extname(file.filename);
   const filename =
     Date.now() + "-" + Math.round(Math.random() * 1e9) + extension;

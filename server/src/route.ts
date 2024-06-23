@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 
-import CustomerController from "./controllers/CustomerController";
 import FacultyController from "./controllers/FacultyController";
+import UserPositionController from "./controllers/UserPositionController";
 import IssueController from "./controllers/IssueController";
 import PositionController from "./controllers/PositionController";
 import PriorityController from "./controllers/PriorityController";
@@ -15,6 +15,7 @@ import CategoryController from "./controllers/CategoryController";
 import EquipStatusController from "./controllers/EquipStatusController";
 import EquipmentController from "./controllers/EquipmentController";
 import LoginController from "./controllers/LoginController";
+import RequestController from "./controllers/RequestController";
 
 const routes = async (fastify: FastifyInstance) => {
   //DEFAULT ROUTE
@@ -27,7 +28,6 @@ const routes = async (fastify: FastifyInstance) => {
     return "Hello API";
   });
 
-  fastify.register(CustomerController, { prefix: "/api/customers" });
   fastify.register(FacultyController, { prefix: "/api/facultys" });
   fastify.register(IssueController, { prefix: "/api/issues" });
   fastify.register(PositionController, { prefix: "/api/positions" });
@@ -42,6 +42,8 @@ const routes = async (fastify: FastifyInstance) => {
   fastify.register(TumbolController, { prefix: "/api/tumbols" });
   fastify.register(ImageController, { prefix: "/api/images" });
   fastify.register(LoginController, { prefix: "/api/login" });
+  fastify.register(UserPositionController, { prefix: "/api/user_positions" });
+  fastify.register(RequestController, { prefix: "/api/requests" });
 };
 
 export default routes;

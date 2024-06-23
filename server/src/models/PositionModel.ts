@@ -22,7 +22,6 @@ export class PositionModel {
     try {
       const result = await baseQuery
         .clone()
-        .select(`${tbName}.id`, `${tbName}.name`)
         .orderBy(sortField, sortDirection)
         .offset(offset)
         .limit(limit);

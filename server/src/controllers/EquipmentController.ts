@@ -22,7 +22,6 @@ export default async function EquipmentController(fastify: FastifyInstance) {
   fastify.post("/create", async (req, res) => {
     let data = req.body as IEquipmentForm;
     const checkDuplicate = await equipmentModel.checkDuplicate(
-      data.name,
       data.code,
       data.serial
     );
@@ -42,7 +41,6 @@ export default async function EquipmentController(fastify: FastifyInstance) {
     let data = req.body as IEquipmentForm;
     const { id } = req.params as { id: number };
     const checkDuplicate = await equipmentModel.checkDuplicate(
-      data.name,
       data.code,
       data.serial,
       id

@@ -132,19 +132,12 @@ export class EquipmentModel {
       throw new Error("Internal server error");
     }
   }
-  async checkDuplicate(
-    name: string,
-    code: string,
-    serial: string,
-    id = 0
-  ): Promise<number> {
+  async checkDuplicate(code: string, serial: string, id = 0): Promise<number> {
     try {
       const query = await db(tbName)
-        .where((builder) => {
-          if (serial) builder.where({ serial });
-          builder.orWhere({ code, name });
-        })
-        .whereNot({ id })
+        .where({ code })
+        .orWhere({ serial })
+        .andWhereNot({ id })
         .first();
       return query ? 1 : 0;
     } catch (error) {

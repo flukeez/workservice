@@ -1,3 +1,7 @@
+import type { BaseFilter } from "./BaseFilter";
+import type { IFile } from "./FileUploadType";
+
+export interface IRequestQuery extends BaseFilter {}
 export type IRequestForm = {
   id?: number;
   name: string;
@@ -5,8 +9,9 @@ export type IRequestForm = {
   issue_sub_id: string | null;
   priority_id: string;
   faculty_id: string;
-  user_id: string;
-  equip_id: string[];
+  user_id: number;
+  "equip_id[]": string[];
   details: string | null;
-  image: unknown[] | null;
+  "image[]": IFile[] | null | string[];
+  image_old?: string[] | null;
 };

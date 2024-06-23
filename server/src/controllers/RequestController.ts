@@ -1,11 +1,30 @@
 import { RequestModel } from "@/models/RequestModel";
-import { IRequestForm } from "@/types/Request";
+import type { IRequestForm, IRequestQuery } from "@/types/Request";
 import { IUserToken } from "@/types/UserType";
+import { saveFile } from "@/utils/imagefile";
 import { FastifyInstance } from "fastify";
 
 export default async function RequestController(fastify: FastifyInstance) {
   const requestModel = new RequestModel();
-  fastify.post("/", async (req, res) => {
+  //find many
+  fastify.get("/", async (req, res) => {
+    const query = req.query as IRequestQuery;
+    const user = req.user as IUserToken;
+    const { result, totalItem, totalPage } = await requestModel.findMany(
+      query,
+      user.id
+    );
+    res.send({ rows: result, totalItem, totalPage });
+  });
+
+  //find by id
+  fastify.get("/:id", async (req, res) => {
+    const { id } = req.params as { id: number };
+    const result = await requestModel.findById(id);
+    res.send(result);
+  });
+
+  fastify.post("/create", async (req, res) => {
     const data = req.body as IRequestForm;
     const user = req.user as IUserToken;
     //ถ้าหน่วยงานไม่ตรงกับที่เลือกมา
@@ -21,7 +40,25 @@ export default async function RequestController(fastify: FastifyInstance) {
         result: 0,
       });
     }
-    const newData = { ...data, faculty_id };
+    //เก็บค่าหน่วยวยงาน
+    let newData = { ...data, faculty_id, user_id: user.id };
+    //อัพโหลดรูป
+    if (Array.isArray(newData["image[]"])) {
+      const imageArray = await Promise.all(
+        newData["image[]"].map(async (image, key) => {
+          //ถ้าเป็นรูปให้อัพโหลด
+          if (typeof image === "object") {
+            return await saveFile("request", image);
+          } else {
+            //ถ้าไม่ใช่รูปจะเป็นชื่อรูปให้เก็บไว้เหมือนเดิม
+            return image;
+          }
+        })
+      );
+
+      newData = { ...newData, "image[]": imageArray };
+    }
+
     const result = await requestModel.create(newData);
     res.send({ result });
   });
