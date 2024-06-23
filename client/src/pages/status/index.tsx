@@ -1,27 +1,22 @@
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import {
-  Button,
-  Card,
-  Drawer,
-  Grid,
-  Group,
-  Highlight,
-  Menu,
-  ScrollArea,
-} from "@mantine/core";
+import { Card, Drawer, Grid, Group, Highlight, Text } from "@mantine/core";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { IconChevronDown, IconPlus } from "@tabler/icons-react";
 import { useDebouncedValue } from "@mantine/hooks";
-import { useStatusStore } from "@/stores/useStatusStore";
 import { useStatusDelete, useStatuses } from "@/hooks/status";
+import { useStatusStore } from "@/stores/useStatusStore";
 import InputSearch from "@/components/common/InputSearch";
 import PageHeader from "@/components/common/PageHeader";
 import StatusForm from "@/components/status/StatusForm";
+import ConfirmDeleteDialog from "@/components/common/ConfirmDeleteDialog";
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
+import ButtonNew from "@/components/common/ButtonNew";
+import { PAGE_SIZE } from "@/config";
+import ButtonDelete from "@/components/common/ButtonDelete";
+import ButtonEdit from "@/components/common/ButtonEdit";
 
 const title = "สถานะงาน";
 const listItems = [{ title: title, href: "#" }];
-const Page_size = 10;
 
 export default function Status() {
   const statusStore = useStatusStore();
@@ -38,7 +33,6 @@ export default function Status() {
       sortField: statusStore.sortField,
       sortDirection: statusStore.sortDirection,
       page: statusStore.page - 1,
-      limit: Page_size,
     };
     return condition;
   };
@@ -53,7 +47,7 @@ export default function Status() {
     setRowId(id);
     setOpened(true);
   };
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
     const isConfirmed = await ConfirmDeleteDialog({
       html: `คุณต้องการลบรายการนี่ใช่หรือไม่<p>${name}</p>`,
     });
@@ -132,80 +126,72 @@ export default function Status() {
             </Grid.Col>
           </Grid>
         </Card.Section>
-        <ScrollArea>
-          <DataTable
-            mt="md"
-            withTableBorder
-            borderRadius="sm"
-            withColumnBorders
-            striped
-            highlightOnHover
-            records={data?.rows}
-            columns={[
-              {
-                accessor: "name",
-                title: "ชื่อสถานะงาน",
-                width: "35%",
-                sortable: true,
-                render({ name }) {
-                  return (
-                    <Highlight highlight={statusStore.txtSearch}>
-                      {String(name)}
-                    </Highlight>
-                  );
-                },
+        <DataTable
+          mt="md"
+          withTableBorder
+          borderRadius="sm"
+          withColumnBorders
+          striped
+          highlightOnHover
+          records={data?.rows}
+          columns={[
+            {
+              accessor: "name",
+              title: (
+                <Text ml={24} fw={700}>
+                  ชื่อสถานะงาน
+                </Text>
+              ),
+              width: "35%",
+              sortable: true,
+              render({ name }) {
+                return (
+                  <Highlight size="sm" highlight={statusStore.txtSearch}>
+                    {String(name)}
+                  </Highlight>
+                );
               },
-              {
-                accessor: "id",
-                title: "จัดการ",
-                width: "0%",
-                textAlign: "center",
-                render: ({ id }) => (
-                  <Group justify="center" gap={3} wrap="nowrap">
-                    <Button
-                      variant="subtle"
-                      size="compact-md"
-                      onClick={() => handleUpdate(String(id))}
-                    >
-                      <IconEdit size={"18"} />
-                    </Button>
-                    <Button
-                      variant="subtle"
-                      size="compact-md"
-                      color="red"
-                      onClick={() => handleDelete(String(id), String(name))}
-                    >
-                      <IconTrash size={"18"} />
-                    </Button>
-                  </Group>
-                ),
-              },
-            ]}
-            sortStatus={sortStatus}
-            onSortStatusChange={(sort) => [
-              setSortStatus(sort),
-              statusStore.setFilter({
-                ...statusStore,
-                sortField: sort.columnAccessor,
-                sortDirection: sort.direction,
-              }),
-            ]}
-            totalRecords={data?.totalItem || 0}
-            recordsPerPage={PAGE_SIZE}
-            page={statusStore.page}
-            onPageChange={(p: number) =>
-              statusStore.setFilter({ ...statusStore, page: p })
-            }
-            paginationText={({ from, to, totalRecords }) =>
-              `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
-            }
-            paginationActiveBackgroundColor="gray"
-            noRecordsText="ไม่พบรายการ"
-            noRecordsIcon={<></>}
-            minHeight={120}
-            fetching={isLoading}
-          />
-        </ScrollArea>
+            },
+            {
+              accessor: "id",
+              title: "จัดการ",
+              width: "0%",
+              textAlign: "center",
+              render: ({ id, name }) => (
+                <Group justify="center" gap={3} wrap="nowrap">
+                  <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                  <ButtonDelete
+                    onClick={() => handleDelete(String(id), String(name))}
+                  />
+                </Group>
+              ),
+            },
+          ]}
+          sortStatus={sortStatus}
+          onSortStatusChange={(sort) => [
+            setSortStatus(sort),
+            statusStore.setFilter({
+              ...statusStore,
+              sortField: sort.columnAccessor,
+              sortDirection: sort.direction,
+            }),
+          ]}
+          totalRecords={data?.totalItem || 0}
+          recordsPerPage={PAGE_SIZE}
+          page={statusStore.page}
+          onPageChange={(p: number) =>
+            statusStore.setFilter({ ...statusStore, page: p })
+          }
+          paginationText={({ from, to, totalRecords }) =>
+            `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
+          }
+          noRecordsText="ไม่พบรายการ"
+          noRecordsIcon={<></>}
+          minHeight={120}
+          fetching={isLoading}
+          pinLastColumn
+          pinFirstColumn
+        />
       </Card>
     </>
   );

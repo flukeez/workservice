@@ -20,7 +20,7 @@ export default function DropdownCategory({
   const condition: IConditionFilter = {
     txtSearch: "",
     page: 0,
-    limit: 1000,
+    limit: "1000",
     sortDirection: "asc",
     sortField: "name",
   };
@@ -30,7 +30,6 @@ export default function DropdownCategory({
   return (
     <Select
       label={label}
-      placeholder="เลือกหมวดหมู่อุปกรณ์"
       value={category?.toString() || null}
       onChange={setCategory}
       data={

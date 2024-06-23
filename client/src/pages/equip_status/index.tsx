@@ -1,18 +1,10 @@
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  Drawer,
-  Grid,
-  Group,
-  Highlight,
-  Text,
-} from "@mantine/core";
+import { Card, Drawer, Grid, Group, Highlight, Text } from "@mantine/core";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
+
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useEquipStatues, useEquipStatusDelete } from "@/hooks/equip_status";
-import { useEquipStatusStore } from "@/stores/useEquipStatusStore";
+
 import InputSearch from "@/components/common/InputSearch";
 import PageHeader from "@/components/common/PageHeader";
 import EquipStatusForm from "@/components/equip_status/EquipStatusForm";
@@ -21,6 +13,10 @@ import AlertErrorDialog from "@/components/common/AlertErrorDialog";
 import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
 import ButtonNew from "@/components/common/ButtonNew";
 import { PAGE_SIZE } from "@/config";
+
+import { useEquipStatusStore } from "@/stores/useEquipStatusStore";
+import ButtonEdit from "@/components/common/ButtonEdit";
+import ButtonDelete from "@/components/common/ButtonDelete";
 
 const title = "สถานะอุปกรณ์";
 const listItems = [{ title: title, href: "#" }];
@@ -148,7 +144,7 @@ export default function EquipStatus() {
               sortable: true,
               render({ name }) {
                 return (
-                  <Highlight highlight={equipStatusStore.txtSearch}>
+                  <Highlight size="sm" highlight={equipStatusStore.txtSearch}>
                     {String(name)}
                   </Highlight>
                 );
@@ -159,23 +155,12 @@ export default function EquipStatus() {
               title: "จัดการ",
               width: "0%",
               textAlign: "center",
-              render: ({ id }) => (
+              render: ({ id, name }) => (
                 <Group justify="center" gap={3} wrap="nowrap">
-                  <Button
-                    variant="subtle"
-                    size="compact-md"
-                    onClick={() => handleUpdate(String(id))}
-                  >
-                    <IconEdit size={"18"} />
-                  </Button>
-                  <Button
-                    variant="subtle"
-                    size="compact-md"
-                    color="red"
+                  <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                  <ButtonDelete
                     onClick={() => handleDelete(String(id), String(name))}
-                  >
-                    <IconTrash size={"18"} />
-                  </Button>
+                  />
                 </Group>
               ),
             },
@@ -198,7 +183,6 @@ export default function EquipStatus() {
           paginationText={({ from, to, totalRecords }) =>
             `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
           }
-          paginationActiveBackgroundColor="gray"
           noRecordsText="ไม่พบรายการ"
           noRecordsIcon={<></>}
           minHeight={120}

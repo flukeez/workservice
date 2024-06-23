@@ -100,6 +100,7 @@ export default function TableEquipment({
   }, [equip]);
 
   useEffect(() => {
+    console.log(selectRowID);
     if (data?.rows) {
       const initialSelect = data.rows.filter((row: IEquip) =>
         selectRowID.includes(row.id.toString())
@@ -150,12 +151,14 @@ export default function TableEquipment({
             title: "...",
             textAlign: "center",
             width: "0%",
-            render({ id }) {
+            render({ id, name }) {
               return (
                 <Button
                   size="xs"
                   onClick={() => {
-                    setEquip([String(id)]), onClose();
+                    setEquip([String(id)]),
+                      onClose(),
+                      setEquipName([String(name)]);
                   }}
                 >
                   เลือก
@@ -186,6 +189,8 @@ export default function TableEquipment({
         allRecordsSelectionCheckboxProps={{
           onClick: () => handleClickSelectAll(),
         }}
+        pinLastColumn
+        pinFirstColumn
       />
 
       <Group justify="right" mt="md">

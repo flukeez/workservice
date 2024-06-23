@@ -75,6 +75,7 @@ export default function MenuItem({
                   autoContrast
                   label={subItem.title}
                   component={Link}
+                  py="sm"
                   to={subItem.path}
                   className={cx(classes.subnavlink, {
                     [classes.activeNavLink]:

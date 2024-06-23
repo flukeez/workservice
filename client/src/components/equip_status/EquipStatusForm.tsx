@@ -18,6 +18,7 @@ import {
 import type { IEquipStatusForm } from "@/types/IEquipStatus";
 import AlertSuccessDialog from "../common/AlertSuccessDialog";
 import AlertErrorDialog from "../common/AlertErrorDialog";
+import ButtonSave from "../common/ButtonSave";
 
 interface EquipStatusFormProps {
   onClose: () => void;
@@ -33,7 +34,6 @@ export default function EquipStatusForm({ onClose, id }: EquipStatusFormProps) {
     formState: { errors },
     getValues,
   } = useForm({
-    mode: "onChange",
     resolver: yupResolver(equipStatusYup),
     defaultValues: equipStatusInitialValues,
   });
@@ -79,21 +79,23 @@ export default function EquipStatusForm({ onClose, id }: EquipStatusFormProps) {
           ชื่อ <b>{getValues("name")}</b> มีแล้วในะรบบ ! กรุณาเปลี่ยนชื่อใหม่
         </Alert>
       )}
-      <Stack>
-        <TextInput
-          label="ชื่อสถานะอุปกรณ์"
-          {...register("name")}
-          error={errors.name?.message}
-          required
-        />
+      <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>
+        <Stack>
+          <TextInput
+            label="ชื่อสถานะอุปกรณ์"
+            {...register("name")}
+            error={errors.name?.message}
+            withAsterisk
+          />
 
-        <Group justify="right" mt={20}>
-          <Button color="gray" onClick={onClose}>
-            ยกเลิก
-          </Button>
-          <Button onClick={handleSubmit(onSubmit)}>บันทึก</Button>
-        </Group>
-      </Stack>
+          <Group justify="right" mt={20}>
+            <Button color="gray" onClick={onClose}>
+              ยกเลิก
+            </Button>
+            <ButtonSave loading={mutationSave.isPending} />
+          </Group>
+        </Stack>
+      </form>
     </>
   );
 }

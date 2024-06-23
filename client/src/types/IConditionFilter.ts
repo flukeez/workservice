@@ -3,5 +3,5 @@ export interface IConditionFilter {
   page: number;
   sortField: string;
   sortDirection: string;
-  limit?: number;
+  limit?: string;
 }

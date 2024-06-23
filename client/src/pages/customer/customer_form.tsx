@@ -43,7 +43,6 @@ export default function CustomerFormPage() {
     formState: { errors },
     control,
   } = useForm({
-    mode: "onChange",
     resolver: yupResolver(customerYup),
   });
 

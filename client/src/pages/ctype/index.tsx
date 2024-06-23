@@ -44,7 +44,7 @@ export default function Ctype() {
     setRowId(id);
     setOpened(true);
   };
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
     await axiosAuth.delete("/ctype/" + id);
   };
 

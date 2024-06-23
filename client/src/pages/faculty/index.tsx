@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import {
@@ -9,17 +8,22 @@ import {
   Grid,
   Group,
   Highlight,
-  Menu,
   ScrollArea,
+  Text,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconChevronDown, IconFolderOpen, IconPlus } from "@tabler/icons-react";
+import { IconPlus, IconSearch } from "@tabler/icons-react";
 import PageHeader from "@/components/common/PageHeader";
 import InputSearch from "@/components/common/InputSearch";
 import FacultyForm from "@/components/faculty/FacultyForm";
 import { useFacultyDelete, useFacultys } from "@/hooks/faculty";
 import { useFacultyStore } from "@/stores/useFacultyStore";
 import { PAGE_SIZE } from "@/config";
+import ButtonEdit from "@/components/common/ButtonEdit";
+import ButtonDelete from "@/components/common/ButtonDelete";
+import ConfirmDeleteDialog from "@/components/common/ConfirmDeleteDialog";
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
 
 const title = "หน่วยงาน";
 const listItems = [{ title: title, href: "#" }];
@@ -38,7 +42,6 @@ export default function Faculty() {
     const condition = {
       txtSearch: facultyStore.txtSearch,
       page: facultyStore.page - 1,
-      limit: PAGE_SIZE,
       sortField: sortStatus.columnAccessor,
       sortDirection: sortStatus.direction,
     };
@@ -56,7 +59,7 @@ export default function Faculty() {
     setRowId(id);
     setOpened(true);
   };
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
     const isConfirmed = await ConfirmDeleteDialog({
       html: `คุณต้องการลบรายการนี่ใช่หรือไม่<p>${name}</p>`,
     });
@@ -148,12 +151,12 @@ export default function Faculty() {
             columns={[
               {
                 accessor: "name",
-                title: "ชื่อหน่วยงาน",
+                title: <Text fw={700}>ชื่อหน่วยงาน</Text>,
                 width: "45%",
                 sortable: true,
                 render({ name }) {
                   return (
-                    <Highlight highlight={facultyStore.txtSearch}>
+                    <Highlight size="sm" highlight={facultyStore.txtSearch}>
                       {String(name)}
                     </Highlight>
                   );
@@ -161,57 +164,37 @@ export default function Faculty() {
               },
               {
                 accessor: "faculty_name",
-                title: "หน่วยงงานต้นสังกัด",
+                title: <Text fw={700}>หน่วยงงานต้นสังกัด</Text>,
                 width: "20%",
                 sortable: true,
                 render({ faculty_name }) {
                   return (
-                    <Highlight highlight={facultyStore.txtSearch}>
+                    <Highlight size="sm" highlight={facultyStore.txtSearch}>
                       {String(faculty_name || "")}
                     </Highlight>
                   );
                 },
               },
               {
-                accessor: "org_chart",
-                title: "แผนผังองค์กร",
-                width: "10%",
-                textAlign: "center",
-                render({ id }) {
-                  return (
-                    <Button
-                      leftSection={<IconFolderOpen size="1.25rem" />}
-                      color="cyan"
-                      size="xs"
-                      onClick={() => navigate("organize_chart/" + id)}
-                    >
-                      เรียกดู
-                    </Button>
-                  );
-                },
-              },
-              {
                 accessor: "id",
-                title: "จัดการ",
+                title: <Text fw={700}>จัดการ</Text>,
                 width: "0%",
                 textAlign: "center",
                 render: ({ id }) => (
                   <Group justify="center" gap={3} wrap="nowrap">
                     <Button
+                      color="cyan"
                       variant="subtle"
                       size="compact-md"
-                      onClick={() => handleUpdate(String(id))}
+                      onClick={() => navigate("user_position/" + id)}
                     >
-                      <IconEdit size={"18"} />
+                      <IconSearch size="1.25rem" />
                     </Button>
-                    <Button
-                      variant="subtle"
-                      size="compact-md"
-                      color="red"
+
+                    <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                    <ButtonDelete
                       onClick={() => handleDelete(String(id), String(name))}
-                    >
-                      <IconTrash size={"18"} />
-                    </Button>
+                    />
                   </Group>
                 ),
               },
@@ -234,11 +217,12 @@ export default function Faculty() {
             paginationText={({ from, to, totalRecords }) =>
               `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
             }
-            paginationActiveBackgroundColor="gray"
             noRecordsText="ไม่พบรายการ"
             noRecordsIcon={<></>}
             minHeight={120}
             fetching={isLoading}
+            pinLastColumn
+            pinFirstColumn
           />
         </ScrollArea>
       </Card>

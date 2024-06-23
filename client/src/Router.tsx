@@ -6,10 +6,11 @@ import ProtectRoute from "./components/protect_route/ProtectRoute";
 import PublicRoute from "./components/protect_route/PublicRoute";
 
 const RequestForm = lazy(() => import("@/pages/request/request_form"));
+const Request = lazy(() => import("@/pages/request"));
 const Equipment = lazy(() => import("@/pages/equipment"));
 const EquipmentForm = lazy(() => import("@/pages/equipment/equipment_form"));
 const Faculty = lazy(() => import("@/pages/faculty"));
-const OrganizeChart = lazy(() => import("@/pages/faculty/organize_chart"));
+const UserPosition = lazy(() => import("@/pages/user_position"));
 const Issue = lazy(() => import("@/pages/issue"));
 const Position = lazy(() => import("@/pages/position"));
 const Priority = lazy(() => import("@/pages/priority"));
@@ -33,11 +34,16 @@ export function Router() {
         <Route element={<ProtectRoute />}>
           <Route element={<DashboardLayout />}>
             <Route path="/" element={<Faculty />} />
+            <Route path="/request">
+              <Route index element={<Request />} />
+              <Route path="new" element={<RequestForm />} />
+              <Route path=":id" element={<RequestForm />} />
+            </Route>
             <Route path="/service_request" element={<RequestForm />} />
             <Route path="/home" element={<Faculty />} />
             <Route path="/faculty">
               <Route index element={<Faculty />} />
-              <Route path="organize_chart/:id" element={<OrganizeChart />} />
+              <Route path="user_position/:id" element={<UserPosition />} />
             </Route>
             <Route path="/issue" element={<Issue />} />
             <Route path="/position" element={<Position />} />

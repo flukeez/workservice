@@ -1,27 +1,31 @@
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import {
-  Button,
   Card,
   Drawer,
   Grid,
   Group,
   Highlight,
-  Menu,
   ScrollArea,
+  Text,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { IconCheck, IconChevronDown, IconPlus } from "@tabler/icons-react";
+import { IconCheck } from "@tabler/icons-react";
 import InputSearch from "@/components/common/InputSearch";
 import PageHeader from "@/components/common/PageHeader";
 import { usePositionStore } from "@/stores/usePositionStore";
 import { usePositionDelete, usePositions } from "@/hooks/position";
 import PositionForm from "@/components/position/PositionForm";
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
+import ButtonNew from "@/components/common/ButtonNew";
+import ButtonEdit from "@/components/common/ButtonEdit";
+import ButtonDelete from "@/components/common/ButtonDelete";
+import { PAGE_SIZE } from "@/config";
+import ConfirmDeleteDialog from "@/components/common/ConfirmDeleteDialog";
 
 const title = "ตำแหน่งงาน";
 const listItems = [{ title: title, href: "#" }];
-const Page_size = 10;
 export default function Position() {
   const positionStore = usePositionStore();
   const [debounce] = useDebouncedValue(positionStore.txtSearch, 500);
@@ -37,7 +41,6 @@ export default function Position() {
       sortField: positionStore.sortField,
       sortDirection: positionStore.sortDirection,
       page: positionStore.page - 1,
-      limit: Page_size,
     };
     return condition;
   };
@@ -52,7 +55,7 @@ export default function Position() {
     setRowId(id);
     setOpened(true);
   };
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
     const isConfirmed = await ConfirmDeleteDialog({
       html: `คุณต้องการลบรายการนี่ใช่หรือไม่<p>${name}</p>`,
     });
@@ -143,12 +146,12 @@ export default function Position() {
             columns={[
               {
                 accessor: "name",
-                title: "ชื่อตำแหน่ง",
+                title: <Text fw={700}>ชื่อตำแหน่ง</Text>,
                 width: "35%",
                 sortable: true,
                 render({ name }) {
                   return (
-                    <Highlight highlight={positionStore.txtSearch}>
+                    <Highlight size="sm" highlight={positionStore.txtSearch}>
                       {String(name)}
                     </Highlight>
                   );
@@ -156,7 +159,7 @@ export default function Position() {
               },
               {
                 accessor: "super_admin",
-                title: "สิทธิ์หัวหน้างาน",
+                title: <Text fw={700}>สิทธิ์หัวหน้างาน</Text>,
                 textAlign: "center",
                 sortable: true,
                 width: "5%",
@@ -166,26 +169,15 @@ export default function Position() {
               },
               {
                 accessor: "id",
-                title: "จัดการ",
+                title: <Text fw={700}>จัดการ</Text>,
                 width: "0%",
                 textAlign: "center",
                 render: ({ id }) => (
                   <Group justify="center" gap={3} wrap="nowrap">
-                    <Button
-                      variant="subtle"
-                      size="compact-md"
-                      onClick={() => handleUpdate(String(id))}
-                    >
-                      <IconEdit size={"18"} />
-                    </Button>
-                    <Button
-                      variant="subtle"
-                      size="compact-md"
-                      color="red"
+                    <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                    <ButtonDelete
                       onClick={() => handleDelete(String(id), String(name))}
-                    >
-                      <IconTrash size={"18"} />
-                    </Button>
+                    />
                   </Group>
                 ),
               },
@@ -208,11 +200,12 @@ export default function Position() {
             paginationText={({ from, to, totalRecords }) =>
               `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
             }
-            paginationActiveBackgroundColor="gray"
             noRecordsText="ไม่พบรายการ"
             noRecordsIcon={<></>}
             minHeight={120}
             fetching={isLoading}
+            pinLastColumn
+            pinFirstColumn
           />
         </ScrollArea>
       </Card>

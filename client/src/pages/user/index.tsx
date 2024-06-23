@@ -1,29 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import {
-  Button,
-  Card,
-  Grid,
-  Group,
-  Highlight,
-  Menu,
-  ScrollArea,
-  Text,
-} from "@mantine/core";
+import { Card, Grid, Group, Highlight, ScrollArea, Text } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconChevronDown, IconPlus } from "@tabler/icons-react";
 import { timeFormNow } from "@/utils/mydate";
 import { useUserStore } from "@/stores/useUserStore";
 import { useUserDelete, useUsers } from "@/hooks/user";
 import InputSearch from "@/components/common/InputSearch";
 import PageHeader from "@/components/common/PageHeader";
 import UserInfo from "@/components/user/UserInfo";
+import ConfirmDeleteDialog from "@/components/common/ConfirmDeleteDialog";
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
+import ButtonNew from "@/components/common/ButtonNew";
+import { PAGE_SIZE } from "@/config";
+import ButtonDelete from "@/components/common/ButtonDelete";
+import ButtonEdit from "@/components/common/ButtonEdit";
 
 const title = "รายชื่อผู้ใช้";
 const listItems = [{ title: title, href: "#" }];
-const Page_size = 10;
 
 export default function User() {
   const navigate = useNavigate();
@@ -39,7 +34,6 @@ export default function User() {
       sortField: userStore.sortField,
       sortDirection: userStore.sortDirection,
       page: userStore.page - 1,
-      limit: Page_size,
     };
     return condition;
   };
@@ -51,7 +45,7 @@ export default function User() {
   const handleUpdate = (id: string) => {
     navigate("/user/" + id);
   };
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
     const isConfirmed = await ConfirmDeleteDialog({
       html: `คุณต้องการลบรายการนี่ใช่หรือไม่<p>${name}</p>`,
     });
@@ -122,7 +116,7 @@ export default function User() {
             columns={[
               {
                 accessor: "firstname",
-                title: "ชื่อ - นามสกุล",
+                title: <Text fw={700}>ชื่อ - นามสกุล</Text>,
                 width: "45%",
                 sortable: true,
                 render({ firstname, surname, nickname, image }) {
@@ -139,7 +133,7 @@ export default function User() {
               },
               {
                 accessor: "username",
-                title: "ชื่อผู้ใช้ ",
+                title: <Text fw={700}>ชื่อผู้ใช้</Text>,
                 width: "20%",
                 sortable: true,
                 render({ username }) {
@@ -152,14 +146,14 @@ export default function User() {
               },
               {
                 accessor: "phone",
-                title: "เบอร์โทรศัพท์",
+                title: <Text fw={700}>เบอร์โทรศัพท์</Text>,
                 width: "10%",
                 textAlign: "center",
                 sortable: true,
               },
               {
                 accessor: "last_login",
-                title: "ใช้งานล่าสุด",
+                title: <Text fw={700}>ใช้งานล่าสุด</Text>,
                 sortable: true,
                 width: "10%",
                 textAlign: "center",
@@ -171,26 +165,15 @@ export default function User() {
               },
               {
                 accessor: "id",
-                title: "จัดการ",
+                title: <Text fw={700}>จัดการ</Text>,
                 width: "0%",
                 textAlign: "center",
                 render: ({ id }) => (
                   <Group justify="center" gap={3} wrap="nowrap">
-                    <Button
-                      variant="subtle"
-                      size="compact-md"
-                      onClick={() => handleUpdate(String(id))}
-                    >
-                      <IconEdit size={"18"} />
-                    </Button>
-                    <Button
-                      variant="subtle"
-                      size="compact-md"
-                      color="red"
+                    <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                    <ButtonDelete
                       onClick={() => handleDelete(String(id), String(name))}
-                    >
-                      <IconTrash size={"18"} />
-                    </Button>
+                    />
                   </Group>
                 ),
               },
@@ -213,11 +196,12 @@ export default function User() {
             paginationText={({ from, to, totalRecords }) =>
               `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
             }
-            paginationActiveBackgroundColor="gray"
             noRecordsText="ไม่พบรายการ"
             noRecordsIcon={<></>}
             minHeight={120}
             fetching={isLoading}
+            pinLastColumn
+            pinFirstColumn
           />
         </ScrollArea>
       </Card>

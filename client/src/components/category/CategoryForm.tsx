@@ -7,7 +7,7 @@ import {
   Stack,
   TextInput,
 } from "@mantine/core";
-import { IconAlertCircle, IconDeviceFloppy } from "@tabler/icons-react";
+import { IconAlertCircle } from "@tabler/icons-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useCategory, useCategorySave } from "@/hooks/category";
@@ -16,8 +16,10 @@ import {
   categoryYup,
 } from "@/validations/category.schema";
 import type { ICategoryForm } from "@/types/ICategory";
+
 import AlertSuccessDialog from "../common/AlertSuccessDialog";
 import AlertErrorDialog from "../common/AlertErrorDialog";
+import ButtonSave from "../common/ButtonSave";
 
 interface CategoryFormProps {
   onClose: () => void;
@@ -33,7 +35,6 @@ export default function CategoryForm({ onClose, id }: CategoryFormProps) {
     formState: { errors },
     getValues,
   } = useForm({
-    mode: "onChange",
     resolver: yupResolver(categoryYup),
     defaultValues: categoryInitialValues,
   });
@@ -90,16 +91,14 @@ export default function CategoryForm({ onClose, id }: CategoryFormProps) {
             label="ชื่อประเภทอุปกรณ์"
             {...register("name")}
             error={errors.name?.message}
-            required
+            withAsterisk
           />
 
           <Group justify="right" mt={20}>
             <Button color="gray" onClick={onClose}>
               ยกเลิก
             </Button>
-            <Button leftSection={<IconDeviceFloppy />} type="submit">
-              บันทึกข้อมูล
-            </Button>
+            <ButtonSave loading={mutationSave.isPending} />
           </Group>
         </Stack>
       </form>

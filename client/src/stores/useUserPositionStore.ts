@@ -18,10 +18,10 @@ const initialState: IFilter = {
   txtSearch: "",
   page: 1,
   sortDirection: "asc",
-  sortField: "firstname",
+  sortField: "tb_user_position.id",
 };
 
-export const useOrgChartStore = create<FilterStore>()(
+export const useUserPositionStore = create<FilterStore>()(
   (persist as MyPersist)(
     (set): FilterStore => ({
       ...initialState,
@@ -29,7 +29,7 @@ export const useOrgChartStore = create<FilterStore>()(
       resetFilter: () => set(() => ({ ...initialState })),
     }),
     {
-      name: "org-chart-filter",
+      name: "user-position-filter",
       version: 1,
     }
   )

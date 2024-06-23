@@ -9,6 +9,7 @@ interface FacultyProps {
   label?: string;
   error?: string;
   required?: boolean;
+  placeholder?: string;
 }
 export default function DropdownFaculty({
   faculty,
@@ -16,11 +17,12 @@ export default function DropdownFaculty({
   label,
   error,
   required,
+  placeholder,
 }: FacultyProps) {
   const condition: IConditionFilter = {
     txtSearch: "",
     page: 0,
-    limit: 1000,
+    limit: "1000",
     sortDirection: "asc",
     sortField: "name",
   };
@@ -29,9 +31,9 @@ export default function DropdownFaculty({
   return (
     <Select
       label={label}
-      placeholder="เลือกหน่วยงาน"
       value={faculty?.toString()}
       onChange={setFaculty}
+      placeholder={placeholder}
       data={
         data?.rows &&
         data.rows.map((field: IFaculty) => ({

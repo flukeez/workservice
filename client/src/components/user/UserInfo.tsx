@@ -4,7 +4,7 @@ interface UserInfoProps {
   firstname: unknown;
   surname: unknown;
   nickname: unknown;
-  image: unknown;
+  image?: unknown;
   highlight: string;
 }
 
@@ -25,7 +25,9 @@ export default function UserInfo({
   return (
     <Group wrap="nowrap">
       {imageIcon}
-      <Highlight highlight={highlight}>{name}</Highlight>
+      <Highlight size="sm" highlight={highlight}>
+        {name}
+      </Highlight>
     </Group>
   );
 }

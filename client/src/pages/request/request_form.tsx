@@ -1,12 +1,11 @@
-import ButtonFileUploadMultiple from "@/components/common/ButtonFileUploadMultiple";
-import ImageAlbumPreview from "@/components/common/ImageAlbumPreview";
-import PageHeader from "@/components/common/PageHeader";
-import ModalEquipment from "@/components/equipment/ModalEquipment";
-import DropdownIssue from "@/components/issue/DropdownIssue";
-import DropdownPriority from "@/components/priority/DropdownPriority";
-import type { IRequest } from "@/types/IRequest";
-import { requestInitialValues, requestYup } from "@/validations/request.schema";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { requestInitialValues, requestYup } from "@/validations/request.schema";
+import { useRequest, useRequestSave } from "@/hooks/request";
+import type { IRequest } from "@/types/IRequest";
+
 import {
   Button,
   Card,
@@ -18,8 +17,17 @@ import {
   TextInput,
 } from "@mantine/core";
 import { IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
-import { Controller, useForm } from "react-hook-form";
-import Swal from "sweetalert2";
+
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
+import ButtonFileUploadMultiple from "@/components/common/ButtonFileUploadMultiple";
+import ImageAlbumPreview from "@/components/common/ImageAlbumPreview";
+import PageHeader from "@/components/common/PageHeader";
+import ModalEquipment from "@/components/equipment/ModalEquipment";
+import DropdownIssue from "@/components/issue/DropdownIssue";
+import DropdownPriority from "@/components/priority/DropdownPriority";
+import { useEffect } from "react";
+import { convertToNumberOrZero } from "@/utils/mynumber";
 
 const title = "แจ้งซ่อม";
 const listItems = [{ title: title, href: "#" }];
@@ -29,6 +37,11 @@ const layout = {
   xs: 12,
 };
 export default function RequestForm() {
+  const navigate = useNavigate();
+  const mutationSave = useRequestSave();
+  const params = useParams();
+  const id = convertToNumberOrZero(params.id);
+  const { data, isLoading, setFilter } = useRequest(id);
   const handleNew = () => {};
   const {
     control,
@@ -39,17 +52,39 @@ export default function RequestForm() {
     reset,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
     resolver: yupResolver(requestYup),
     defaultValues: requestInitialValues,
   });
 
-  const onSubmit = (formData: IRequest) => {
-    console.log(formData);
+  const onSubmit = async (formData: IRequest) => {
+    try {
+      const { data } = await mutationSave.mutateAsync(formData);
+      if (data.result) {
+        const isConfirmed = await AlertSuccessDialog({
+          title: "บันทึกข้อมูลสำเร็จ",
+        });
+        if (isConfirmed) navigate("/request");
+      } else {
+        await AlertErrorDialog({
+          html: "มีข้อมูลอยู่แล้วในระบบ ไม่สามารถบันทึกข้อมูลได้",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      await AlertErrorDialog({
+        html: "บันทึกข้อมูลไม่สำเร็จ ให้ลองออกจากระบบ แล้วเข้าสู่ระบบใหม่",
+      });
+    }
   };
+
+  useEffect(() => {
+    if (data && data.result) {
+      reset(data.result);
+    }
+  }, [data]);
+
   return (
     <>
-      {JSON.stringify(errors)}
       <PageHeader title={title} listItems={listItems} />
       <Card shadow="sm">
         <Card.Section withBorder inheritPadding py="md">
@@ -194,10 +229,8 @@ export default function RequestForm() {
                   if (value === null) return;
                   //เช็คจำนวนภาพ
                   if (value.length + field.value.length > 5) {
-                    return Swal.fire({
-                      icon: "error",
-                      title: "ไม่สามารถเพิ่มได้",
-                      text: "สามารถเพิ่มได้ไม่เกิน 5 รูป",
+                    return AlertErrorDialog({
+                      html: "สามารถเพิ่มได้ไม่เกิน 5 รูป",
                     });
                   }
                   field.onChange([...field.value, ...value]);

@@ -4,7 +4,11 @@ export const categoryInitialValues = {
   code: "",
 };
 export const categoryYup = yup.object().shape({
-  code: yup.string().notRequired().default("").max(10, "ห้ามเกิน 10 ตัวอักษร"),
+  code: yup
+    .string()
+    .required("กรอกรหัสประเภทอุปกรณ์")
+    .default("")
+    .max(10, "ห้ามเกิน 10 ตัวอักษร"),
   name: yup
     .string()
     .required("กรอกชื่อประเภทอุปกรณ์")

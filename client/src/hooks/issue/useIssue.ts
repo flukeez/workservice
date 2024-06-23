@@ -16,7 +16,7 @@ export const useIssues = (condition: IConditionFilter & IIssueFilter) => {
       ["sortField", filter.sortField || "name"],
       ["sortDirection", filter.sortDirection || "asc"],
       ["page", filter.page.toString()],
-      ["limit", filter.limit.toString()],
+      ["limit", filter.limit || "20"],
       ["issue_type", filter.issueType || ""],
       ["issue_id", filter.issueId || ""],
     ]);

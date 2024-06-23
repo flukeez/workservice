@@ -2,17 +2,8 @@ import { useEffect, useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useCategories, useCategoryDelete } from "@/hooks/category";
 
-import {
-  Button,
-  Card,
-  Drawer,
-  Grid,
-  Group,
-  Highlight,
-  Text,
-} from "@mantine/core";
+import { Card, Drawer, Grid, Group, Highlight, Text } from "@mantine/core";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
 
 import { useCategoryStore } from "@/stores/useCategoryStore";
 
@@ -23,6 +14,8 @@ import ButtonNew from "@/components/common/ButtonNew";
 import ConfirmDeleteDialog from "@/components/common/ConfirmDeleteDialog";
 import AlertErrorDialog from "@/components/common/AlertErrorDialog";
 import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
+import ButtonEdit from "@/components/common/ButtonEdit";
+import ButtonDelete from "@/components/common/ButtonDelete";
 import { PAGE_SIZE } from "@/config";
 
 const title = "ประเภทอุปกรณ์";
@@ -157,7 +150,7 @@ export default function Category() {
               textAlign: "center",
               render({ code }) {
                 return (
-                  <Highlight highlight={categoryStore.txtSearch}>
+                  <Highlight size="sm" highlight={categoryStore.txtSearch}>
                     {String(code)}
                   </Highlight>
                 );
@@ -169,7 +162,7 @@ export default function Category() {
               sortable: true,
               render({ name }) {
                 return (
-                  <Highlight highlight={categoryStore.txtSearch}>
+                  <Highlight size="sm" highlight={categoryStore.txtSearch}>
                     {String(name || "")}
                   </Highlight>
                 );
@@ -182,21 +175,10 @@ export default function Category() {
               textAlign: "center",
               render: ({ id, name }) => (
                 <Group justify="center" gap={3} wrap="nowrap">
-                  <Button
-                    variant="subtle"
-                    size="compact-md"
-                    onClick={() => handleUpdate(String(id))}
-                  >
-                    <IconEdit size={"18"} />
-                  </Button>
-                  <Button
-                    variant="subtle"
-                    size="compact-md"
-                    color="red"
+                  <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                  <ButtonDelete
                     onClick={() => handleDelete(String(id), String(name))}
-                  >
-                    <IconTrash size={"18"} />
-                  </Button>
+                  />
                 </Group>
               ),
             },
@@ -219,7 +201,6 @@ export default function Category() {
           paginationText={({ from, to, totalRecords }) =>
             `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
           }
-          paginationActiveBackgroundColor="gray"
           noRecordsText="ไม่พบรายการ"
           noRecordsIcon={<></>}
           minHeight={120}

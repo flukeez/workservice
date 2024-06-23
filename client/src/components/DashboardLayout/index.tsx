@@ -16,6 +16,7 @@ import { AdminHeader } from "./AdminHeader";
 import { Navbar } from "./Navbar";
 import { Suspense } from "react";
 import { IconSearch } from "@tabler/icons-react";
+import { WEBSITE_NAME } from "@/config";
 
 export function DashboardLayout() {
   const theme = useMantineTheme();
@@ -58,7 +59,7 @@ export function DashboardLayout() {
                 size="sm"
               />
             </ThemeIcon>
-            <Text fw={700}>WorkService</Text>
+            <Text fw={700}>{WEBSITE_NAME}</Text>
             <Code>1.0.0</Code>
           </Group>
           <TextInput

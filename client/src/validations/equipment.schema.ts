@@ -22,7 +22,11 @@ export const equipmentYup = yup.object().shape({
     .string()
     .required("กรุณากรอกชื่ออุปกรณ์")
     .max(200, "ห้ามเกิน 200 ตัวอักษร"),
-  code: yup.string().max(50, "ห้ามเกิน 50 ตัวอักษร").notRequired().default(""),
+  code: yup
+    .string()
+    .max(50, "ห้ามเกิน 50 ตัวอักษร")
+    .required("กรุณากรอกรหัส")
+    .default(""),
   serial: yup
     .string()
     .max(50, "ห้ามเกิน 50 ตัวอักษร")
@@ -32,7 +36,7 @@ export const equipmentYup = yup.object().shape({
   price: yup
     .number()
     .typeError("กรุณากรอกราคา")
-    .min(0, "ราคาต้องมากกว่า 0")
+    .min(1, "ราคาต้องมากกว่า 0")
     .required("กรุณากรอกราคา"),
   date_start: yup
     .string()

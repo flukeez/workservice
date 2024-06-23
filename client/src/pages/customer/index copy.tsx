@@ -49,7 +49,7 @@ export default function CustomerPage() {
 
   const handleEdit = (id: string) => {};
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
     try {
       const dialog = await Swal.fire({
         title: "คุณต้องการลบรายการนี้ใช่หรือไม่",

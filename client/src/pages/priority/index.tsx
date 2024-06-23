@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import {
-  Button,
-  Card,
-  Drawer,
-  Grid,
-  Group,
-  Highlight,
-  Menu,
-  ScrollArea,
-} from "@mantine/core";
-import { DataTable, DataTableSortStatus } from "mantine-datatable";
+
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconChevronDown, IconPlus } from "@tabler/icons-react";
-import { usePriorityStore } from "@/stores/usePriorityStore";
 import { usePriorityDelete, usePrioritys } from "@/hooks/priority";
+
+import { Card, Drawer, Grid, Group, Highlight, Text } from "@mantine/core";
+import { DataTable, DataTableSortStatus } from "mantine-datatable";
+
 import PriorityForm from "@/components/priority/PriorityForm";
 import PageHeader from "@/components/common/PageHeader";
 import InputSearch from "@/components/common/InputSearch";
+import ConfirmDeleteDialog from "@/components/common/ConfirmDeleteDialog";
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
+import ButtonNew from "@/components/common/ButtonNew";
+import ButtonEdit from "@/components/common/ButtonEdit";
+import ButtonDelete from "@/components/common/ButtonDelete";
+
+import { usePriorityStore } from "@/stores/usePriorityStore";
+import { PAGE_SIZE } from "@/config";
 
 const title = "ความเร่งด่วน";
 const listItems = [{ title: title, href: "#" }];
-const Page_size = 10;
 
 export default function Priority() {
   const priorityStore = usePriorityStore();
@@ -38,7 +37,6 @@ export default function Priority() {
       sortField: priorityStore.sortField,
       sortDirection: priorityStore.sortDirection,
       page: priorityStore.page - 1,
-      limit: Page_size,
     };
     return condition;
   };
@@ -53,7 +51,7 @@ export default function Priority() {
     setRowId(id);
     setOpened(true);
   };
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
     const isConfirmed = await ConfirmDeleteDialog({
       html: `คุณต้องการลบรายการนี่ใช่หรือไม่<p>${name}</p>`,
     });
@@ -132,80 +130,68 @@ export default function Priority() {
             </Grid.Col>
           </Grid>
         </Card.Section>
-        <ScrollArea>
-          <DataTable
-            mt="md"
-            withTableBorder
-            borderRadius="sm"
-            withColumnBorders
-            striped
-            highlightOnHover
-            records={data?.rows}
-            columns={[
-              {
-                accessor: "name",
-                title: "ชื่อความเร่งด่วน",
-                width: "35%",
-                sortable: true,
-                render({ name }) {
-                  return (
-                    <Highlight highlight={priorityStore.txtSearch}>
-                      {String(name)}
-                    </Highlight>
-                  );
-                },
+        <DataTable
+          mt="md"
+          withTableBorder
+          borderRadius="sm"
+          withColumnBorders
+          striped
+          highlightOnHover
+          records={data?.rows}
+          columns={[
+            {
+              accessor: "name",
+              title: <Text fw={700}>ชื่อความเร่งด่วน</Text>,
+              width: "35%",
+              sortable: true,
+              render({ name }) {
+                return (
+                  <Highlight size="sm" highlight={priorityStore.txtSearch}>
+                    {String(name)}
+                  </Highlight>
+                );
               },
-              {
-                accessor: "id",
-                title: "จัดการ",
-                width: "0%",
-                textAlign: "center",
-                render: ({ id }) => (
-                  <Group justify="center" gap={3} wrap="nowrap">
-                    <Button
-                      variant="subtle"
-                      size="compact-md"
-                      onClick={() => handleUpdate(String(id))}
-                    >
-                      <IconEdit size={"18"} />
-                    </Button>
-                    <Button
-                      variant="subtle"
-                      size="compact-md"
-                      color="red"
-                      onClick={() => handleDelete(String(id), String(name))}
-                    >
-                      <IconTrash size={"18"} />
-                    </Button>
-                  </Group>
-                ),
-              },
-            ]}
-            sortStatus={sortStatus}
-            onSortStatusChange={(sort) => [
-              setSortStatus(sort),
-              priorityStore.setFilter({
-                ...priorityStore,
-                sortField: sort.columnAccessor,
-                sortDirection: sort.direction,
-              }),
-            ]}
-            totalRecords={data?.totalItem || 0}
-            recordsPerPage={PAGE_SIZE}
-            page={priorityStore.page}
-            onPageChange={(p: number) =>
-              priorityStore.setFilter({ ...priorityStore, page: p })
-            }
-            paginationText={({ from, to, totalRecords }) =>
-              `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
-            }
-            paginationActiveBackgroundColor="gray"
-            noRecordsText="ไม่พบรายการ"
-            noRecordsIcon={<></>}
-            minHeight={120}
-            fetching={isLoading}
-          />
-        </ScrollArea>
+            },
+            {
+              accessor: "id",
+              title: "จัดการ",
+              width: "0%",
+              textAlign: "center",
+              render: ({ id, name }) => (
+                <Group justify="center" gap={3} wrap="nowrap">
+                  <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                  <ButtonDelete
+                    onClick={() => handleDelete(String(id), String(name))}
+                  />
+                </Group>
+              ),
+            },
+          ]}
+          sortStatus={sortStatus}
+          onSortStatusChange={(sort) => [
+            setSortStatus(sort),
+            priorityStore.setFilter({
+              ...priorityStore,
+              sortField: sort.columnAccessor,
+              sortDirection: sort.direction,
+            }),
+          ]}
+          totalRecords={data?.totalItem || 0}
+          recordsPerPage={PAGE_SIZE}
+          page={priorityStore.page}
+          onPageChange={(p: number) =>
+            priorityStore.setFilter({ ...priorityStore, page: p })
+          }
+          paginationText={({ from, to, totalRecords }) =>
+            `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
+          }
+          noRecordsText="ไม่พบรายการ"
+          noRecordsIcon={<></>}
+          minHeight={120}
+          fetching={isLoading}
+          pinLastColumn
+          pinFirstColumn
+        />
       </Card>
     </>
   );

@@ -1,7 +1,7 @@
 import { Select } from "@mantine/core";
-import { useOrgCharts } from "@/hooks/faculty/useFaculty";
 import type { IConditionFilter } from "@/types/IConditionFilter";
 import type { User } from "@/types/IUser";
+import { useUserPositions } from "@/hooks/user_position";
 
 interface FacultyUserProps {
   user: string | null;
@@ -10,6 +10,7 @@ interface FacultyUserProps {
   label?: string;
   error?: string;
   required?: boolean;
+  placeholder?: string;
 }
 export default function DropdownFacultyUser({
   user,
@@ -18,22 +19,23 @@ export default function DropdownFacultyUser({
   label,
   error,
   required,
+  placeholder,
 }: FacultyUserProps) {
   const condition: IConditionFilter = {
     txtSearch: "",
     page: 0,
-    limit: 1000,
+    limit: "1000",
     sortDirection: "asc",
     sortField: "firstname",
   };
 
-  const { data } = useOrgCharts(Number(faculty), condition);
+  const { data } = useUserPositions(Number(faculty), condition);
   return (
     <Select
       key={faculty}
       label={label || "บุคคล"}
-      placeholder="เลือกรายชื่อบุคคล"
       value={user?.toString() || null}
+      placeholder={placeholder}
       onChange={setUser}
       data={
         data?.rows &&

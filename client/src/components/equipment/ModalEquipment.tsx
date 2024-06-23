@@ -1,8 +1,8 @@
+import { useState } from "react";
 import { ActionIcon, Group, Modal, Textarea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconList, IconX } from "@tabler/icons-react";
 import TableEquipment from "./TableEquipment";
-import { useState } from "react";
 
 interface ModalEquipmentProps {
   equip: string[];

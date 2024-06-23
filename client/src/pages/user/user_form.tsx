@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
+
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { useUser, useUserSave } from "@/hooks/user";
+import { useImage } from "@/hooks/image";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { userInitialValues, userYup } from "@/validations/user.schema";
+import type { IUserForm } from "@/types/IUser";
+
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
+
 import {
   Button,
   Card,
@@ -16,23 +23,23 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import { IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { IconDeviceFloppy } from "@tabler/icons-react";
+
 import DropdownAmphure from "@/components/common/DropdownAmphure";
 import DropdownProvince from "@/components/common/DropdownProvince";
 import DropdownTumbol from "@/components/common/DropdownTumbol";
 import InputDate from "@/components/common/InputDate";
 import PageHeader from "@/components/common/PageHeader";
+import ImagePreview from "@/components/common/ImagePreview";
+import ButtonFileUpload from "@/components/common/ButtonFileUpload";
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
+import ButtonNew from "@/components/common/ButtonNew";
+
 import PasswordTooltip from "@/components/user/PasswordTooltip";
 import { checkThaiID } from "@/utils/checkThaiID";
 import { convertToNumberOrZero } from "@/utils/mynumber";
 import { dateToText } from "@/utils/mydate";
-import { useUser, useUserSave } from "@/hooks/user";
-import { useImage } from "@/hooks/image";
-import { userInitialValues, userYup } from "@/validations/user.schema";
-import type { IUserForm } from "@/types/IUser";
-import ImagePreview from "@/components/common/ImagePreview";
-import ButtonFileUpload from "@/components/common/ButtonFileUpload";
 
 const listItems = [
   { title: "รายชื่อผู้ใช้", href: "/user" },
@@ -60,7 +67,6 @@ export default function UserForm() {
     reset,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
     resolver: yupResolver(userYup),
     defaultValues: userInitialValues,
   });
@@ -75,36 +81,27 @@ export default function UserForm() {
   const onSubmit: SubmitHandler<IUserForm> = async (formData) => {
     const id_card = checkThaiID(formData.id_card);
     if (!id_card) {
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "เลขบัตรประชาชนไม่ถูกต้อง",
+      await AlertErrorDialog({
+        html: "เลขบัตรประชาชนไม่ถูกต้อง",
       });
       return;
     }
     try {
       const { data } = await mutationSave.mutateAsync(formData);
       if (data.result) {
-        Swal.fire({
-          icon: "success",
-          title: "บันทึกข้อมูลสําเร็จ",
-        }).then((results) => {
-          if (results.isConfirmed) {
-            navigate("/user");
-          }
+        const isConfirmed = await AlertSuccessDialog({
+          title: "บันทึกข้อมูลสำเร็จ",
         });
+        if (isConfirmed) navigate("/user");
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "เกิดข้อผิดพลาด",
-          text: "มีข้อมูลอยู่แล้วในระบบ ไม่สามารถบันทึกข้อมูลได้",
+        await AlertErrorDialog({
+          html: "มีข้อมูลอยู่แล้วในระบบ ไม่สามารถบันทึกข้อมูลได้",
         });
       }
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
+      console.error(error);
+      await AlertErrorDialog({
+        html: "บันทึกข้อมูลไม่สำเร็จ ให้ลองออกจากระบบ แล้วเข้าสู่ระบบใหม่",
       });
     }
   };

@@ -13,7 +13,7 @@ export const useCustomers = (condition: IConditionFilter) => {
       ["sortField", filter.sortField || "name"],
       ["sortDirection", filter.sortDirection || "asc"],
       ["activePage", filter.page?.toString()],
-      ["limit", filter.limit.toString()],
+      ["limit", filter.limit || "20"],
     ]);
     const { data } = await axiosAuth.get("/customer", { params });
     return data;
