@@ -20,7 +20,6 @@ export default function DropdownPriority({
   const condition: IConditionFilter = {
     txtSearch: "",
     page: 0,
-    limit: 1000,
     sortDirection: "asc",
     sortField: "name",
   };
@@ -29,7 +28,7 @@ export default function DropdownPriority({
     <Select
       label={label || "ความเร่งด่วน"}
       placeholder="เลือกความเร่งด่วน"
-      value={priority?.toString() || ""}
+      value={priority?.toString() || null}
       onChange={setPriority}
       data={
         data?.rows &&

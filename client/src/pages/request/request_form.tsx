@@ -12,6 +12,7 @@ import {
   Divider,
   Grid,
   Group,
+  LoadingOverlay,
   Text,
   Textarea,
   TextInput,
@@ -43,7 +44,9 @@ export default function RequestForm() {
   const id = convertToNumberOrZero(params.id);
 
   const { data, isLoading, setFilter } = useRequest(id);
-  const handleNew = () => {};
+  const handleNew = () => {
+    setFilter(0);
+  };
   const {
     control,
     register,
@@ -100,6 +103,7 @@ export default function RequestForm() {
             </Button>
           </Group>
         </Card.Section>
+        <LoadingOverlay visible={isLoading || mutationSave.isPending} />
         <Grid mt="sm">
           <Grid.Col>
             <TextInput
@@ -222,21 +226,11 @@ export default function RequestForm() {
           }
         />
         <Grid mt="sm">
-          {(Array.isArray(watch("image")) || watch("image")) &&
-            watch("image").length > 0 && (
-              <Grid.Col span={layout}>
-                <ImageAlbumPreview
-                  folder="request"
-                  images={
-                    Array.isArray(watch("image"))
-                      ? watch("image")
-                      : String(watch("image"))
-                          .split(",")
-                          .filter((item) => item !== "")
-                  }
-                />
-              </Grid.Col>
-            )}
+          {Array.isArray(watch("image")) && watch("image").length > 0 && (
+            <Grid.Col span={layout}>
+              <ImageAlbumPreview folder="request" images={watch("image")} />
+            </Grid.Col>
+          )}
           <Grid.Col span={layout}>
             <Controller
               name="image"
@@ -257,13 +251,7 @@ export default function RequestForm() {
                 };
                 return (
                   <ButtonFileUploadMultiple
-                    file={
-                      Array.isArray(field.value)
-                        ? field.value
-                        : String(field.value)
-                            .split(",")
-                            .filter((item) => item !== "")
-                    }
+                    file={field.value}
                     setFile={handleSelectChange}
                     setDelete={handleDelete}
                   />

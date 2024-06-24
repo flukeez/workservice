@@ -14,6 +14,7 @@ export async function JWTMiddleware(req: FastifyRequest, res: FastifyReply) {
           return res.status(400).send("Invalid token.");
         default:
           console.log("Unexpected error:", error);
+          console.log("test");
           return res.status(500).send("Unexpected error.");
       }
     } else {

@@ -88,22 +88,20 @@ export class RequestModel {
           " tb_request_details.image1",
           db.raw(`GROUP_CONCAT(tb_request_equip.equip_id) AS equip_id`),
           db.raw(`
-            CONCAT(
-              COALESCE(tb_request_details.image2, ''),',',
-              COALESCE(tb_request_details.image1, ''),',',
-              COALESCE(tb_request_details.image3, ''),',',
-              COALESCE(tb_request_details.image4, ''),',',
-              COALESCE(tb_request_details.image5, '')
-            ) AS image
+          CONCAT_WS(',', 
+              tb_request_details.image1, 
+              tb_request_details.image2, 
+              tb_request_details.image3, 
+              tb_request_details.image4, 
+              tb_request_details.image5) AS image
           `),
           db.raw(`
-            CONCAT(
-              COALESCE(tb_request_details.image1, ''),
-              COALESCE(tb_request_details.image2, ''),
-              COALESCE(tb_request_details.image3, ''),
-              COALESCE(tb_request_details.image4, ''),
-              COALESCE(tb_request_details.image5, '')
-            ) AS image_old
+             CONCAT_WS(',', 
+              tb_request_details.image1, 
+              tb_request_details.image2, 
+              tb_request_details.image3, 
+              tb_request_details.image4, 
+              tb_request_details.image5) AS image_old
           `)
         )
         .leftJoin(
@@ -118,6 +116,11 @@ export class RequestModel {
         )
         .where("tb_request.id", id)
         .first();
+      if (result) {
+        // แปลง string ที่คั่นด้วยเครื่องหมายคอมมาเป็นอาเรย์
+        result.image = result.image ? result.image.split(",") : [];
+        result.image_old = result.image_old ? result.image_old.split(",") : [];
+      }
       return { result };
     } catch (error) {
       console.log(error);
@@ -182,7 +185,7 @@ export class RequestModel {
       return { result: 1 };
     } catch (error) {
       console.log(error);
-      throw new Error("Internal server error");
+      throw new Error("Internal server errorfjyfyujfyj");
     }
   }
 }

@@ -7,6 +7,7 @@ import PublicRoute from "./components/protect_route/PublicRoute";
 
 const RequestForm = lazy(() => import("@/pages/request/request_form"));
 const Request = lazy(() => import("@/pages/request"));
+const RequestDetails = lazy(() => import("@/pages/request/request_details"));
 const Equipment = lazy(() => import("@/pages/equipment"));
 const EquipmentForm = lazy(() => import("@/pages/equipment/equipment_form"));
 const Faculty = lazy(() => import("@/pages/faculty"));
@@ -38,6 +39,7 @@ export function Router() {
               <Route index element={<Request />} />
               <Route path="new" element={<RequestForm />} />
               <Route path=":id" element={<RequestForm />} />
+              <Route path="details/:id" element={<RequestDetails />} />
             </Route>
             <Route path="/service_request" element={<RequestForm />} />
             <Route path="/home" element={<Faculty />} />

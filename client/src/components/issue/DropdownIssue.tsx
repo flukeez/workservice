@@ -30,7 +30,6 @@ export default function DropdownIssue({
     const condition: IConditionFilter & IIssueFilter = {
       txtSearch: "",
       page: 0,
-      limit: 1000,
       sortDirection: "asc",
       sortField: "name",
       issueId: issue_id,

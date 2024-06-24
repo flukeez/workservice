@@ -13,7 +13,7 @@ import {
   Text,
 } from "@mantine/core";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { IconListSearch } from "@tabler/icons-react";
+import { IconListSearch, IconUserEdit } from "@tabler/icons-react";
 
 import ButtonDelete from "@/components/common/ButtonDelete";
 import ButtonEdit from "@/components/common/ButtonEdit";
@@ -74,7 +74,8 @@ export default function Request() {
       <Card shadow="sm">
         <Card.Section withBorder inheritPadding py="md">
           <Group justify="right">
-            <ButtonNew onClick={handleNew}>เพิ่มข้อมูล</ButtonNew>
+            <ButtonNew onClick={handleNew}>แจ้งซ่อม</ButtonNew>
+            <Button leftSection={<IconUserEdit size="18" />}>มอบหมายงาน</Button>
           </Group>
         </Card.Section>
         <Card.Section>
@@ -188,7 +189,11 @@ export default function Request() {
               textAlign: "center",
               render: ({ id, name }) => (
                 <Group justify="center" gap={3} wrap="nowrap">
-                  <Button variant="subtle" size="conmpact-md">
+                  <Button
+                    variant="subtle"
+                    size="conmpact-md"
+                    onClick={() => navigate(`/request/details/${id}`)}
+                  >
                     <IconListSearch size="18" color="orange" />
                   </Button>
                   <ButtonEdit onClick={() => handleUpdate(String(id))} />
