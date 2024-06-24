@@ -23,6 +23,7 @@ export const queryKeys = {
   image: "Get Image",
   equipments: "Fetch Equipments",
   equipment: "Get Equipment",
+  equipments_repair: "Fetch Equipments Repair",
   requests: "Fetch Requests",
   request: "Get Request",
 };

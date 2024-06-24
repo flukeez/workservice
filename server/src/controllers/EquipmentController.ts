@@ -77,4 +77,15 @@ export default async function EquipmentController(fastify: FastifyInstance) {
     }
     res.send(result);
   });
+
+  //แสดงใน modal รายการอุปกรณ์
+  fastify.get("/list/:id", async (req, res) => {
+    const { id } = req.params as { id: string };
+    const query = req.query as IEquipQuery;
+    const { result, totalItem, totalPage } = await equipmentModel.findAllById(
+      query,
+      id
+    );
+    res.send({ rows: result, totalItem, totalPage });
+  });
 }

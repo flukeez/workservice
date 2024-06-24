@@ -42,3 +42,30 @@ export const useEquipment = (id: number) => {
   });
   return { ...query, setFilter };
 };
+
+// TODO: อุปกรณ์ในรายการซ่อม
+export const useEquipmentsRepair = (
+  condition: IEquipmentQuery,
+  id?: number
+) => {
+  const [filter, setFilter] = useState(condition);
+  const findMany = async () => {
+    const params = new URLSearchParams([
+      ["txtSearch", filter.txtSearch || ""],
+      ["sortField", filter.sortField || "name"],
+      ["sortDirection", filter.sortDirection || "asc"],
+      ["page", filter.page?.toString()],
+      ["limit", filter.limit?.toString() || "10"],
+      ["faculty_id", filter.faculty_id || ""],
+      ["user_id", filter.user_id || ""],
+    ]);
+
+    const { data } = await axiosAuth.get(url + "/list/" + id, { params });
+    return data;
+  };
+  const query = useQuery({
+    queryKey: [queryKeys.equipments_repair, id, { ...filter }],
+    queryFn: findMany,
+  });
+  return { ...query, setFilter };
+};

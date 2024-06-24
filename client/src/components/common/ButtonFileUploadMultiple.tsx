@@ -41,7 +41,7 @@ export default function ButtonFileUploadMultiple({
 
       {/* แสดงชื่อไฟล์และปุ่มลบ */}
       <Flex direction="column" gap="sm" align="flex-start">
-        {file.map((fileItem, index) => (
+        {file?.map((fileItem, index) => (
           <Flex key={index} align="center" gap="sm">
             <Text>
               {typeof fileItem === "string"

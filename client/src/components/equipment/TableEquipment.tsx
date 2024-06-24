@@ -1,24 +1,29 @@
-import { useEquipments } from "@/hooks/equipment";
-import type { IEquip, IEquipmentQuery } from "@/types/IEquipment";
-import { Button, Grid, Group } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
-import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { useEffect, useState } from "react";
+import { useDebouncedValue } from "@mantine/hooks";
+import { useEquipmentsRepair } from "@/hooks/equipment";
+
+import { Button, Grid, Group } from "@mantine/core";
+import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import EquipmentLabel from "./EquipmentLabel";
 import InputSearch from "../common/InputSearch";
+import type { IEquip, IEquipmentQuery } from "@/types/IEquipment";
 
 interface TableEquipmentProps {
   equip: string[];
   setEquip: (value: string[]) => void;
   onClose: () => void;
+  equipName: string[];
   setEquipName: (value: string[]) => void;
+  id?: number;
 }
 
 export default function TableEquipment({
   equip,
   setEquip,
   onClose,
+  equipName,
   setEquipName,
+  id,
 }: TableEquipmentProps) {
   const [page, setPage] = useState(1);
   const [txtSearch, setTxtSearch] = useState("");
@@ -41,7 +46,10 @@ export default function TableEquipment({
     };
     return condition;
   };
-  const { data, isLoading, setFilter } = useEquipments(setCondition());
+  const { data, isLoading, setFilter } = useEquipmentsRepair(
+    setCondition(),
+    id
+  );
 
   const handleSelectRow = (selectedRecords: Record<string, unknown>[]) => {
     const selected = selectedRecords as IEquip[];
@@ -89,6 +97,7 @@ export default function TableEquipment({
     setTxtSearch("");
     setPage(1);
   };
+
   useEffect(() => {
     searchData();
   }, [page, debounce, sortStatus]);
@@ -100,14 +109,23 @@ export default function TableEquipment({
   }, [equip]);
 
   useEffect(() => {
-    console.log(selectRowID);
     if (data?.rows) {
+      //กำหนดค่าแถวที่เลือก
       const initialSelect = data.rows.filter((row: IEquip) =>
         selectRowID.includes(row.id.toString())
       );
       setSelectRow(initialSelect);
+      //ถ้าเป็นการแก้่ไข และชื่อยังไม่มีจะทำการกำหนดชื่อ
+      if (equipName.length === 0) {
+        const selectRows = data.rows.filter((record: IEquip) =>
+          equip.includes(record.id.toString())
+        );
+        const selectedNames = selectRows.map((record: IEquip) => record.name);
+        setEquipName(selectedNames);
+      }
     }
   }, [data, selectRowID]);
+
   return (
     <>
       <Grid>
@@ -129,7 +147,7 @@ export default function TableEquipment({
         striped
         highlightOnHover
         verticalAlign="top"
-        records={data?.rows}
+        records={data?.rows.slice(0, 10)}
         columns={[
           {
             accessor: "name",
@@ -170,7 +188,7 @@ export default function TableEquipment({
         sortStatus={sortStatus}
         onSortStatusChange={setSortStatus}
         totalRecords={data?.totalItem || 0}
-        recordsPerPage={1}
+        recordsPerPage={10}
         page={page}
         onPageChange={(p: number) => setPage(p)}
         paginationText={({ from, to, totalRecords }) =>

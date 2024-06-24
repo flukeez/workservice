@@ -1,4 +1,5 @@
 export type IRequest = {
+  id: number;
   name: string;
   issue_id: string;
   issue_sub_id: string | null;
@@ -9,7 +10,7 @@ export type IRequest = {
 };
 
 export type IRequestForm = {
-  id?: number;
+  id?: number | null;
   name: string;
   issue_id: string;
   issue_sub_id: string | null;

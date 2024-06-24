@@ -73,6 +73,7 @@ export class RequestModel {
     try {
       const result = await db(tbName)
         .select(
+          "tb_request.id",
           "tb_request_details.name",
           "tb_request.issue_id",
           "tb_request.issue_sub_id",
@@ -84,12 +85,26 @@ export class RequestModel {
           "tb_request.date_start",
           "tb_request.notify",
           "tb_request_details.details",
-          "tb_request_details.image1",
-          "tb_request_details.image2",
-          "tb_request_details.image3",
-          "tb_request_details.image4",
-          "tb_request_details.image5",
-          db.raw(`GROUP_CONCAT(tb_request_equip.equip_id) AS equip_id`)
+          " tb_request_details.image1",
+          db.raw(`GROUP_CONCAT(tb_request_equip.equip_id) AS equip_id`),
+          db.raw(`
+            CONCAT(
+              COALESCE(tb_request_details.image2, ''),',',
+              COALESCE(tb_request_details.image1, ''),',',
+              COALESCE(tb_request_details.image3, ''),',',
+              COALESCE(tb_request_details.image4, ''),',',
+              COALESCE(tb_request_details.image5, '')
+            ) AS image
+          `),
+          db.raw(`
+            CONCAT(
+              COALESCE(tb_request_details.image1, ''),
+              COALESCE(tb_request_details.image2, ''),
+              COALESCE(tb_request_details.image3, ''),
+              COALESCE(tb_request_details.image4, ''),
+              COALESCE(tb_request_details.image5, '')
+            ) AS image_old
+          `)
         )
         .leftJoin(
           "tb_request_details",

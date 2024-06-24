@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 export const requestInitialValues = {
+  id: null,
   name: "",
   issue_id: "",
   issue_sub_id: "",
@@ -11,6 +12,7 @@ export const requestInitialValues = {
 };
 
 export const requestYup = yup.object().shape({
+  id: yup.number().default(null).notRequired(),
   name: yup
     .string()
     .required("กรุณากรอกชื่องานซ่อม")

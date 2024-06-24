@@ -8,11 +8,13 @@ interface ModalEquipmentProps {
   equip: string[];
   setEquip: (equip: string[]) => void;
   error?: string;
+  id?: number;
 }
 export default function ModalEquipment({
   equip,
   setEquip,
   error,
+  id,
 }: ModalEquipmentProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [equipment, setEquipment] = useState<string[]>([]);
@@ -37,12 +39,21 @@ export default function ModalEquipment({
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="รายการอุปกรณ์" size="70rem">
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="รายการอุปกรณ์"
+        size="70rem"
+        closeOnClickOutside={false}
+        keepMounted={true}
+      >
         <TableEquipment
           equip={equip}
           setEquip={setEquip}
+          equipName={equipment}
           setEquipName={handleSelectName}
           onClose={close}
+          id={id}
         />
       </Modal>
       <Textarea
@@ -52,14 +63,6 @@ export default function ModalEquipment({
         value={equipment.join(", ")}
         autosize
         maxRows={5}
-        // rightSectionProps={{
-        //   style: {
-        //     display: "flex",
-        //     alignItems: "flex-start",
-        //     marginTop: "0.1rem",
-        //     marginRight: "0.5rem",
-        //   },
-        // }}
         rightSection={
           <Group gap={3} align="top">
             <ActionIcon onClick={open} variant="light">

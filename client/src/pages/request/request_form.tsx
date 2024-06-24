@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { requestInitialValues, requestYup } from "@/validations/request.schema";
 import { useRequest, useRequestSave } from "@/hooks/request";
-import type { IRequest } from "@/types/IRequest";
+import type { IRequestForm } from "@/types/IRequest";
 
 import {
   Button,
@@ -41,6 +41,7 @@ export default function RequestForm() {
   const mutationSave = useRequestSave();
   const params = useParams();
   const id = convertToNumberOrZero(params.id);
+
   const { data, isLoading, setFilter } = useRequest(id);
   const handleNew = () => {};
   const {
@@ -50,13 +51,14 @@ export default function RequestForm() {
     setValue,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(requestYup),
     defaultValues: requestInitialValues,
   });
 
-  const onSubmit = async (formData: IRequest) => {
+  const onSubmit = async (formData: IRequestForm) => {
     try {
       const { data } = await mutationSave.mutateAsync(formData);
       if (data.result) {
@@ -184,9 +186,14 @@ export default function RequestForm() {
                 };
                 return (
                   <ModalEquipment
-                    equip={field.value}
+                    equip={
+                      Array.isArray(field.value)
+                        ? field.value
+                        : String(field.value).split(",")
+                    }
                     setEquip={handleSelectChange}
                     error={errors.equip_id?.message}
+                    id={getValues("id") || 0}
                   />
                 );
               }}
@@ -215,11 +222,21 @@ export default function RequestForm() {
           }
         />
         <Grid mt="sm">
-          {Array.isArray(watch("image")) && watch("image").length > 0 && (
-            <Grid.Col span={layout}>
-              <ImageAlbumPreview folder="request" images={watch("image")} />
-            </Grid.Col>
-          )}
+          {(Array.isArray(watch("image")) || watch("image")) &&
+            watch("image").length > 0 && (
+              <Grid.Col span={layout}>
+                <ImageAlbumPreview
+                  folder="request"
+                  images={
+                    Array.isArray(watch("image"))
+                      ? watch("image")
+                      : String(watch("image"))
+                          .split(",")
+                          .filter((item) => item !== "")
+                  }
+                />
+              </Grid.Col>
+            )}
           <Grid.Col span={layout}>
             <Controller
               name="image"
@@ -240,7 +257,13 @@ export default function RequestForm() {
                 };
                 return (
                   <ButtonFileUploadMultiple
-                    file={field.value}
+                    file={
+                      Array.isArray(field.value)
+                        ? field.value
+                        : String(field.value)
+                            .split(",")
+                            .filter((item) => item !== "")
+                    }
                     setFile={handleSelectChange}
                     setDelete={handleDelete}
                   />
