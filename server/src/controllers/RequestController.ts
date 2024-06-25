@@ -1,8 +1,8 @@
-import { RequestModel } from "@/models/RequestModel";
-import type { IRequestForm, IRequestQuery } from "@/types/Request";
-import { IUserToken } from "@/types/UserType";
-import { saveFile } from "@/utils/imagefile";
 import { FastifyInstance } from "fastify";
+import { RequestModel } from "@/models/RequestModel";
+import { saveFile } from "@/utils/imagefile";
+import type { IRequestForm, IRequestQuery } from "@/types/RequestType";
+import type { IUserToken } from "@/types/UserType";
 
 export default async function RequestController(fastify: FastifyInstance) {
   const requestModel = new RequestModel();
@@ -61,5 +61,12 @@ export default async function RequestController(fastify: FastifyInstance) {
 
     const result = await requestModel.create(newData);
     res.send({ result });
+  });
+
+  //รายละเอียดงานซ่อมจากไอดี
+  fastify.get("/details/:id", async (req, res) => {
+    const { id } = req.params as { id: number };
+    const result = await requestModel.findByIdDetails(id);
+    res.send(result);
   });
 }

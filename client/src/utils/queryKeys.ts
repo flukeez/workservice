@@ -26,4 +26,6 @@ export const queryKeys = {
   equipments_repair: "Fetch Equipments Repair",
   requests: "Fetch Requests",
   request: "Get Request",
+  request_details: "Get Request Details",
+  request_status: "Fetch Request Status",
 };

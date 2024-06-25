@@ -1,5 +1,6 @@
 import { dateThai } from "@/utils/mydate";
 import { Stepper } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 interface StepperRepairStatusProps {
   status: number;
@@ -7,6 +8,7 @@ interface StepperRepairStatusProps {
 export default function StepperRepairStatus({
   status,
 }: StepperRepairStatusProps) {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const statusLabels: { [key: string]: string } = {
     2: status == 1 ? "รอดำเนินการ" : "รออนุมัติ",
     3: "กำลังดำเนินการ",
@@ -32,6 +34,7 @@ export default function StepperRepairStatus({
       active={status}
       iconPosition="left"
       allowNextStepsSelect={false}
+      orientation={isMobile ? "vertical" : "horizontal"}
     >
       <Stepper.Step label="แจ้งซ่อม" description={dateThai(new Date())} />
       {nextSteps.map((step, index) => (

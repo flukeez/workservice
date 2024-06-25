@@ -42,3 +42,19 @@ export const useRequest = (id: number) => {
   });
   return { ...query, setFilter };
 };
+
+//TODO: รายละเอียดงานซ่อม
+export const useRequestDetails = (id: number) => {
+  const findById = async () => {
+    if (id === 0) {
+      return {};
+    }
+    const { data } = await axiosAuth.get(url + "/details/" + id);
+    return data;
+  };
+  const query = useQuery({
+    queryKey: [queryKeys.request_details, id],
+    queryFn: findById,
+  });
+  return { ...query };
+};

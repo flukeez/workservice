@@ -1,6 +1,6 @@
 import db from "@/database";
 import { pagination } from "@/utils/pagination";
-import type { IRequestForm, IRequestQuery } from "@/types/Request";
+import type { IRequestForm, IRequestQuery } from "@/types/RequestType";
 
 const tbName = "tb_request";
 export class RequestModel {
@@ -185,7 +185,49 @@ export class RequestModel {
       return { result: 1 };
     } catch (error) {
       console.log(error);
-      throw new Error("Internal server errorfjyfyujfyj");
+      throw new Error("Internal server");
     }
   }
+
+  //รายละเอียดงานซอม
+  async findByIdDetails(id: number): Promise<{ result: object }> {
+    try {
+      const result = await db(tbName)
+        .select(
+          "tb_request.id",
+          "tb_request.date_start",
+          db.raw(
+            "CONCAT(tb_user.firstname, ' ', tb_user.surname) AS user_name"
+          ),
+          "tb_request_details.name as request_name",
+          db.raw("GROUP_CONCAT(tb_equip.name) AS equip_name"),
+          "tb_provider.name",
+          "tb_status.name as status_name"
+        )
+        .leftJoin("tb_user", `${tbName}.user_id`, "tb_user.id")
+        .leftJoin(
+          "tb_request_details",
+          `${tbName}.id`,
+          "tb_request_details.request_id"
+        )
+        .leftJoin(
+          "tb_request_equip",
+          `${tbName}.id`,
+          "tb_request_equip.request_id"
+        )
+        .leftJoin("tb_equip", `tb_equip.id`, "tb_request_equip.equip_id")
+        .leftJoin("tb_provider", `${tbName}.provider_id`, "tb_provider.id")
+        .leftJoin("tb_status", `${tbName}.status_id`, "tb_status.id")
+        .where("tb_request.id", id)
+        .first();
+
+      return { result };
+    } catch (error) {
+      console.log(error);
+      throw new Error("Internal server");
+    }
+  }
+
+  //TODO ประวัติสถานะงานซ่อม
+  async historyRequest(id: number): Promise<{ result }>;
 }
