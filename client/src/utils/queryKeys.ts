@@ -27,5 +27,5 @@ export const queryKeys = {
   requests: "Fetch Requests",
   request: "Get Request",
   request_details: "Get Request Details",
-  request_status: "Fetch Request Status",
+  request_history: "Fetch Request Status",
 };

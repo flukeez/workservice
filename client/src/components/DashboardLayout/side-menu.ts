@@ -37,7 +37,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   },
   {
     title: "รายชื่อผู้ซ่อม",
-    path: "/supervisor",
+    path: "/provider",
     icon: IconUserFilled,
   },
   {

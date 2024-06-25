@@ -137,7 +137,7 @@ export class RequestModel {
           issue_id: data.issue_id,
           issue_sub_id: data.issue_sub_id,
           priority_id: data.priority_id,
-          status_id: 1,
+          status_id: 2,
           faculty_id: data.faculty_id,
           user_id: data.user_id,
         };
@@ -176,10 +176,16 @@ export class RequestModel {
         );
 
         //เพิ่มลงตารางประวัติการซ่อม
+        //แจ้งซ่อม
         await trx("tb_request_history").insert({
           request_id: request[0],
           status_id: 1,
           details: "แจ้งซ่อม",
+        });
+        //รอดำเนินการ
+        await trx("tb_request_history").insert({
+          request_id: request[0],
+          status_id: 2,
         });
       });
       return { result: 1 };
@@ -221,13 +227,35 @@ export class RequestModel {
         .where("tb_request.id", id)
         .first();
 
+      if (result) {
+        // แปลง string ที่คั่นด้วยเครื่องหมายคอมมาเป็นอาเรย์
+        result.equip_name = result.equip_name
+          ? result.equip_name.split(",")
+          : [];
+      }
+
       return { result };
     } catch (error) {
-      console.log(error);
       throw new Error("Internal server");
     }
   }
 
   //TODO ประวัติสถานะงานซ่อม
-  async historyRequest(id: number): Promise<{ result }>;
+  async findByIdHistory(id: number): Promise<{ result: object }> {
+    try {
+      const result = await db("tb_request_history")
+        .select(
+          "tb_request_history.timestamp",
+          "tb_status.name",
+          "tb_request_history.status_id"
+        )
+        .where("tb_request_history.request_id", id)
+        .leftJoin("tb_status", `tb_request_history.status_id`, "tb_status.id")
+        .orderBy("timestamp", "asc");
+      return { result };
+    } catch (error) {
+      console.log(error);
+      throw new Error("Internal Server Error");
+    }
+  }
 }

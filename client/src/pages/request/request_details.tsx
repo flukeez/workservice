@@ -7,14 +7,17 @@ import {
   Card,
   Grid,
   Group,
+  List,
+  LoadingOverlay,
+  ScrollArea,
   Text,
-  Textarea,
   TextInput,
 } from "@mantine/core";
 import { useRequestDetails } from "@/hooks/request";
 import { convertToNumberOrZero } from "@/utils/mynumber";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { dateThaiLong } from "@/utils/mydate";
 
 const title = "รายละเอียดงานซ่อม";
 const listItems = [
@@ -39,61 +42,86 @@ export default function RequestDetails() {
   const isMobile = useMediaQuery("(max-width: 390px)");
   const { data, isLoading } = useRequestDetails(id);
 
-  const { register, reset } = useForm();
+  const { register, reset, getValues } = useForm();
 
   const TextLabel = ({ label }: { label: string }) => {
     return <Text ta={isMobile ? "left" : "right"}>{label} :</Text>;
+  };
+
+  const ListEquipment = ({ equip }: { equip: string[] }) => {
+    return (
+      <List size="sm" withPadding bg="gray.1" p="sm">
+        {equip?.map((item) => (
+          <List.Item key={item}>{item}</List.Item>
+        ))}
+      </List>
+    );
   };
 
   useEffect(() => {
     if (data && data.result) {
       reset(data.result);
     }
-  }, [data, reset]);
+  }, [data]);
 
   return (
     <>
       <PageHeader title={title} listItems={listItems} />
       <Card shadow="sm">
         <Card.Section withBorder inheritPadding py="md">
-          <StepperRepairStatus status={2} />
+          <StepperRepairStatus id={id} />
         </Card.Section>
+        <LoadingOverlay visible={isLoading} />
         <Grid mt="lg">
           <Grid.Col span={labelSize}>
-            <TextLabel label="วันที่เริ่มต้น" />
+            <TextLabel label="วันที่แจ้ง" />
           </Grid.Col>
           <Grid.Col span={inputSize}>
-            <TextInput {...register("date_start")} />
+            <TextInput
+              value={dateThaiLong(getValues("date_start"))}
+              readOnly
+              variant="filled"
+            />
           </Grid.Col>
           <Grid.Col span={labelSize}>
             <TextLabel label="ผู้แจ้ง" />
           </Grid.Col>
           <Grid.Col span={inputSize}>
-            <TextInput {...register("user_name")} />
+            <TextInput {...register("user_name")} readOnly variant="filled" />
           </Grid.Col>
           <Grid.Col span={labelSize}>
             <TextLabel label="งานซ่อม" />
           </Grid.Col>
           <Grid.Col span={inputSize}>
-            <TextInput {...register("request_name")} />
+            <TextInput
+              {...register("request_name")}
+              readOnly
+              variant="filled"
+            />
           </Grid.Col>
           <Grid.Col span={labelSize}>
             <TextLabel label="รายการอุปกรณ์" />
           </Grid.Col>
           <Grid.Col span={inputSize}>
-            <Textarea rows={4} {...register("equip_name")} />
+            <ScrollArea>
+              <ListEquipment equip={getValues("equip_name")} />
+            </ScrollArea>
           </Grid.Col>
           <Grid.Col span={labelSize}>
             <TextLabel label="ผู้ซ่อม" />
           </Grid.Col>
           <Grid.Col span={inputSize}>
-            <TextInput {...register("provider_name")} />
+            <TextInput
+              {...register("provider_name")}
+              readOnly
+              variant="filled"
+            />
           </Grid.Col>
           <Grid.Col span={labelSize}>
             <TextLabel label="สถานะงาน" />
           </Grid.Col>
           <Grid.Col span={inputSize}>
-            <TextInput {...register("status_name")} />
+            <TextInput {...register("status_name")} readOnly variant="filled" />
           </Grid.Col>
         </Grid>
         <Card.Section withBorder inheritPadding py="md" mt="lg">

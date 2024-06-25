@@ -262,11 +262,7 @@ export default function RequestForm() {
         </Grid>
         <Card.Section withBorder inheritPadding py="md" mt="lg">
           <Group justify="center">
-            <Button
-              size="lg"
-              color="gray"
-              // onClick={() => navigate("/equipment")}
-            >
+            <Button size="lg" color="gray" onClick={() => navigate("/request")}>
               ยกเลิก
             </Button>
             <Button

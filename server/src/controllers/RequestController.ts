@@ -69,4 +69,11 @@ export default async function RequestController(fastify: FastifyInstance) {
     const result = await requestModel.findByIdDetails(id);
     res.send(result);
   });
+
+  //ประวัติสถานะงานซ่อม
+  fastify.get("/history/:id", async (req, res) => {
+    const { id } = req.params as { id: number };
+    const result = await requestModel.findByIdHistory(id);
+    res.send(result);
+  });
 }

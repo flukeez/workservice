@@ -20,6 +20,7 @@ const Category = lazy(() => import("@/pages/category"));
 const Status = lazy(() => import("@/pages/status"));
 const User = lazy(() => import("@/pages/user"));
 const UserForm = lazy(() => import("@/pages/user/user_form"));
+const Provider = lazy(() => import("@/pages/provider"));
 const Login = lazy(() => import("@/pages/login"));
 const PageNotFound = lazy(() => import("@/pages/notfound"));
 
@@ -47,6 +48,7 @@ export function Router() {
               <Route index element={<Faculty />} />
               <Route path="user_position/:id" element={<UserPosition />} />
             </Route>
+            <Route path="/provider" element={<Provider />} />
             <Route path="/issue" element={<Issue />} />
             <Route path="/position" element={<Position />} />
             <Route path="/priority" element={<Priority />} />

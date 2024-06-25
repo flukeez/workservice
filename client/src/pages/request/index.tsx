@@ -137,24 +137,24 @@ export default function Request() {
                 );
               },
             },
-            {
-              accessor: "main_issue.name",
-              title: <Text fw={700}>ประเภทงาน</Text>,
-              width: "15%",
-              sortable: true,
-              render({ issue_name, issue_sub_name }) {
-                return (
-                  <Group>
-                    <Text size="sm">{String(issue_name)}</Text>
-                    {issue_sub_name ? (
-                      <Text size="sm" c="dimmed">
-                        {`(${issue_sub_name})`}
-                      </Text>
-                    ) : null}
-                  </Group>
-                );
-              },
-            },
+            // {
+            //   accessor: "main_issue.name",
+            //   title: <Text fw={700}>ประเภทงาน</Text>,
+            //   width: "15%",
+            //   sortable: true,
+            //   render({ issue_name, issue_sub_name }) {
+            //     return (
+            //       <Group>
+            //         <Text size="sm">{String(issue_name)}</Text>
+            //         {issue_sub_name ? (
+            //           <Text size="sm" c="dimmed">
+            //             {`(${issue_sub_name})`}
+            //           </Text>
+            //         ) : null}
+            //       </Group>
+            //     );
+            //   },
+            // },
             {
               accessor: "equip_count",
               title: <Text fw={700}>จํานวนอุปกรณ์</Text>,

@@ -58,3 +58,19 @@ export const useRequestDetails = (id: number) => {
   });
   return { ...query };
 };
+
+//TODO:ประวัติสถานะงานซ่อม
+export const useRequestHistory = (id: number) => {
+  const findById = async () => {
+    if (id === 0) {
+      return {};
+    }
+    const { data } = await axiosAuth.get(url + "/history/" + id);
+    return data;
+  };
+  const query = useQuery({
+    queryKey: [queryKeys.request_history, id],
+    queryFn: findById,
+  });
+  return { ...query };
+};

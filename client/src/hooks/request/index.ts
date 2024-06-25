@@ -1,2 +1,7 @@
-export { useRequestDetails, useRequests, useRequest } from "./useRequest";
+export {
+  useRequestDetails,
+  useRequestHistory,
+  useRequests,
+  useRequest,
+} from "./useRequest";
 export { useRequestSave } from "./useRequestMutate";
