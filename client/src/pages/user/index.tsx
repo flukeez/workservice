@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { Card, Grid, Group, Highlight, ScrollArea, Text } from "@mantine/core";
+import { Card, Grid, Group, Highlight, Text } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { timeFormNow } from "@/utils/mydate";
 import { useUserStore } from "@/stores/useUserStore";
@@ -104,106 +104,106 @@ export default function User() {
             </Grid.Col>
           </Grid>
         </Card.Section>
-        <ScrollArea>
-          <DataTable
-            mt="md"
-            withTableBorder
-            borderRadius="sm"
-            withColumnBorders
-            striped
-            highlightOnHover
-            records={data?.rows}
-            columns={[
-              {
-                accessor: "firstname",
-                title: <Text fw={700}>ชื่อ - นามสกุล</Text>,
-                width: "45%",
-                sortable: true,
-                render({ firstname, surname, nickname, image }) {
-                  return (
-                    <UserInfo
-                      firstname={firstname}
-                      surname={surname}
-                      nickname={nickname}
-                      image={image}
-                      highlight={userStore.txtSearch}
-                    />
-                  );
-                },
+        <DataTable
+          mt="md"
+          withTableBorder
+          borderRadius="sm"
+          withColumnBorders
+          striped
+          highlightOnHover
+          records={data?.rows}
+          columns={[
+            {
+              accessor: "firstname",
+              title: <Text fw={700}>ชื่อ - นามสกุล</Text>,
+              width: "45%",
+              sortable: true,
+              render({ firstname, surname, nickname, image }) {
+                return (
+                  <UserInfo
+                    firstname={firstname}
+                    surname={surname}
+                    nickname={nickname}
+                    image={image}
+                    highlight={userStore.txtSearch}
+                  />
+                );
               },
-              {
-                accessor: "username",
-                title: <Text fw={700}>ชื่อผู้ใช้</Text>,
-                width: "20%",
-                sortable: true,
-                render({ username }) {
-                  return (
-                    <Highlight highlight={userStore.txtSearch}>
-                      {String(username)}
-                    </Highlight>
-                  );
-                },
+            },
+            {
+              accessor: "username",
+              title: <Text fw={700}>ชื่อผู้ใช้</Text>,
+              width: "20%",
+              sortable: true,
+              render({ username }) {
+                return (
+                  <Highlight highlight={userStore.txtSearch}>
+                    {String(username)}
+                  </Highlight>
+                );
               },
-              {
-                accessor: "phone",
-                title: <Text fw={700}>เบอร์โทรศัพท์</Text>,
-                width: "10%",
-                textAlign: "center",
-                sortable: true,
+            },
+            {
+              accessor: "phone",
+              title: <Text fw={700}>เบอร์โทรศัพท์</Text>,
+              width: "10%",
+              textAlign: "center",
+              sortable: true,
+            },
+            {
+              accessor: "last_login",
+              title: <Text fw={700}>ใช้งานล่าสุด</Text>,
+              sortable: true,
+              width: "10%",
+              textAlign: "center",
+              render({ last_login }) {
+                return (
+                  <Text size="sm" c="dimmed">
+                    {timeFormNow(String(last_login))}
+                  </Text>
+                );
               },
-              {
-                accessor: "last_login",
-                title: <Text fw={700}>ใช้งานล่าสุด</Text>,
-                sortable: true,
-                width: "10%",
-                textAlign: "center",
-                render({ last_login }) {
-                  return (
-                    <Text c="dimmed">{timeFormNow(String(last_login))}</Text>
-                  );
-                },
-              },
-              {
-                accessor: "id",
-                title: <Text fw={700}>จัดการ</Text>,
-                width: "0%",
-                textAlign: "center",
-                render: ({ id }) => (
-                  <Group justify="center" gap={3} wrap="nowrap">
-                    <ButtonEdit onClick={() => handleUpdate(String(id))} />
-                    <ButtonDelete
-                      onClick={() => handleDelete(String(id), String(name))}
-                    />
-                  </Group>
-                ),
-              },
-            ]}
-            sortStatus={sortStatus}
-            onSortStatusChange={(sort) => [
-              setSortStatus(sort),
-              userStore.setFilter({
-                ...userStore,
-                sortField: sort.columnAccessor,
-                sortDirection: sort.direction,
-              }),
-            ]}
-            totalRecords={data?.totalItem || 0}
-            recordsPerPage={PAGE_SIZE}
-            page={userStore.page}
-            onPageChange={(p: number) =>
-              userStore.setFilter({ ...userStore, page: p })
-            }
-            paginationText={({ from, to, totalRecords }) =>
-              `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
-            }
-            noRecordsText="ไม่พบรายการ"
-            noRecordsIcon={<></>}
-            minHeight={120}
-            fetching={isLoading}
-            pinLastColumn
-            pinFirstColumn
-          />
-        </ScrollArea>
+            },
+            {
+              accessor: "id",
+              title: <Text fw={700}>จัดการ</Text>,
+              width: "0%",
+              textAlign: "center",
+              render: ({ id, name }) => (
+                <Group justify="center" gap={3} wrap="nowrap">
+                  <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                  <ButtonDelete
+                    onClick={() => handleDelete(String(id), String(name))}
+                  />
+                </Group>
+              ),
+            },
+          ]}
+          sortStatus={sortStatus}
+          onSortStatusChange={(sort) => [
+            setSortStatus(sort),
+            userStore.setFilter({
+              ...userStore,
+              sortField: sort.columnAccessor,
+              sortDirection: sort.direction,
+            }),
+          ]}
+          totalRecords={data?.totalItem || 0}
+          recordsPerPage={PAGE_SIZE}
+          page={userStore.page}
+          onPageChange={(p: number) =>
+            userStore.setFilter({ ...userStore, page: p })
+          }
+          paginationText={({ from, to, totalRecords }) =>
+            `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
+          }
+          noRecordsText="ไม่พบรายการ"
+          noRecordsIcon={<></>}
+          minHeight={120}
+          fetching={isLoading}
+          pinLastColumn
+          pinFirstColumn
+        />
       </Card>
     </>
   );

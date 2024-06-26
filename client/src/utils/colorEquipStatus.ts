@@ -1,7 +1,7 @@
 export function ColorEquipStatus(text: string) {
   let color;
   switch (text) {
-    case "ปกติ":
+    case "พร้อมใช้งาน":
       color = `green.6`;
       break;
     case "ไม่ได้ใช้งาน":

@@ -16,6 +16,7 @@ import EquipStatusController from "./controllers/EquipStatusController";
 import EquipmentController from "./controllers/EquipmentController";
 import LoginController from "./controllers/LoginController";
 import RequestController from "./controllers/RequestController";
+import ProviderController from "./controllers/ProviderController";
 
 const routes = async (fastify: FastifyInstance) => {
   //DEFAULT ROUTE
@@ -44,6 +45,7 @@ const routes = async (fastify: FastifyInstance) => {
   fastify.register(LoginController, { prefix: "/api/login" });
   fastify.register(UserPositionController, { prefix: "/api/user_positions" });
   fastify.register(RequestController, { prefix: "/api/requests" });
+  fastify.register(ProviderController, { prefix: "/api/providers" });
 };
 
 export default routes;

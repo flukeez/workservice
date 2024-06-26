@@ -28,4 +28,6 @@ export const queryKeys = {
   request: "Get Request",
   request_details: "Get Request Details",
   request_history: "Fetch Request Status",
+  providers: "Fetch Providers",
+  provider: "Get Provider",
 };
