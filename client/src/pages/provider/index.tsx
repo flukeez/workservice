@@ -1,17 +1,23 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { useDebouncedValue } from "@mantine/hooks";
+import { useProviders } from "@/hooks/provider";
+
+import { Card, Grid, Group, Highlight, Rating, Text } from "@mantine/core";
+import { DataTable, DataTableSortStatus } from "mantine-datatable";
+
 import ButtonDelete from "@/components/common/ButtonDelete";
 import ButtonEdit from "@/components/common/ButtonEdit";
 import ButtonNew from "@/components/common/ButtonNew";
 import InputSearch from "@/components/common/InputSearch";
 import PageHeader from "@/components/common/PageHeader";
+import BadgeProviderStatus from "@/components/provider/BadgeProviderStatus";
+
 import { PAGE_SIZE } from "@/config";
-import { useProviders } from "@/hooks/provider";
-import { useProviderStore } from "@/stores/useProviderStore";
 import { timeFormNow } from "@/utils/mydate";
-import { Card, Grid, Group, Highlight, Rating, Text } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
-import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { useProviderStore } from "@/stores/useProviderStore";
 
 const title = "รายชื่อผู้ซ่อม";
 const listItems = [{ title: title, href: "#" }];
@@ -37,7 +43,9 @@ export default function Provider() {
   const handleNew = () => {
     navigate("/provider/new");
   };
-  const handleUpdate = (id: string) => {};
+  const handleUpdate = (id: string) => {
+    navigate(`/provider/${id}`);
+  };
   const handleDelete = (id: string, name: string) => {};
   const searchData = () => {
     setFilter(setCondition());
@@ -85,6 +93,7 @@ export default function Provider() {
           striped
           highlightOnHover
           records={data?.rows}
+          fs="sm"
           columns={[
             {
               accessor: "name",
@@ -92,14 +101,14 @@ export default function Provider() {
               sortable: true,
               render({ name }) {
                 return (
-                  <Highlight highlight={providerStore.txtSearch}>
+                  <Highlight size="sm" highlight={providerStore.txtSearch}>
                     {String(name)}
                   </Highlight>
                 );
               },
             },
             {
-              accessor: "tel",
+              accessor: "phone",
               title: <Text fw={700}>เบอร์โทรศัพท์</Text>,
               width: "12%",
               textAlign: "center",
@@ -131,6 +140,9 @@ export default function Provider() {
               width: "10%",
               textAlign: "center",
               sortable: true,
+              render({ status }) {
+                return <BadgeProviderStatus status={String(status)} />;
+              },
             },
             {
               accessor: "last_login",

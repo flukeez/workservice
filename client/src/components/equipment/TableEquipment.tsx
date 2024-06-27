@@ -194,7 +194,6 @@ export default function TableEquipment({
         paginationText={({ from, to, totalRecords }) =>
           `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
         }
-        paginationActiveBackgroundColor="gray"
         noRecordsText="ไม่พบรายการ"
         noRecordsIcon={<></>}
         minHeight={120}

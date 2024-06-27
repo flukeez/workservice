@@ -29,8 +29,9 @@ export const useRequests = (condition: IConditionFilter) => {
 //find by id
 export const useRequest = (id: number) => {
   const [filter, setFilter] = useState(id);
+
   const findById = async () => {
-    if (id === 0) {
+    if (filter == 0) {
       return {};
     }
     const { data } = await axiosAuth.get(url + "/" + filter);

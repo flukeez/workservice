@@ -18,4 +18,6 @@ export type IRequestForm = {
   equip_id: string[];
   details: string | null;
   image: unknown[] | null;
+  provider?: string;
+  status_id?: number | null;
 };

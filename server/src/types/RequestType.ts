@@ -12,6 +12,8 @@ export type IRequestForm = {
   user_id: number;
   "equip_id[]": string[];
   details: string | null;
+  status_id: string | null;
+  provider_id: string;
   "image[]": IFile[] | null | string[];
   image_old?: string[] | null;
 };

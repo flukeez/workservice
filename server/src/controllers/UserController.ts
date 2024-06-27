@@ -1,4 +1,3 @@
-import { upload } from "@/middlewares/multer";
 import { UserModel } from "@/models/UserModel";
 import { IUserForm, IUserQuery } from "@/types/UserType";
 import { deleteFile, saveFile } from "@/utils/imagefile";
@@ -19,17 +18,18 @@ export default async function UserController(fastify: FastifyInstance) {
   fastify.post("/create", async (req, res) => {
     // รับข้อมูลจากฟอร์ม
     let data = req.body as IUserForm;
-    const checkDuplicate = await userModel.checkDuplicate(
-      data.id_card,
-      data.firstname,
-      data.surname,
-      data.username
-    );
-    if (checkDuplicate) {
-      res.send({ result: 0 });
-      return;
-    }
     try {
+      const checkDuplicate = await userModel.checkDuplicate(
+        data.id_card,
+        data.firstname,
+        data.surname,
+        data.username
+      );
+      if (checkDuplicate) {
+        res.send({ result: 0 });
+        return;
+      }
+
       if (Array.isArray(data.image)) {
         const image = await saveFile("user", data.image[0]);
         data = { ...data, image: image };

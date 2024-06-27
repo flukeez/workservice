@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2024-06-26 17:20:45
+Date: 2024-06-27 17:27:24
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -2050,7 +2050,7 @@ INSERT INTO `tb_equip` VALUES ('1075', 'A-01075', '(2.0) NUBWO MESH (NS010) USB 
 INSERT INTO `tb_equip` VALUES ('1076', 'A-01076', '(2.0) NUBWO MESH (NS010) USB Red', null, '170', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : Aux 3.5mm', 'A0079922_1.jpg', '1', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1077', 'A-01077', '(2.0) MD-TECH (SP-18) USB Pink', null, '200', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : Aux 3.5mm', 'A0132963_1.jpg', '1', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1078', 'A-01078', '(2.0) OKER (SP-568) USB Pink', null, '210', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : Aux 3.5mm', 'A0136889_1.jpg', '2', '0', '0', null, null, null);
-INSERT INTO `tb_equip` VALUES ('1079', 'A-01079', '(2.0) AULA (N-69) USB', null, '215', '2023-11-29', null, 'ประกัน 2*2*0', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5mm', 'A0138550_1.jpg', '1', '0', '0', null, null, null);
+INSERT INTO `tb_equip` VALUES ('1079', 'A-01079', '(2.0) AULA (N-69) USB', null, '215', '2023-11-29', null, 'ประกัน 2*2*0', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5mm', 'A0138550_1.jpg', '2', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1080', 'A-01080', '(2.0) AULA (N-108) USB', null, '215', '2023-11-29', null, 'ประกัน 2*2*0', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0138551_1.jpg', '2', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1081', 'A-01081', '(2.0) NUBWO SPARK (NS011) USB RGB Blue', null, '250', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0079932_1.jpg', '1', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1082', 'A-01082', '(2.0) NUBWO SPARK (NS011) USB RGB Green', null, '250', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0079933_1.jpg', '2', '0', '0', null, null, null);
@@ -2059,10 +2059,10 @@ INSERT INTO `tb_equip` VALUES ('1084', 'A-01084', '(2.0) LECOO (DS151) USB Gray'
 INSERT INTO `tb_equip` VALUES ('1085', 'A-01085', '(2.0) AULA (N-107) USB', null, '360', '2023-11-29', null, 'ประกัน 2*2*0', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0138553_1.jpg', '2', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1086', 'A-01086', '(2.0) GENIUS (SP-HF180) USB Black', null, '390', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0129304_1.jpg', '1', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1087', 'A-01087', '(2.0) GENIUS (SP-HF180) USB Wood', null, '390', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0129305_1.jpg', '1', '0', '0', null, null, null);
-INSERT INTO `tb_equip` VALUES ('1088', 'A-01088', '(2.0) AULA (N-521) USB', null, '420', '2023-11-29', null, 'ประกัน 2*2*0', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0138554_1.jpg', '1', '0', '0', null, null, null);
+INSERT INTO `tb_equip` VALUES ('1088', 'A-01088', '(2.0) AULA (N-521) USB', null, '420', '2023-11-29', null, 'ประกัน 2*2*0', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0138554_1.jpg', '2', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1089', 'A-01089', '(2.0) LECOO (DS105) USB Wood', null, '295', '2023-11-29', null, 'ประกัน 1*1*0', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 5w. (2x2.5\") / Input : AUX 3.5 mm', 'A0137291_1.jpg', '1', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1090', 'A-01090', '(2.0) CREATIVE (PEBBLE) USB Black', null, '790', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 4.4w. (2x2) / Input : AUX 3.5mm', 'A0144113_1.jpg', '1', '0', '0', null, null, null);
-INSERT INTO `tb_equip` VALUES ('1091', 'A-01091', '(2.0) CREATIVE (PEBBLE) USB White', null, '790', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 4.4w. (2x2) / Input : AUX 3.5mm', 'A0144114_1.jpg', '1', '0', '0', null, null, null);
+INSERT INTO `tb_equip` VALUES ('1091', 'A-01091', '(2.0) CREATIVE (PEBBLE) USB White', null, '790', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 4.4w. (2x2) / Input : AUX 3.5mm', 'A0144114_1.jpg', '2', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1092', 'A-01092', '(2.0) MICROLAB (B16) USB', null, '390', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 5w. / Input : AUX 3.5 mm', 'A0081713_1.jpg', '1', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1093', 'A-01093', '(2.0) SAAG ARROW (D71) USB RGB', null, '190', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 6w. (2x2\'\') / Input : AUX 3.5mm', 'A0138705_1.jpg', '2', '0', '0', null, null, null);
 INSERT INTO `tb_equip` VALUES ('1094', 'A-01094', '(2.0) SAAG ACHER (D72) USB RGB', null, '190', '2023-11-29', null, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 6w. (2x2) / Input : AUX 3.5mm', 'A0138706_1.jpg', '2', '0', '0', null, null, null);
@@ -2914,19 +2914,61 @@ CREATE TABLE `tb_issue` (
   `issue_show` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `fk_issue_issue` (`issue_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_issue
 -- ----------------------------
-INSERT INTO `tb_issue` VALUES ('1', 'test3', '1', '3', '0');
-INSERT INTO `tb_issue` VALUES ('2', 'test1', '1', '3', '1');
-INSERT INTO `tb_issue` VALUES ('3', 'sdfsdfsdfsd', '0', null, '0');
-INSERT INTO `tb_issue` VALUES ('4', 'test9', '0', null, '0');
-INSERT INTO `tb_issue` VALUES ('5', 'tsttestsdtws', '1', '3', '1');
-INSERT INTO `tb_issue` VALUES ('6', 'test3sdf', '0', null, '0');
-INSERT INTO `tb_issue` VALUES ('7', 'sdfsdfsd', '1', '3', '0');
-INSERT INTO `tb_issue` VALUES ('8', 'test33', '1', '6', '0');
+INSERT INTO `tb_issue` VALUES ('1', 'งานซ่อมไฟฟ้า', '0', null, '0');
+INSERT INTO `tb_issue` VALUES ('2', 'งานซ่อมประปา', '0', null, '0');
+INSERT INTO `tb_issue` VALUES ('3', 'งานซ่อมเครื่องปรับอากาศ', '0', null, '0');
+INSERT INTO `tb_issue` VALUES ('4', 'งานซ่อมเครื่องใช้ไฟฟ้า', '0', null, '0');
+INSERT INTO `tb_issue` VALUES ('5', 'งานซ่อมยานพาหนะ', '0', null, '0');
+INSERT INTO `tb_issue` VALUES ('6', 'งานซ่อมโครงสร้าง', '0', null, '0');
+INSERT INTO `tb_issue` VALUES ('7', 'งานซ่อมระบบคอมพิวเตอร์', '0', null, '0');
+INSERT INTO `tb_issue` VALUES ('8', 'งานซ่อมโทรศัพท์มือถือ', '0', null, '0');
+INSERT INTO `tb_issue` VALUES ('9', 'งานซ่อมเฟอร์นิเจอร์', '0', '', '0');
+INSERT INTO `tb_issue` VALUES ('10', 'งานซ่อมระบบเครื่องกล', '0', '', '0');
+INSERT INTO `tb_issue` VALUES ('11', 'การติดตั้งและเปลี่ยนสายไฟ', '1', '1', '0');
+INSERT INTO `tb_issue` VALUES ('12', 'การติดตั้งและเปลี่ยนเต้ารับ', '1', '1', '0');
+INSERT INTO `tb_issue` VALUES ('13', 'การซ่อมแซมและเปลี่ยนไฟฟ้าแสงสว่าง', '1', '1', '0');
+INSERT INTO `tb_issue` VALUES ('14', 'การติดตั้งและซ่อมระบบไฟฟ้าภายในบ้าน', '1', '1', '0');
+INSERT INTO `tb_issue` VALUES ('15', 'การซ่อมและเปลี่ยนท่อน้ำ', '1', '2', '0');
+INSERT INTO `tb_issue` VALUES ('16', 'การซ่อมและเปลี่ยนก๊อกน้ำ', '1', '2', '0');
+INSERT INTO `tb_issue` VALUES ('17', 'การติดตั้งและซ่อมสุขภัณฑ์', '1', '2', '0');
+INSERT INTO `tb_issue` VALUES ('18', 'การตรวจสอบและซ่อมแซมระบบระบายน้ำ', '1', '2', '0');
+INSERT INTO `tb_issue` VALUES ('19', 'การซ่อมและบำรุงรักษาแอร์', '1', '3', '0');
+INSERT INTO `tb_issue` VALUES ('20', 'การติดตั้งและถอดแอร์', '1', '3', '0');
+INSERT INTO `tb_issue` VALUES ('21', 'การล้างแอร์', '1', '3', '0');
+INSERT INTO `tb_issue` VALUES ('22', 'การตรวจสอบและเติมน้ำยาแอร์', '1', '3', '0');
+INSERT INTO `tb_issue` VALUES ('23', 'การซ่อมและบำรุงรักษาเครื่องซักผ้า', '1', '4', '0');
+INSERT INTO `tb_issue` VALUES ('24', 'การซ่อมและบำรุงรักษาตู้เย็น', '1', '4', '0');
+INSERT INTO `tb_issue` VALUES ('25', 'การซ่อมและบำรุงรักษาเตาไมโครเวฟ', '1', '4', '0');
+INSERT INTO `tb_issue` VALUES ('26', 'การซ่อมและบำรุงรักษาเครื่องทำน้ำอุ่น', '1', '4', '0');
+INSERT INTO `tb_issue` VALUES ('27', 'การซ่อมและบำรุงรักษาเครื่องยนต์', '1', '5', '0');
+INSERT INTO `tb_issue` VALUES ('28', 'การเปลี่ยนและตรวจสอบน้ำมันเครื่อง', '1', '5', '0');
+INSERT INTO `tb_issue` VALUES ('29', 'การซ่อมและบำรุงรักษาระบบเบรก', '1', '5', '0');
+INSERT INTO `tb_issue` VALUES ('30', 'การซ่อมและบำรุงรักษาระบบระบายความร้อน', '1', '5', '0');
+INSERT INTO `tb_issue` VALUES ('31', 'การซ่อมและบำรุงรักษาหลังคา', '1', '6', '0');
+INSERT INTO `tb_issue` VALUES ('32', 'การซ่อมและบำรุงรักษาผนัง', '1', '6', '0');
+INSERT INTO `tb_issue` VALUES ('33', 'การซ่อมและบำรุงรักษาพื้น', '1', '6', '0');
+INSERT INTO `tb_issue` VALUES ('34', 'การซ่อมและบำรุงรักษาประตูและหน้าต่าง', '1', '6', '0');
+INSERT INTO `tb_issue` VALUES ('35', 'การซ่อมและบำรุงรักษาฮาร์ดแวร์', '1', '7', '0');
+INSERT INTO `tb_issue` VALUES ('36', 'การติดตั้งและอัพเดตซอฟต์แวร์', '1', '7', '0');
+INSERT INTO `tb_issue` VALUES ('37', 'การตรวจสอบและซ่อมแซมระบบเน็ตเวิร์ค', '1', '7', '0');
+INSERT INTO `tb_issue` VALUES ('38', 'การกู้ข้อมูลและซ่อมแซมดิสก์ไดรฟ์', '1', '7', '0');
+INSERT INTO `tb_issue` VALUES ('39', 'การซ่อมและเปลี่ยนหน้าจอ', '1', '8', '0');
+INSERT INTO `tb_issue` VALUES ('40', 'การซ่อมและเปลี่ยนแบตเตอรี่', '1', '8', '0');
+INSERT INTO `tb_issue` VALUES ('41', 'การซ่อมและบำรุงรักษาพอร์ตชาร์จ', '1', '8', '0');
+INSERT INTO `tb_issue` VALUES ('42', 'การตรวจสอบและซ่อมแซมซอฟต์แวร์', '1', '8', '0');
+INSERT INTO `tb_issue` VALUES ('43', 'การซ่อมและบำรุงรักษาโซฟา', '1', '9', '0');
+INSERT INTO `tb_issue` VALUES ('44', 'การซ่อมและบำรุงรักษาโต๊ะและเก้าอี้', '1', '9', '0');
+INSERT INTO `tb_issue` VALUES ('45', 'การซ่อมและบำรุงรักษาตู้และชั้นวางของ', '1', '9', '0');
+INSERT INTO `tb_issue` VALUES ('46', 'การซ่อมและบำรุงรักษาเตียง', '1', '9', '0');
+INSERT INTO `tb_issue` VALUES ('47', 'การซ่อมและบำรุงรักษาเครื่องจักรกล', '1', '10', '0');
+INSERT INTO `tb_issue` VALUES ('48', 'การซ่อมและบำรุงรักษาปั๊มน้ำ', '1', '10', '0');
+INSERT INTO `tb_issue` VALUES ('49', 'การซ่อมและบำรุงรักษามอเตอร์', '1', '10', '0');
+INSERT INTO `tb_issue` VALUES ('50', 'การซ่อมและบำรุงรักษาระบบเกียร์', '1', '10', '0');
 
 -- ----------------------------
 -- Table structure for tb_login_log
@@ -3025,46 +3067,39 @@ DROP TABLE IF EXISTS `tb_provider`;
 CREATE TABLE `tb_provider` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
-  `details` varchar(255) DEFAULT NULL,
+  `details` text DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `tel` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) NOT NULL DEFAULT '',
   `line` varchar(255) DEFAULT NULL,
   `line_token` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
+  `address` varchar(255) NOT NULL DEFAULT '',
+  `tumbol_id` int(11) NOT NULL,
+  `amphure_id` int(11) NOT NULL,
+  `province_id` int(11) NOT NULL,
   `special` varchar(255) DEFAULT NULL,
   `issue_id1` int(11) DEFAULT NULL,
   `issue_id2` int(11) DEFAULT NULL,
   `issue_id3` int(11) DEFAULT NULL,
   `issue_id4` int(11) DEFAULT NULL,
   `issue_id5` int(11) DEFAULT NULL,
-  `available` int(11) DEFAULT 0,
-  `rating` decimal(10,2) DEFAULT NULL,
+  `available` int(11) NOT NULL DEFAULT 0,
+  `rating` decimal(10,2) NOT NULL DEFAULT 5.00,
   `create_date` timestamp NULL DEFAULT current_timestamp(),
   `last_login` datetime DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
-  `provider_show` int(1) DEFAULT NULL,
+  `status` int(11) DEFAULT 1,
+  `username` varchar(255) NOT NULL DEFAULT '',
+  `password` text NOT NULL,
+  `provider_show` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_provider
 -- ----------------------------
-INSERT INTO `tb_provider` VALUES ('1', 'ทดลอง', '23', null, null, '0000000000', null, null, '1', '12312', '1', '3', '4', '6', '8', '0', '5.00', '2024-06-26 12:07:12', null, '1', '0');
-
--- ----------------------------
--- Table structure for tb_provider_status
--- ----------------------------
-DROP TABLE IF EXISTS `tb_provider_status`;
-CREATE TABLE `tb_provider_status` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
-
--- ----------------------------
--- Records of tb_provider_status
--- ----------------------------
+INSERT INTO `tb_provider` VALUES ('1', 'ทดลอง', '23', null, null, '0000000000', null, null, '1', '0', '0', '0', '12312', '1', '3', '4', '6', '8', '0', '5.00', '2024-06-26 12:07:12', '2024-06-26 12:07:12', '1', '', '', '0');
+INSERT INTO `tb_provider` VALUES ('2', 'บริษัท ทดลอง แจ้งซ่อม', 'zzzzzzz', '1719463164125-176515986.jpg', 'flukelalalalal@gmail.com', '0909823211', '', '', '1111', '810303', '8103', '81', '', '7', '9', '10', '4', '8', '0', '5.00', '2024-06-27 11:17:03', '2024-06-27 11:17:03', '1', 'Provider1', '', '0');
+INSERT INTO `tb_provider` VALUES ('3', 'บริษัท ซ่อมไม่เสร็จ จำกัด', '', '1719461947398-451651698.jpg', 'flukelalalalal@gmail.com', '0909823211', '', '', '109 หมู่ 7 บ้านหนองฟ้า\r\n', '103005', '1030', '10', '', null, null, null, '2', null, '0', '5.00', '2024-06-27 11:19:07', '2024-06-27 11:19:07', '1', 'Provider2', '$2b$10$UDrR64uB5N4X.ibHdlZz.uSrdAv6.96MeGccHISi4BwiGGAWKV3vq', '0');
 
 -- ----------------------------
 -- Table structure for tb_province
@@ -3177,7 +3212,7 @@ CREATE TABLE `tb_request` (
   `user_id` int(11) NOT NULL,
   `total` decimal(10,0) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_request
@@ -3197,6 +3232,11 @@ INSERT INTO `tb_request` VALUES ('19', '2024-06-23 17:27:53', '0000-00-00', '0',
 INSERT INTO `tb_request` VALUES ('20', '2024-06-23 17:27:53', '0000-00-00', '0', '3', null, '6', '0', '1', '99', '999', '0');
 INSERT INTO `tb_request` VALUES ('21', '2024-06-23 17:27:53', '0000-00-00', '0', '3', null, '7', '0', '1', '99', '999', '0');
 INSERT INTO `tb_request` VALUES ('22', '2024-06-24 19:59:01', '0000-00-00', '0', '6', '0', '7', null, '1', '99', '999', null);
+INSERT INTO `tb_request` VALUES ('23', '2024-06-27 13:01:57', '0000-00-00', '0', '10', '49', '3', null, '2', '99', '999', null);
+INSERT INTO `tb_request` VALUES ('24', '2024-06-27 13:29:52', '0000-00-00', '0', '7', '0', '2', null, '2', '99', '999', null);
+INSERT INTO `tb_request` VALUES ('25', '2024-06-27 13:30:10', '0000-00-00', '0', '3', '22', '2', null, '2', '99', '999', null);
+INSERT INTO `tb_request` VALUES ('26', '2024-06-27 13:33:19', '0000-00-00', '0', '6', '0', '6', '0', '2', '99', '999', null);
+INSERT INTO `tb_request` VALUES ('27', '2024-06-27 15:33:01', '0000-00-00', '0', '2', '16', '3', '3', '3', '99', '999', null);
 
 -- ----------------------------
 -- Table structure for tb_request_details
@@ -3220,7 +3260,7 @@ CREATE TABLE `tb_request_details` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `fk_req_detail_req` (`request_id`) USING BTREE,
   CONSTRAINT `fk_req_detail_req` FOREIGN KEY (`request_id`) REFERENCES `tb_request` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_request_details
@@ -3240,6 +3280,11 @@ INSERT INTO `tb_request_details` VALUES ('16', '2', 'dss', '', '0', '0', '0', '0
 INSERT INTO `tb_request_details` VALUES ('17', '2', '', '', '0', '0', '0', '0', '1719138473505-817493767.jpg', null, null, null, null, '20');
 INSERT INTO `tb_request_details` VALUES ('18', 'wq', '', '', '0', '0', '0', '0', null, null, null, null, null, '21');
 INSERT INTO `tb_request_details` VALUES ('19', '2', 'gjh', '', '0', '0', '0', '0', '1719233941600-766978535.jpg', '1719233941600-539082732.jpg', '1719233941600-936670379.jpg', null, null, '22');
+INSERT INTO `tb_request_details` VALUES ('20', 'Wing Espinoza', 'sdfsddsdf', '', '0', '0', '0', '0', '1719468117189-119925067.jpg', null, null, null, null, '23');
+INSERT INTO `tb_request_details` VALUES ('21', 'dfdfgd', 'dfgdfgdf', '', '0', '0', '0', '0', null, null, null, null, null, '24');
+INSERT INTO `tb_request_details` VALUES ('22', 'dfgdf', '', '', '0', '0', '0', '0', null, null, null, null, null, '25');
+INSERT INTO `tb_request_details` VALUES ('23', '12345', '263555', '', '0', '0', '0', '0', null, null, null, null, null, '26');
+INSERT INTO `tb_request_details` VALUES ('24', 'เปลี่ยนก๊อกน้ำ', 'กกกกก', '', '0', '0', '0', '0', null, null, null, null, null, '27');
 
 -- ----------------------------
 -- Table structure for tb_request_equip
@@ -3251,7 +3296,7 @@ CREATE TABLE `tb_request_equip` (
   `request_id` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `fk_req_equip_req` (`request_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_request_equip
@@ -3319,6 +3364,12 @@ INSERT INTO `tb_request_equip` VALUES ('65', '1105', '22');
 INSERT INTO `tb_request_equip` VALUES ('66', '1112', '22');
 INSERT INTO `tb_request_equip` VALUES ('67', '1111', '22');
 INSERT INTO `tb_request_equip` VALUES ('68', '1108', '22');
+INSERT INTO `tb_request_equip` VALUES ('69', '1091', '23');
+INSERT INTO `tb_request_equip` VALUES ('70', '1069', '24');
+INSERT INTO `tb_request_equip` VALUES ('71', '1079', '24');
+INSERT INTO `tb_request_equip` VALUES ('72', '1091', '25');
+INSERT INTO `tb_request_equip` VALUES ('73', '1088', '26');
+INSERT INTO `tb_request_equip` VALUES ('74', '1080', '27');
 
 -- ----------------------------
 -- Table structure for tb_request_history
@@ -3333,7 +3384,7 @@ CREATE TABLE `tb_request_history` (
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE,
   KEY `fk_req_his_status` (`status_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_request_history
@@ -3355,6 +3406,16 @@ INSERT INTO `tb_request_history` VALUES ('14', '21', 'แจ้งซ่อม',
 INSERT INTO `tb_request_history` VALUES ('15', '22', 'แจ้งซ่อม', '', '1', '2024-06-24 19:59:01');
 INSERT INTO `tb_request_history` VALUES ('16', '19', 'ซื้ออะไหล่', '', '4', '2024-06-25 22:07:24');
 INSERT INTO `tb_request_history` VALUES ('17', '19', '', '', '2', '2024-06-24 22:06:38');
+INSERT INTO `tb_request_history` VALUES ('18', '23', 'แจ้งซ่อม', '', '1', '2024-06-27 13:01:57');
+INSERT INTO `tb_request_history` VALUES ('19', '23', '', '', '2', '2024-06-27 13:01:57');
+INSERT INTO `tb_request_history` VALUES ('20', '24', 'แจ้งซ่อม', '', '1', '2024-06-27 13:29:52');
+INSERT INTO `tb_request_history` VALUES ('21', '24', '', '', '2', '2024-06-27 13:29:52');
+INSERT INTO `tb_request_history` VALUES ('22', '25', 'แจ้งซ่อม', '', '1', '2024-06-27 13:30:10');
+INSERT INTO `tb_request_history` VALUES ('23', '25', '', '', '2', '2024-06-27 13:30:10');
+INSERT INTO `tb_request_history` VALUES ('24', '26', 'แจ้งซ่อม', '', '1', '2024-06-27 13:33:19');
+INSERT INTO `tb_request_history` VALUES ('25', '26', '', '', '2', '2024-06-27 13:33:19');
+INSERT INTO `tb_request_history` VALUES ('26', '27', 'แจ้งซ่อม', '', '1', '2024-06-27 15:33:01');
+INSERT INTO `tb_request_history` VALUES ('27', '27', '', '', '3', '2024-06-27 15:33:01');
 
 -- ----------------------------
 -- Table structure for tb_status

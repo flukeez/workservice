@@ -85,7 +85,9 @@ export class UserModel {
         data.birthday = dateToMySql(data.birthday);
       }
       data.password = encryptPassword(data.password);
-      const result = await db(tbName).insert(data);
+      const currentDate = dateToMySql(new Date().toString());
+      const newData = { ...data, last_login: currentDate };
+      const result = await db(tbName).insert(newData);
       return { result: result[0] };
     } catch (error) {
       console.error("Error in create:", error);

@@ -8,6 +8,8 @@ export const requestInitialValues = {
   priority_id: "",
   equip_id: [] as string[],
   details: "",
+  provider_id: "",
+  status_id: null,
   image: [],
 };
 
@@ -32,6 +34,8 @@ export const requestYup = yup.object().shape({
     .max(500, "ห้ามเกิน 500 ตัวอักษร")
     .default("")
     .notRequired(),
+  provider_id: yup.string().required("กรุณาเลือกผู้ซ่อม"),
+  status_id: yup.number().default(null).notRequired().nullable(),
   image: yup
     .array()
     .of(

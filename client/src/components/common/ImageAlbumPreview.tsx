@@ -14,7 +14,6 @@ export default function ImageAlbumPreview({
   const [objectUrls, setObjectUrls] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log(images);
     const urls = images.map((image) => {
       if (typeof image === "string") {
         return `${BASE_URL}/images/${folder}/${image}`;

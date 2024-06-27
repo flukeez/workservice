@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActionIcon, Group, Modal, Textarea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconList, IconX } from "@tabler/icons-react";
@@ -36,6 +36,12 @@ export default function ModalEquipment({
       setEquipment([...equipment, ...updatedEquipment]);
     }
   };
+
+  useEffect(() => {
+    if (equip.length === 0) {
+      setEquipment([]);
+    }
+  }, [equip]);
 
   return (
     <>

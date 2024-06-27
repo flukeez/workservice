@@ -6,11 +6,13 @@ interface ProvinceProps {
   province: string | null;
   setProvince: (province: string | null) => void;
   error?: string;
+  require?: boolean;
 }
 export default function DropdownProvince({
   province,
   setProvince,
   error,
+  require,
 }: ProvinceProps) {
   const { data } = useProvinces();
   return (
@@ -30,6 +32,7 @@ export default function DropdownProvince({
       clearable
       error={error}
       nothingFoundMessage="ไม่พบข้อมูล"
+      withAsterisk={require}
     />
   );
 }

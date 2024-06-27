@@ -7,11 +7,13 @@ type AmphureProps = {
   amphure: string | null;
   setAmphure: (amphure: string | null) => void;
   province: string;
+  require?: boolean;
 };
 export default function DropdownAmphure({
   amphure,
   setAmphure,
   province,
+  require,
 }: AmphureProps) {
   const { data, setFilter } = useAmphures(province);
 
@@ -36,6 +38,7 @@ export default function DropdownAmphure({
       searchable
       clearable
       nothingFoundMessage="ไม่พบข้อมูล"
+      withAsterisk={require}
     />
   );
 }

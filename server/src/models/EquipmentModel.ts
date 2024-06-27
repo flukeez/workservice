@@ -183,7 +183,12 @@ export class EquipmentModel {
         .union(function () {
           this.select("id", "code", "name", "serial", db.raw("2 as sort_order"))
             .from(tbName)
-            .whereNotIn("id", equipIds);
+            .whereNotIn("id", equipIds)
+            .where(function () {
+              this.where("name", "LIKE", `%${txtSearch}%`)
+                .orWhere(`code`, "LIKE", `%${txtSearch}%`)
+                .orWhere(`serial`, "LIKE", `%${txtSearch}%`);
+            });
         })
         .orderBy([
           { column: "sort_order", order: "asc" },

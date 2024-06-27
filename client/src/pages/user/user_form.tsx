@@ -12,7 +12,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   Card,
-  Divider,
   Grid,
   Group,
   InputWrapper,
@@ -35,6 +34,7 @@ import ButtonFileUpload from "@/components/common/ButtonFileUpload";
 import AlertErrorDialog from "@/components/common/AlertErrorDialog";
 import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
 import ButtonNew from "@/components/common/ButtonNew";
+import DividerLabel from "@/components/common/DividerLabel";
 
 import PasswordTooltip from "@/components/user/PasswordTooltip";
 import { checkThaiID } from "@/utils/checkThaiID";
@@ -132,16 +132,7 @@ export default function UserForm() {
             <ButtonNew onClick={handleNew}>เพิ่มข้อมูล</ButtonNew>
           </Group>
         </Card.Section>
-        <Divider
-          size="xs"
-          mt="md"
-          labelPosition="left"
-          label={
-            <Text size="lg" c="dimmed">
-              ข้อมูลพื้นฐาน
-            </Text>
-          }
-        />
+        <DividerLabel label="ข้อมูลพื้นฐาน" />
         <Grid mt="sm">
           <Grid.Col span={layout}>
             <TextInput
@@ -281,16 +272,7 @@ export default function UserForm() {
             />
           </Grid.Col>
         </Grid>
-        <Divider
-          size="xs"
-          mt="md"
-          labelPosition="left"
-          label={
-            <Text size="lg" c="dimmed">
-              ข้อมูลการติดต่อ
-            </Text>
-          }
-        />
+        <DividerLabel label="ข้อมูลการติดต่อ" />
         <Grid mt="sm">
           <Grid.Col span={layout}>
             <TextInput
@@ -325,16 +307,7 @@ export default function UserForm() {
             />
           </Grid.Col>
         </Grid>
-        <Divider
-          size="xs"
-          mt="md"
-          labelPosition="left"
-          label={
-            <Text size="lg" c="dimmed">
-              ข้อมูลเข้าใช้งาน
-            </Text>
-          }
-        />
+        <DividerLabel label="ข้อมูลเข้าใช้งาน" />
         <Grid mt="sm">
           <Grid.Col span={layout}>
             <TextInput
@@ -348,12 +321,12 @@ export default function UserForm() {
           <Grid.Col span={layout}>
             <PasswordInput
               label={
-                <Group>
-                  <Text>รหัสผ่าน</Text>
+                <Group justify="left" gap="xs">
+                  <Text size="sm">รหัสผ่าน</Text>
                   {id ? (
                     <PasswordTooltip />
                   ) : (
-                    <Text fw={500} color="red">
+                    <Text fw={500} size="sm" c="red">
                       *
                     </Text>
                   )}
@@ -374,16 +347,7 @@ export default function UserForm() {
             />
           </Grid.Col>
         </Grid>
-        <Divider
-          size="xs"
-          mt="md"
-          labelPosition="left"
-          label={
-            <Text size="lg" c="dimmed">
-              รูปประจำตัว
-            </Text>
-          }
-        />
+        <DividerLabel label="รูปประจำตัว" />
         <Grid mt="sm">
           {watch("image") && (
             <Grid.Col span={layout}>

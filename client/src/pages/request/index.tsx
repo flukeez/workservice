@@ -75,7 +75,12 @@ export default function Request() {
         <Card.Section withBorder inheritPadding py="md">
           <Group justify="right">
             <ButtonNew onClick={handleNew}>แจ้งซ่อม</ButtonNew>
-            <Button leftSection={<IconUserEdit size="18" />}>มอบหมายงาน</Button>
+            <Button
+              onClick={() => navigate("/request/assign")}
+              leftSection={<IconUserEdit size="18" />}
+            >
+              มอบหมายงาน
+            </Button>
           </Group>
         </Card.Section>
         <Card.Section>

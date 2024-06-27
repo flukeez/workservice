@@ -41,6 +41,7 @@ export function Router() {
               <Route index element={<Request />} />
               <Route path="new" element={<RequestForm />} />
               <Route path=":id" element={<RequestForm />} />
+              <Route path="assign" element={<RequestForm />} />
               <Route path="details/:id" element={<RequestDetails />} />
             </Route>
             <Route path="/service_request" element={<RequestForm />} />

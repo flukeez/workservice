@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -29,6 +29,8 @@ import DropdownIssue from "@/components/issue/DropdownIssue";
 import DropdownPriority from "@/components/priority/DropdownPriority";
 import { useEffect } from "react";
 import { convertToNumberOrZero } from "@/utils/mynumber";
+import DividerLabel from "@/components/common/DividerLabel";
+import ModalProvider from "@/components/provider/ModalProvider";
 
 const title = "แจ้งซ่อม";
 const listItems = [{ title: title, href: "#" }];
@@ -41,11 +43,14 @@ export default function RequestForm() {
   const navigate = useNavigate();
   const mutationSave = useRequestSave();
   const params = useParams();
+  const location = useLocation();
+  const assign = location.pathname.includes("assign");
   const id = convertToNumberOrZero(params.id);
 
   const { data, isLoading, setFilter } = useRequest(id);
   const handleNew = () => {
     setFilter(0);
+    navigate("/request/new");
   };
   const {
     control,
@@ -85,6 +90,15 @@ export default function RequestForm() {
   useEffect(() => {
     if (data && data.result) {
       reset(data.result);
+    } else {
+      reset(requestInitialValues);
+    }
+    //TODO เช็คว่าเป็นการมอบหมายงานไหม
+    if (assign) {
+      setValue("status_id", 3);
+    } else {
+      setValue("status_id", 2);
+      setValue("provider_id", "0");
     }
   }, [data]);
 
@@ -215,6 +229,29 @@ export default function RequestForm() {
             />
           </Grid.Col>
         </Grid>
+        {assign || id ? (
+          <>
+            <DividerLabel label="ผู้ซ่อม" />
+            <Grid mt="sm">
+              <Grid.Col>
+                <Controller
+                  name="provider_id"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <ModalProvider
+                        provider={field.value}
+                        setProvider={field.onChange}
+                        error={errors.provider_id?.message}
+                        issue_id={watch("issue_id")}
+                      />
+                    );
+                  }}
+                />
+              </Grid.Col>
+            </Grid>
+          </>
+        ) : null}
         <Divider
           size="xs"
           mt="md"

@@ -7,6 +7,7 @@ type TumbolProps = {
   tumbol: string | null;
   setTumbol: (tumbol: string | null) => void;
   amphure: string;
+  require?: boolean;
 };
 export default function DropdownTumbol({
   tumbol,
@@ -35,6 +36,7 @@ export default function DropdownTumbol({
       searchable
       clearable
       nothingFoundMessage="ไม่พบข้อมูล"
+      withAsterisk={true}
     />
   );
 }

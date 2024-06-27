@@ -137,7 +137,8 @@ export class RequestModel {
           issue_id: data.issue_id,
           issue_sub_id: data.issue_sub_id,
           priority_id: data.priority_id,
-          status_id: 2,
+          status_id: data.status_id,
+          provider_id: data.provider_id,
           faculty_id: data.faculty_id,
           user_id: data.user_id,
         };
@@ -182,10 +183,10 @@ export class RequestModel {
           status_id: 1,
           details: "แจ้งซ่อม",
         });
-        //รอดำเนินการ
+        //รอดำเนินการ หรือรอการอนุมติ
         await trx("tb_request_history").insert({
           request_id: request[0],
-          status_id: 2,
+          status_id: data.status_id,
         });
       });
       return { result: 1 };
