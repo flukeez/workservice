@@ -98,7 +98,10 @@ export default function RequestForm() {
       setValue("status_id", 3);
     } else {
       setValue("status_id", 2);
-      setValue("provider_id", "0");
+      //ถ้าไอดีมี่ค่าไม่ต้องกำหนด
+      if (!id) {
+        setValue("provider_id", "0");
+      }
     }
   }, [data]);
 

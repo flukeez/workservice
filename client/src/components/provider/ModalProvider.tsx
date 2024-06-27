@@ -19,10 +19,8 @@ export default function ModalProvider({
   const [issue, setIssue] = useState("");
   const [provName, setProvName] = useState("");
 
-  const handleSelectName = (value: { name: string; id: string }) => {
-    setProvider(value.id);
-    setProvName(value.name);
-    close();
+  const handleSelectName = (value: string) => {
+    setProvName(value);
   };
 
   useEffect(() => {
@@ -38,12 +36,15 @@ export default function ModalProvider({
         title="รายชื่อผู้ซ่อม"
         size="70rem"
         closeOnClickOutside={false}
+        keepMounted={true}
       >
         <TableProvider
           provider={provider}
-          setProvider={handleSelectName}
+          setProvider={setProvider}
+          setProvName={handleSelectName}
           issue_id={issue}
           provName={provName}
+          onClose={close}
         />
       </Modal>
       <TextInput
@@ -51,6 +52,7 @@ export default function ModalProvider({
         value={provName}
         error={error}
         onClick={open}
+        onChange={() => null}
       />
     </>
   );

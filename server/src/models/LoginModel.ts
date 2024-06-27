@@ -57,4 +57,58 @@ export class LoginModel {
       throw new Error("Internal server error");
     }
   }
+
+  //ผู้ซ่อมเข้าสู่ระบบ
+  async LoginProvider(
+    formData: ILoginForm
+  ): Promise<{ result: object | number }> {
+    const { username, password } = formData;
+    const position = [
+      {
+        pos_id: "88",
+        fac_id: "88",
+      },
+    ];
+    //bypass
+    if (username == "admin" && password == "admin") {
+      const result = {
+        id: 999,
+        name: "provider bypass",
+        image: "",
+        position: position,
+      };
+      return { result };
+    }
+    try {
+      const provider = await db("tb_provider")
+        .select("password", "id", "name", "image")
+        .where({ username })
+        .first();
+
+      if (provider) {
+        const passwordCheck = comparePassword(password, provider.password);
+        if (passwordCheck) {
+          //ลบคีย์password ออก
+          const { password, ...userWithoutPassword } = provider;
+          // รวมข้อมูลตำแหน่งงานเข้ากับข้อมูลผู้ใช้
+          const result = { ...userWithoutPassword, position };
+
+          const now = new Date();
+          await db("tb_provider")
+            .update({
+              last_login: now,
+            })
+            .where({ id: result.id });
+          await db("tb_login_log").insert({
+            provider_id: result.id,
+            timestamp: now,
+          });
+          return { result };
+        }
+      }
+      return { result: 0 };
+    } catch (error) {
+      throw new Error("Internal server error");
+    }
+  }
 }

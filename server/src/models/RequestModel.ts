@@ -208,7 +208,7 @@ export class RequestModel {
           ),
           "tb_request_details.name as request_name",
           db.raw("GROUP_CONCAT(tb_equip.name) AS equip_name"),
-          "tb_provider.name",
+          "tb_provider.name as provider_name",
           "tb_status.name as status_name"
         )
         .leftJoin("tb_user", `${tbName}.user_id`, "tb_user.id")

@@ -11,15 +11,28 @@ import { timeFormNow } from "@/utils/mydate";
 
 interface TableProviderProps {
   provider: string;
-  setProvider: (value: { name: string; id: string }) => void;
+  setProvider: (value: string) => void;
+  setProvName: (value: string) => void;
   issue_id: string;
   provName: string;
+  onClose: () => void;
+}
+
+interface ProviderType {
+  id: string;
+  name: string;
+  status: string;
+  last_login: Date;
+  available: number;
+  sort_order: number;
 }
 export default function TableProvider({
   provider,
   setProvider,
+  setProvName,
   issue_id,
   provName,
+  onClose,
 }: TableProviderProps) {
   const [page, setPage] = useState(1);
   const [txtSearch, setTxtSearch] = useState("");
@@ -60,6 +73,15 @@ export default function TableProvider({
     searchData();
   }, [page, debounce, sortStatus]);
 
+  useEffect(() => {
+    if (provName === "" && provider !== "" && data?.rows) {
+      const providerData = data.rows.find(
+        (item: ProviderType) => item.id === provider
+      );
+      setProvName(providerData?.name || "");
+    }
+  }, [data]);
+
   return (
     <>
       <Grid>
@@ -92,12 +114,11 @@ export default function TableProvider({
               return (
                 <Group wrap="nowrap">
                   <Text size="sm">{String(name)}</Text>
-                  {sort_order == 1 ||
-                    (sort_order == 3 && (
-                      <Badge color="yellow" size="sm" radius="xs">
-                        แนะนำ
-                      </Badge>
-                    ))}
+                  {(sort_order == 1 || sort_order == 3) && (
+                    <Badge color="yellow" size="sm" radius="xs">
+                      แนะนำ
+                    </Badge>
+                  )}
                 </Group>
               );
             },
@@ -110,7 +131,7 @@ export default function TableProvider({
             sortable: true,
           },
           {
-            accessor: "available",
+            accessor: "status",
             title: "สถานะ",
             textAlign: "center",
             width: "13%",
@@ -138,9 +159,11 @@ export default function TableProvider({
               return (
                 <Button
                   size="xs"
-                  onClick={() =>
-                    setProvider({ name: String(name), id: String(id) })
-                  }
+                  onClick={() => [
+                    setProvName(String(name)),
+                    setProvider(String(id)),
+                    onClose(),
+                  ]}
                 >
                   เลือก
                 </Button>

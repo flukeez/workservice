@@ -53,7 +53,7 @@ export const useProvidersIssue = (condition: IProviderQuery, id: string) => {
       ["sortDirection", filter.sortDirection || "asc"],
       ["page", filter.page?.toString()],
       ["limit", filter.limit?.toString() || "10"],
-      ["issue_id", filter.issue_id || ""],
+      ["issue_id", filter.issue_id || "0"],
     ]);
     const { data } = await axiosAuth.get(url + "/list/" + id, { params });
     return data;
