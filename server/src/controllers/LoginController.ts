@@ -16,7 +16,22 @@ export default async function LoginController(fastify: FastifyInstance) {
         key: refresh_key,
       });
       setCookie("refresh_token", refresh_token, res);
-      console.log("test");
+      res.send({ result: { token } });
+    } else {
+      res.send({ result });
+    }
+  });
+  fastify.post("/provider", async (req, res) => {
+    const data = req.body as ILoginForm;
+    const { result } = await loginModel.loginProvider(data);
+    if (typeof result !== "number") {
+      const refresh_key = process.env.REFRESH_SECRET_KEY!;
+      const token = fastify.jwt.sign(result);
+      const refresh_token = fastify.jwt.sign(result, {
+        expiresIn: "1d",
+        key: refresh_key,
+      });
+      setCookie("refresh_token", refresh_token, res);
       res.send({ result: { token } });
     } else {
       res.send({ result });

@@ -8,6 +8,11 @@ import PublicRoute from "./components/protect_route/PublicRoute";
 const RequestForm = lazy(() => import("@/pages/request/request_form"));
 const Request = lazy(() => import("@/pages/request"));
 const RequestDetails = lazy(() => import("@/pages/request/request_details"));
+const Work = lazy(() => import("@/pages/work"));
+const WorkDetails = lazy(() => import("@/pages/work/work_details"));
+const WorkProgress = lazy(() => import("@/pages/work/work_progress"));
+const WorkAssign = lazy(() => import("@/pages/work/work_assign"));
+const WorkHistory = lazy(() => import("@/pages/work/work_history"));
 const Equipment = lazy(() => import("@/pages/equipment"));
 const EquipmentForm = lazy(() => import("@/pages/equipment/equipment_form"));
 const Faculty = lazy(() => import("@/pages/faculty"));
@@ -23,6 +28,7 @@ const UserForm = lazy(() => import("@/pages/user/user_form"));
 const Provider = lazy(() => import("@/pages/provider"));
 const ProviderForm = lazy(() => import("@/pages/provider/provider_form"));
 const Login = lazy(() => import("@/pages/login"));
+const LoginProvider = lazy(() => import("@/pages/login/login_provider"));
 const PageNotFound = lazy(() => import("@/pages/notfound"));
 
 export function Router() {
@@ -31,7 +37,10 @@ export function Router() {
       <Routes>
         <Route element={<PublicRoute />}>
           <Route element={<LoadingLayout />}>
-            <Route path="/login" element={<Login />} />
+            <Route path="/login">
+              <Route index element={<Login />} />
+              <Route path="provider" element={<LoginProvider />} />
+            </Route>
           </Route>
         </Route>
         <Route element={<ProtectRoute />}>
@@ -44,6 +53,16 @@ export function Router() {
               <Route path="assign" element={<RequestForm />} />
               <Route path="details/:id" element={<RequestDetails />} />
             </Route>
+            <Route path="/work_wait">
+              <Route index element={<Work />} />
+              <Route path="details/:id" element={<WorkDetails />} />
+            </Route>
+            <Route path="/work_progress">
+              <Route index element={<WorkProgress />} />
+              <Route path="details/:id" element={<WorkDetails />} />
+            </Route>
+            <Route path="/work_assign" element={<WorkAssign />} />
+            <Route path="/work_history" element={<WorkHistory />} />
             <Route path="/service_request" element={<RequestForm />} />
             <Route path="/home" element={<Faculty />} />
             <Route path="/faculty">

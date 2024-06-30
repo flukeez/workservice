@@ -11,7 +11,7 @@
  Target Server Version : 100422 (10.4.22-MariaDB)
  File Encoding         : 65001
 
- Date: 28/06/2024 00:58:42
+ Date: 30/06/2024 22:00:34
 */
 
 SET NAMES utf8mb4;
@@ -2063,7 +2063,7 @@ INSERT INTO `tb_equip` VALUES (1086, 'A-01086', '(2.0) GENIUS (SP-HF180) USB Bla
 INSERT INTO `tb_equip` VALUES (1087, 'A-01087', '(2.0) GENIUS (SP-HF180) USB Wood', NULL, '390', '2023-11-29', NULL, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0129305_1.jpg', 1, 0, '0', NULL, NULL, NULL);
 INSERT INTO `tb_equip` VALUES (1088, 'A-01088', '(2.0) AULA (N-521) USB', NULL, '420', '2023-11-29', NULL, 'ประกัน 2*2*0', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 3w. (2x2\'\') / Input : AUX 3.5 mm', 'A0138554_1.jpg', 2, 0, '0', NULL, NULL, NULL);
 INSERT INTO `tb_equip` VALUES (1089, 'A-01089', '(2.0) LECOO (DS105) USB Wood', NULL, '295', '2023-11-29', NULL, 'ประกัน 1*1*0', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 5w. (2x2.5\") / Input : AUX 3.5 mm', 'A0137291_1.jpg', 1, 0, '0', NULL, NULL, NULL);
-INSERT INTO `tb_equip` VALUES (1090, 'A-01090', '(2.0) CREATIVE (PEBBLE) USB Black', NULL, '790', '2023-11-29', NULL, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 4.4w. (2x2) / Input : AUX 3.5mm', 'A0144113_1.jpg', 1, 0, '0', NULL, NULL, NULL);
+INSERT INTO `tb_equip` VALUES (1090, 'A-01090', '(2.0) CREATIVE (PEBBLE) USB Black', NULL, '790', '2023-11-29', NULL, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 4.4w. (2x2) / Input : AUX 3.5mm', 'A0144113_1.jpg', 2, 0, '0', NULL, NULL, NULL);
 INSERT INTO `tb_equip` VALUES (1091, 'A-01091', '(2.0) CREATIVE (PEBBLE) USB White', NULL, '790', '2023-11-29', NULL, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 4.4w. (2x2) / Input : AUX 3.5mm', 'A0144114_1.jpg', 2, 0, '0', NULL, NULL, NULL);
 INSERT INTO `tb_equip` VALUES (1092, 'A-01092', '(2.0) MICROLAB (B16) USB', NULL, '390', '2023-11-29', NULL, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 5w. / Input : AUX 3.5 mm', 'A0081713_1.jpg', 1, 0, '0', NULL, NULL, NULL);
 INSERT INTO `tb_equip` VALUES (1093, 'A-01093', '(2.0) SAAG ARROW (D71) USB RGB', NULL, '190', '2023-11-29', NULL, 'ประกัน 1 ปี', '0000-00-00', '0000-00-00', 'ลำโพง 2.0 / 6w. (2x2\'\') / Input : AUX 3.5mm', 'A0138705_1.jpg', 2, 0, '0', NULL, NULL, NULL);
@@ -2982,11 +2982,13 @@ CREATE TABLE `tb_login_log`  (
   `timestamp` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `provider_id` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_login_log
 -- ----------------------------
+INSERT INTO `tb_login_log` VALUES (1, 1, '2024-06-30 12:04:22', NULL);
+INSERT INTO `tb_login_log` VALUES (1, 2, '2024-06-30 15:27:36', NULL);
 
 -- ----------------------------
 -- Table structure for tb_module
@@ -3230,7 +3232,7 @@ CREATE TABLE `tb_request`  (
   `user_id` int NOT NULL,
   `total` decimal(10, 0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_request
@@ -3250,11 +3252,17 @@ INSERT INTO `tb_request` VALUES (19, '2024-06-23 17:27:53', '0000-00-00', 0, 3, 
 INSERT INTO `tb_request` VALUES (20, '2024-06-23 17:27:53', '0000-00-00', 0, 3, NULL, 6, 0, 1, 99, 999, 0);
 INSERT INTO `tb_request` VALUES (21, '2024-06-23 17:27:53', '0000-00-00', 0, 3, NULL, 7, 0, 1, 99, 999, 0);
 INSERT INTO `tb_request` VALUES (22, '2024-06-24 19:59:01', '0000-00-00', 0, 6, 0, 7, NULL, 1, 99, 999, NULL);
-INSERT INTO `tb_request` VALUES (23, '2024-06-27 13:01:57', '0000-00-00', 0, 10, 49, 3, NULL, 2, 99, 999, NULL);
+INSERT INTO `tb_request` VALUES (23, '2024-06-27 13:01:57', '0000-00-00', 0, 10, 49, 3, 999, 4, 99, 999, NULL);
 INSERT INTO `tb_request` VALUES (24, '2024-06-27 13:29:52', '0000-00-00', 0, 7, 0, 2, NULL, 2, 99, 999, NULL);
-INSERT INTO `tb_request` VALUES (25, '2024-06-27 13:30:10', '0000-00-00', 0, 3, 22, 2, NULL, 2, 99, 999, NULL);
-INSERT INTO `tb_request` VALUES (26, '2024-06-27 13:33:19', '0000-00-00', 0, 6, 0, 6, 0, 2, 99, 999, NULL);
+INSERT INTO `tb_request` VALUES (25, '2024-06-27 13:30:10', '0000-00-00', 0, 3, 22, 2, 999, 4, 99, 999, NULL);
+INSERT INTO `tb_request` VALUES (26, '2024-06-27 13:33:19', '0000-00-00', 0, 6, 0, 6, 4, 2, 99, 999, NULL);
 INSERT INTO `tb_request` VALUES (27, '2024-06-27 15:33:01', '0000-00-00', 0, 2, 16, 3, 3, 3, 99, 999, NULL);
+INSERT INTO `tb_request` VALUES (28, '2024-06-30 12:07:23', '0000-00-00', 0, 7, 38, 2, 0, 4, 20, 999, NULL);
+INSERT INTO `tb_request` VALUES (29, '2024-06-30 15:28:25', '0000-00-00', 0, 6, 33, 6, 999, 4, 20, 1, NULL);
+INSERT INTO `tb_request` VALUES (30, '2024-06-30 15:30:50', '0000-00-00', 0, 3, 0, 2, 999, 4, 20, 1, NULL);
+INSERT INTO `tb_request` VALUES (31, '2024-06-30 15:57:08', '0000-00-00', 0, 5, 29, 6, 999, 4, 20, 1, NULL);
+INSERT INTO `tb_request` VALUES (32, '2024-06-30 16:18:24', '0000-00-00', 0, 8, 39, 3, 1, 3, 20, 1, NULL);
+INSERT INTO `tb_request` VALUES (33, '2024-06-30 19:06:53', '0000-00-00', 0, 5, 27, 2, 0, 2, 20, 1, NULL);
 
 -- ----------------------------
 -- Table structure for tb_request_details
@@ -3278,7 +3286,7 @@ CREATE TABLE `tb_request_details`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_req_detail_req`(`request_id` ASC) USING BTREE,
   CONSTRAINT `fk_req_detail_req` FOREIGN KEY (`request_id`) REFERENCES `tb_request` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_request_details
@@ -3303,6 +3311,12 @@ INSERT INTO `tb_request_details` VALUES (21, 'dfdfgd', 'dfgdfgdf', '', 0, 0, 0, 
 INSERT INTO `tb_request_details` VALUES (22, 'dfgdf', '', '', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 25);
 INSERT INTO `tb_request_details` VALUES (23, '12345', '263555', '', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 26);
 INSERT INTO `tb_request_details` VALUES (24, 'เปลี่ยนก๊อกน้ำ', 'กกกกก', '', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 27);
+INSERT INTO `tb_request_details` VALUES (25, 'ทดสอบ แจ้งซ่อม', 'กดหกดหกด', '', 0, 0, 0, 0, '1719724043798-849091659.jpg', NULL, NULL, NULL, NULL, 28);
+INSERT INTO `tb_request_details` VALUES (26, 'ทดสอบ แจ้งซ่อม', '', '', 0, 0, 0, 0, '1719736105472-127145804.jpg', NULL, NULL, NULL, NULL, 29);
+INSERT INTO `tb_request_details` VALUES (27, 'ทดสอบ แจ้งซ่อมดกหดหกดห', '', '', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 30);
+INSERT INTO `tb_request_details` VALUES (28, 'ทดสอบแจ้งซ่อมพร้อมภาพ', 'หกดหกดหกด', '', 0, 0, 0, 0, '1719737828826-91106711.jpg', '1719737828826-658030296.jpg', '1719737828827-212849204.jpg', NULL, NULL, 31);
+INSERT INTO `tb_request_details` VALUES (29, 'มอบหมายงานซ่อม', '', '', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 32);
+INSERT INTO `tb_request_details` VALUES (30, 'ทดสอบ แจ้งซ่อมดกหดหกดห', '', '', 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 33);
 
 -- ----------------------------
 -- Table structure for tb_request_equip
@@ -3314,7 +3328,7 @@ CREATE TABLE `tb_request_equip`  (
   `request_id` int NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_req_equip_req`(`request_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 75 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 88 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_request_equip
@@ -3388,6 +3402,19 @@ INSERT INTO `tb_request_equip` VALUES (71, 1079, 24);
 INSERT INTO `tb_request_equip` VALUES (72, 1091, 25);
 INSERT INTO `tb_request_equip` VALUES (73, 1088, 26);
 INSERT INTO `tb_request_equip` VALUES (74, 1080, 27);
+INSERT INTO `tb_request_equip` VALUES (75, 1067, 28);
+INSERT INTO `tb_request_equip` VALUES (76, 1066, 28);
+INSERT INTO `tb_request_equip` VALUES (77, 1068, 28);
+INSERT INTO `tb_request_equip` VALUES (78, 1085, 28);
+INSERT INTO `tb_request_equip` VALUES (79, 1091, 29);
+INSERT INTO `tb_request_equip` VALUES (80, 1090, 29);
+INSERT INTO `tb_request_equip` VALUES (81, 1079, 29);
+INSERT INTO `tb_request_equip` VALUES (82, 1068, 30);
+INSERT INTO `tb_request_equip` VALUES (83, 1078, 31);
+INSERT INTO `tb_request_equip` VALUES (84, 1095, 31);
+INSERT INTO `tb_request_equip` VALUES (85, 1094, 31);
+INSERT INTO `tb_request_equip` VALUES (86, 1067, 32);
+INSERT INTO `tb_request_equip` VALUES (87, 1069, 33);
 
 -- ----------------------------
 -- Table structure for tb_request_history
@@ -3402,7 +3429,7 @@ CREATE TABLE `tb_request_history`  (
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_req_his_status`(`status_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 42 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_request_history
@@ -3434,6 +3461,20 @@ INSERT INTO `tb_request_history` VALUES (24, 26, 'แจ้งซ่อม', '',
 INSERT INTO `tb_request_history` VALUES (25, 26, '', '', 2, '2024-06-27 13:33:19');
 INSERT INTO `tb_request_history` VALUES (26, 27, 'แจ้งซ่อม', '', 1, '2024-06-27 15:33:01');
 INSERT INTO `tb_request_history` VALUES (27, 27, '', '', 3, '2024-06-27 15:33:01');
+INSERT INTO `tb_request_history` VALUES (28, 28, 'แจ้งซ่อม', '', 1, '2024-06-30 12:07:23');
+INSERT INTO `tb_request_history` VALUES (29, 28, '', '', 2, '2024-06-30 12:07:23');
+INSERT INTO `tb_request_history` VALUES (30, 29, 'แจ้งซ่อม', '', 1, '2024-06-30 15:28:25');
+INSERT INTO `tb_request_history` VALUES (31, 29, '', '', 2, '2024-06-30 15:28:25');
+INSERT INTO `tb_request_history` VALUES (32, 30, 'แจ้งซ่อม', '', 1, '2024-06-30 15:30:50');
+INSERT INTO `tb_request_history` VALUES (33, 30, '', '', 2, '2024-06-30 15:30:50');
+INSERT INTO `tb_request_history` VALUES (34, 30, 'รับงานซ่อม', '', 4, '2024-06-30 15:30:56');
+INSERT INTO `tb_request_history` VALUES (35, 31, 'แจ้งซ่อม', '', 1, '2024-06-30 15:57:08');
+INSERT INTO `tb_request_history` VALUES (36, 31, 'รอดำเนินการ', '', 2, '2024-06-30 15:58:11');
+INSERT INTO `tb_request_history` VALUES (37, 32, 'แจ้งซ่อม', '', 1, '2024-06-30 16:18:24');
+INSERT INTO `tb_request_history` VALUES (38, 32, 'รอดำเนินการ', '', 3, '2024-06-30 16:18:24');
+INSERT INTO `tb_request_history` VALUES (39, 31, 'รับงานซ่อม', '', 4, '2024-06-30 18:07:45');
+INSERT INTO `tb_request_history` VALUES (40, 33, 'แจ้งซ่อม', '', 1, '2024-06-30 19:06:53');
+INSERT INTO `tb_request_history` VALUES (41, 33, 'รอดำเนินการ', '', 2, '2024-06-30 19:06:53');
 
 -- ----------------------------
 -- Table structure for tb_status
@@ -11010,8 +11051,8 @@ CREATE TABLE `tb_user`  (
 -- ----------------------------
 -- Records of tb_user
 -- ----------------------------
-INSERT INTO `tb_user` VALUES (1, '1234567891012', 'admin', 'no', 'one', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', 'test3', '1', 'test4', 1, 1, 1, 'test5', 'test6', '0000-00-00 00:00:00', '2024-05-08 00:00:00', '');
-INSERT INTO `tb_user` VALUES (2, '1234567891012', 'admin1', 'no', '', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', 'test3', '1', 'test4', 1, 1, 1, 'test5', 'test6', '0000-00-00 00:00:00', '2024-05-28 00:00:00', '');
+INSERT INTO `tb_user` VALUES (1, '0000000000000', 'admin', 'no', 'one', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', '1719723784656-733840990.jpg', '1', 'test4', 1, 1, 1, 'Admin1', '$2b$10$ZOZpYAgGSRjCouFtBApZP.JiXHwTWtViLJi1d0IBoIHAFYu9hfOvi', '2024-06-30 15:27:36', '2024-06-30 15:27:36', '');
+INSERT INTO `tb_user` VALUES (2, '1234567891012', 'admin1', 'no', '', 'test1', 'test2', 'test3@hotmail.com', '0800000000', '0000-00-00', '', '1', 'test4', 1, 1, 1, 'test5', 'test6', '2024-06-30 12:00:29', '2024-05-28 00:00:00', '');
 INSERT INTO `tb_user` VALUES (7, '1234567891011', 'นายสมมุติภ', 'เกิดมาเพื่อซื้อ', '', '', '', 'flukelalalalal@gmail.com', '0909823211', '0000-00-00', '1717745903852-219944249.jpg', NULL, '109 หมู่ 7 บ้านหนองฟ้า\r\nโคกสว่าง', 0, 0, 0, 'Admin4', '', '2024-06-07 14:38:23', NULL, '0');
 INSERT INTO `tb_user` VALUES (8, '1234567891011', 'test', 'test2', NULL, NULL, NULL, NULL, NULL, '2024-06-03', NULL, NULL, NULL, NULL, NULL, NULL, 'test3455', '', '2024-06-04 15:39:44', NULL, '0');
 

@@ -11,9 +11,9 @@ import ConfirmDeleteDialog from "@/components/common/ConfirmDeleteDialog";
 import AlertErrorDialog from "@/components/common/AlertErrorDialog";
 import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
 import ButtonNew from "@/components/common/ButtonNew";
-import { PAGE_SIZE } from "@/config";
 import ButtonDelete from "@/components/common/ButtonDelete";
 import ButtonEdit from "@/components/common/ButtonEdit";
+import { PAGE_SIZE } from "@/config";
 
 const title = "สถานะงาน";
 const listItems = [{ title: title, href: "#" }];

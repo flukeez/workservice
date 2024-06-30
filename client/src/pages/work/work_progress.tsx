@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDebouncedValue } from "@mantine/hooks";
-import { useRequests } from "@/hooks/request";
+import { useWorksByStatus } from "@/hooks/work";
 
 import {
   Button,
@@ -10,95 +10,80 @@ import {
   Group,
   Highlight,
   NumberFormatter,
+  Stack,
   Text,
 } from "@mantine/core";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import { IconListSearch, IconUserEdit } from "@tabler/icons-react";
+import { IconEdit, IconListSearch } from "@tabler/icons-react";
 
-import ButtonDelete from "@/components/common/ButtonDelete";
-import ButtonEdit from "@/components/common/ButtonEdit";
-import ButtonNew from "@/components/common/ButtonNew";
 import InputSearch from "@/components/common/InputSearch";
 import PageHeader from "@/components/common/PageHeader";
 import BadgePriority from "@/components/priority/BadgePriority";
 
-import { dateThai } from "@/utils/mydate";
+import { dateThai, timeFormNow } from "@/utils/mydate";
 import { PAGE_SIZE } from "@/config";
+import { useWorkProgressStore } from "@/stores/useWorkProgressStore";
 
-import { useRequestStore } from "@/stores/useRequestStore";
-
-const title = "รายการแจ้งซ่อม";
+const title = "งานซ่อมกำลังดำเนินการ";
 const listItems = [{ title: title, href: "#" }];
 
-export default function Request() {
+export default function Work() {
   const navigate = useNavigate();
-  const requestStore = useRequestStore();
-  const [debounce] = useDebouncedValue(requestStore.txtSearch, 500);
+  const workProgressStore = useWorkProgressStore();
+  const [debounce] = useDebouncedValue(workProgressStore.txtSearch, 500);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-    columnAccessor: requestStore.sortField,
-    direction: requestStore.sortDirection,
+    columnAccessor: workProgressStore.sortField,
+    direction: workProgressStore.sortDirection,
   });
+
   const setCondition = () => {
     const condition = {
-      txtSearch: requestStore.txtSearch,
-      page: requestStore.page - 1,
+      txtSearch: workProgressStore.txtSearch,
+      page: workProgressStore.page - 1,
       sortField: sortStatus.columnAccessor,
       sortDirection: sortStatus.direction,
     };
     return condition;
   };
-  const { data, isLoading, setFilter } = useRequests(setCondition());
+  const { data, isLoading, setFilter } = useWorksByStatus(
+    setCondition(),
+    "4,5,6,7"
+  );
 
   const searchData = () => {
     setFilter(setCondition());
   };
   const clearSearchData = () => {
-    requestStore.setFilter({ ...requestStore, txtSearch: "", page: 1 });
+    workProgressStore.setFilter({
+      ...workProgressStore,
+      txtSearch: "",
+      page: 1,
+    });
   };
-
-  const handleNew = () => {
-    navigate("/request/new");
-  };
-
-  const handleUpdate = (id: string) => {
-    navigate("/request/" + id);
-  };
-  const handleDelete = (id: string, name: string) => {};
 
   useEffect(() => {
     searchData();
-  }, [debounce, requestStore.page, sortStatus]);
+  }, [debounce, workProgressStore.page, sortStatus]);
   return (
     <>
       <PageHeader title={title} listItems={listItems} />
       <Card shadow="sm">
-        <Card.Section withBorder inheritPadding py="md">
-          <Group justify="right">
-            <ButtonNew onClick={handleNew}>แจ้งซ่อม</ButtonNew>
-            <Button
-              onClick={() => navigate("/request/assign")}
-              leftSection={<IconUserEdit size="18" />}
-            >
-              มอบหมายงาน
-            </Button>
-          </Group>
-        </Card.Section>
         <Card.Section>
           <Grid mx="md" mt="md" align="flex-end">
             <Grid.Col span={{ md: 4 }}>
               <InputSearch
                 label="ค้นหา"
-                placeholder="ค้นหาจากชื่องานซ่อม"
-                onChange={(e) =>
-                  requestStore.setFilter({
-                    ...requestStore,
+                placeholder="ค้นหาชื่องานซ่อม..."
+                value={workProgressStore.txtSearch}
+                onChange={(e) => {
+                  workProgressStore.setFilter({
+                    ...workProgressStore,
                     txtSearch: e.target.value,
                     page: 1,
-                  })
-                }
-                onClearSearch={clearSearchData}
+                  });
+                }}
                 onSearchData={searchData}
-                value={requestStore.txtSearch}
+                onClearSearch={clearSearchData}
               />
             </Grid.Col>
           </Grid>
@@ -134,10 +119,35 @@ export default function Request() {
               render({ name, priority_name }) {
                 return (
                   <Group>
-                    <Highlight highlight={requestStore.txtSearch} size="sm">
+                    <Highlight
+                      highlight={workProgressStore.txtSearch}
+                      size="sm"
+                    >
                       {String(name)}
                     </Highlight>
                     <BadgePriority text={String(priority_name)} />
+                  </Group>
+                );
+              },
+            },
+            {
+              accessor: "main_issue.name",
+              title: (
+                <Text ta={"center"} fw={700}>
+                  ประเภทงาน
+                </Text>
+              ),
+              width: "15%",
+              sortable: true,
+              render({ issue_name, issue_sub_name }) {
+                return (
+                  <Group>
+                    <Text size="sm">{String(issue_name)}</Text>
+                    {issue_sub_name ? (
+                      <Text size="sm" c="dimmed">
+                        {`(${issue_sub_name})`}
+                      </Text>
+                    ) : null}
                   </Group>
                 );
               },
@@ -152,21 +162,45 @@ export default function Request() {
               },
             },
             {
-              accessor: "provider_name",
-              title: <Text fw={700}>ผู้ซ่อม</Text>,
+              accessor: "tb_faculty.name",
+              title: (
+                <Text ta={"center"} fw={700}>
+                  หน่วยงาน
+                </Text>
+              ),
               width: "15%",
-              textAlign: "center",
-              render({ provider_name }) {
-                return <Text size="sm">{String(provider_name)}</Text>;
+              sortable: true,
+              textAlign: "left",
+              render({ faculty_name, firstname, surname }) {
+                return (
+                  <Stack gap="xs">
+                    <Text size="sm">{String(faculty_name)}</Text>
+                    <Text size="sm" c="dimmed">
+                      {`ผู้แจ้ง : ${firstname} ${surname}`}
+                    </Text>
+                  </Stack>
+                );
               },
             },
             {
-              accessor: "status_name",
-              title: <Text fw={700}>สถานะงาน</Text>,
-              width: "10%",
+              accessor: "update_time",
+              sortable: true,
               textAlign: "center",
-              render({ status_name }) {
-                return <Text size="sm">{String(status_name)}</Text>;
+              width: "15%",
+              title: (
+                <Text ta="center" fw={700}>
+                  สถานะงาน
+                </Text>
+              ),
+              render({ status_name, update_time }) {
+                return (
+                  <Stack gap="xs">
+                    <Text size="sm">{String(status_name)}</Text>
+                    <Text size="sm" c="dimmed">
+                      อัพเดทเมื่อ {timeFormNow(String(update_time))}
+                    </Text>
+                  </Stack>
+                );
               },
             },
             {
@@ -174,19 +208,35 @@ export default function Request() {
               title: <Text fw={700}>จัดการ</Text>,
               width: "0%",
               textAlign: "center",
-              render: ({ id, name }) => (
+              render: ({ id }) => (
                 <Group justify="center" gap={3} wrap="nowrap">
                   <Button
                     variant="subtle"
                     size="conmpact-md"
-                    onClick={() => navigate(`/request/details/${id}`)}
+                    color="yellow"
+                    onClick={() =>
+                      navigate(`/work_progress/details/${id}`, {
+                        state: { mainTitle: title, from: "/work_progress" },
+                      })
+                    }
                   >
                     <IconListSearch size="18" color="orange" />
                   </Button>
-                  <ButtonEdit onClick={() => handleUpdate(String(id))} />
-                  <ButtonDelete
-                    onClick={() => handleDelete(String(id), String(name))}
-                  />
+                  <Button
+                    variant="subtle"
+                    size="conmpact-md"
+                    onClick={() =>
+                      navigate(`/work_progress/details/${id}`, {
+                        state: {
+                          mainTitle: title,
+                          from: "/work_progress",
+                          type: "workUpdate",
+                        },
+                      })
+                    }
+                  >
+                    <IconEdit size={"18"} />
+                  </Button>
                 </Group>
               ),
             },
@@ -194,17 +244,17 @@ export default function Request() {
           sortStatus={sortStatus}
           onSortStatusChange={(sort) => {
             setSortStatus(sort);
-            requestStore.setFilter({
-              ...requestStore,
+            workProgressStore.setFilter({
+              ...workProgressStore,
               sortField: sort.columnAccessor,
               sortDirection: sort.direction,
             });
           }}
           totalRecords={data?.totalItem || 0}
           recordsPerPage={PAGE_SIZE}
-          page={requestStore.page}
+          page={workProgressStore.page}
           onPageChange={(p: number) =>
-            requestStore.setFilter({ ...requestStore, page: p })
+            workProgressStore.setFilter({ ...workProgressStore, page: p })
           }
           paginationText={({ from, to, totalRecords }) =>
             `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`

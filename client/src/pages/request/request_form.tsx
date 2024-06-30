@@ -32,8 +32,6 @@ import { convertToNumberOrZero } from "@/utils/mynumber";
 import DividerLabel from "@/components/common/DividerLabel";
 import ModalProvider from "@/components/provider/ModalProvider";
 
-const title = "แจ้งซ่อม";
-const listItems = [{ title: title, href: "#" }];
 const layout = {
   md: 4,
   sm: 12,
@@ -43,8 +41,13 @@ export default function RequestForm() {
   const navigate = useNavigate();
   const mutationSave = useRequestSave();
   const params = useParams();
+
   const location = useLocation();
   const assign = location.pathname.includes("assign");
+
+  const title = assign ? "มอบหมายงานซ่อม" : "แจ้งซ่อม";
+  const listItems = [{ title: title, href: "#" }];
+
   const id = convertToNumberOrZero(params.id);
 
   const { data, isLoading, setFilter } = useRequest(id);

@@ -71,9 +71,7 @@ export default async function UserController(fastify: FastifyInstance) {
       return res.status(500).send({ error: "Error processing images" });
     }
 
-    if (data.image_old) {
-      delete data.image_old;
-    }
+    delete data.image_old;
     const result = await userModel.update(id, data);
     res.send(result);
   });

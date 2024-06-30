@@ -25,7 +25,6 @@ export class RequestModel {
         `${tbName}.id`,
         "tb_request_details.request_id"
       )
-      .leftJoin("tb_user", `${tbName}.user_id`, "tb_user.id")
       .leftJoin("tb_status", `${tbName}.status_id`, "tb_status.id")
       .leftJoin("tb_provider", `${tbName}.provider_id`, "tb_provider.id")
       .where(`tb_request_details.name`, "LIKE", `%${txtSearch}%`)
@@ -39,8 +38,6 @@ export class RequestModel {
           "tb_request_details.name",
           "tb_request_details.details",
           "tb_request.date_start",
-          "tb_user.firstname",
-          "tb_user.surname",
           "tb_faculty.name as faculty_name",
           "main_issue.name as issue_name",
           "sub_issue.name as issue_sub_name",
@@ -187,6 +184,7 @@ export class RequestModel {
         await trx("tb_request_history").insert({
           request_id: request[0],
           status_id: data.status_id,
+          details: data.status_id === "3" ? "รอการอนุมัติ" : "รอดำเนินการ",
         });
       });
       return { result: 1 };
@@ -203,15 +201,29 @@ export class RequestModel {
         .select(
           "tb_request.id",
           "tb_request.date_start",
+          "tb_faculty.name as faculty_name",
           db.raw(
             "CONCAT(tb_user.firstname, ' ', tb_user.surname) AS user_name"
           ),
           "tb_request_details.name as request_name",
+          "tb_request_details.details as request_details",
+          "main_issue.name as issue_name",
+          "sub_issue.name as issue_sub_name",
+          "tb_priority.name as priority_name",
           db.raw("GROUP_CONCAT(tb_equip.name) AS equip_name"),
           "tb_provider.name as provider_name",
-          "tb_status.name as status_name"
+          "tb_status.name as status_name",
+          db.raw(`
+            CONCAT_WS(',', 
+             tb_request_details.image1, 
+             tb_request_details.image2, 
+             tb_request_details.image3, 
+             tb_request_details.image4, 
+             tb_request_details.image5) AS image
+         `)
         )
         .leftJoin("tb_user", `${tbName}.user_id`, "tb_user.id")
+        .leftJoin("tb_faculty", `${tbName}.faculty_id`, "tb_faculty.id")
         .leftJoin(
           "tb_request_details",
           `${tbName}.id`,
@@ -225,6 +237,17 @@ export class RequestModel {
         .leftJoin("tb_equip", `tb_equip.id`, "tb_request_equip.equip_id")
         .leftJoin("tb_provider", `${tbName}.provider_id`, "tb_provider.id")
         .leftJoin("tb_status", `${tbName}.status_id`, "tb_status.id")
+        .leftJoin(
+          "tb_issue as main_issue",
+          `${tbName}.issue_id`,
+          "main_issue.id"
+        )
+        .leftJoin(
+          "tb_issue as sub_issue",
+          `${tbName}.issue_sub_id`,
+          "sub_issue.id"
+        )
+        .leftJoin("tb_priority", `${tbName}.priority_id`, "tb_priority.id")
         .where("tb_request.id", id)
         .first();
 
@@ -237,6 +260,7 @@ export class RequestModel {
 
       return { result };
     } catch (error) {
+      console.log(error);
       throw new Error("Internal server");
     }
   }

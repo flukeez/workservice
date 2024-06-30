@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import { useRequestDetails } from "@/hooks/request";
 import { convertToNumberOrZero } from "@/utils/mynumber";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { dateThaiLong } from "@/utils/mydate";
 
@@ -35,6 +35,27 @@ const inputSize = {
   sm: 8,
   xs: 12,
 };
+
+const TextLabel = ({
+  label,
+  isMobile,
+}: {
+  label: string;
+  isMobile: boolean;
+}) => {
+  return <Text ta={isMobile ? "left" : "right"}>{label} :</Text>;
+};
+
+const ListEquipment = ({ equip }: { equip: string[] }) => {
+  return (
+    <List size="sm" withPadding bg="gray.1" p="sm">
+      {equip?.map((item) => (
+        <List.Item key={item}>{item}</List.Item>
+      ))}
+    </List>
+  );
+};
+
 export default function RequestDetails() {
   const params = useParams();
   const id = convertToNumberOrZero(params.id);
@@ -43,20 +64,6 @@ export default function RequestDetails() {
   const { data, isLoading } = useRequestDetails(id);
 
   const { register, reset, getValues } = useForm();
-
-  const TextLabel = ({ label }: { label: string }) => {
-    return <Text ta={isMobile ? "left" : "right"}>{label} :</Text>;
-  };
-
-  const ListEquipment = ({ equip }: { equip: string[] }) => {
-    return (
-      <List size="sm" withPadding bg="gray.1" p="sm">
-        {equip?.map((item) => (
-          <List.Item key={item}>{item}</List.Item>
-        ))}
-      </List>
-    );
-  };
 
   useEffect(() => {
     if (data && data.result) {
@@ -73,56 +80,43 @@ export default function RequestDetails() {
         </Card.Section>
         <LoadingOverlay visible={isLoading} />
         <Grid mt="lg">
-          <Grid.Col span={labelSize}>
-            <TextLabel label="วันที่แจ้ง" />
-          </Grid.Col>
-          <Grid.Col span={inputSize}>
-            <TextInput
-              value={dateThaiLong(getValues("date_start"))}
-              readOnly
-              variant="filled"
-            />
-          </Grid.Col>
-          <Grid.Col span={labelSize}>
-            <TextLabel label="ผู้แจ้ง" />
-          </Grid.Col>
-          <Grid.Col span={inputSize}>
-            <TextInput {...register("user_name")} readOnly variant="filled" />
-          </Grid.Col>
-          <Grid.Col span={labelSize}>
-            <TextLabel label="งานซ่อม" />
-          </Grid.Col>
-          <Grid.Col span={inputSize}>
-            <TextInput
-              {...register("request_name")}
-              readOnly
-              variant="filled"
-            />
-          </Grid.Col>
-          <Grid.Col span={labelSize}>
-            <TextLabel label="รายการอุปกรณ์" />
-          </Grid.Col>
-          <Grid.Col span={inputSize}>
-            <ScrollArea>
-              <ListEquipment equip={getValues("equip_name")} />
-            </ScrollArea>
-          </Grid.Col>
-          <Grid.Col span={labelSize}>
-            <TextLabel label="ผู้ซ่อม" />
-          </Grid.Col>
-          <Grid.Col span={inputSize}>
-            <TextInput
-              {...register("provider_name")}
-              readOnly
-              variant="filled"
-            />
-          </Grid.Col>
-          <Grid.Col span={labelSize}>
-            <TextLabel label="สถานะงาน" />
-          </Grid.Col>
-          <Grid.Col span={inputSize}>
-            <TextInput {...register("status_name")} readOnly variant="filled" />
-          </Grid.Col>
+          {[
+            ["วันที่แจ้ง", "date_start", "DateInput"],
+            ["งานซ่อม", "request_name"],
+            ["ประเภทงาน", "issue_name"],
+            ["ประเภทปัญหา", "issue_sub_name"],
+            ["ความเร่งด่วน", "priority_name"],
+            ["รายการอุปกรณ์", "equip_name", "ListEquipment"],
+            ["ผู้ซ่อม", "provider_name", "ProviderInput"],
+            ["สถานะงาน", "status_name"],
+          ].map(([label, value, component = "TextInput"], key) => (
+            <React.Fragment key={key}>
+              <Grid.Col span={labelSize}>
+                <TextLabel label={label} isMobile={isMobile || false} />
+              </Grid.Col>
+              <Grid.Col span={inputSize}>
+                {component === "ProviderInput" ? (
+                  <TextInput
+                    value={getValues(value) || "ยังไม่มีผู้ซ่อม"}
+                    readOnly
+                    variant="filled"
+                  />
+                ) : component === "ListEquipment" ? (
+                  <ScrollArea>
+                    <ListEquipment equip={getValues(value)} />
+                  </ScrollArea>
+                ) : component === "DateInput" ? (
+                  <TextInput
+                    value={dateThaiLong(getValues("date_start"))}
+                    readOnly
+                    variant="filled"
+                  />
+                ) : (
+                  <TextInput {...register(value)} readOnly variant="filled" />
+                )}
+              </Grid.Col>
+            </React.Fragment>
+          ))}
         </Grid>
         <Card.Section withBorder inheritPadding py="md" mt="lg">
           <Group justify="center">

@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useLoginProvider } from "@/hooks/login";
+import { loginInitialValues, loginYup } from "@/validations/login.schema";
+import type { ILoginFormType, ILoginProvider } from "@/types/ILogin";
 import {
   Alert,
   Anchor,
@@ -23,16 +25,16 @@ import {
   IconLockFilled,
   IconUserFilled,
 } from "@tabler/icons-react";
-import { useLogin } from "@/hooks/login";
-import { useLoginStore } from "@/stores/useLoginStore";
-import { loginInitialValues, loginYup } from "@/validations/login.schema";
-import type { ILogin, ILoginFormType } from "@/types/ILogin";
-import { WEBSITE_NAME } from "@/config";
+
 import AlertErrorDialog from "@/components/common/AlertErrorDialog";
 
-export default function Login() {
+import { WEBSITE_NAME } from "@/config";
+import { useLoginStore } from "@/stores/useLoginStore";
+import { jwtDecode } from "jwt-decode";
+
+export default function LoginProvider() {
   const navigate = useNavigate();
-  const mutationLogin = useLogin();
+  const mutationLogin = useLoginProvider();
   const loginStore = useLoginStore();
   const {
     handleSubmit,
@@ -50,11 +52,11 @@ export default function Login() {
       if (data.result) {
         const user = data.result;
         setShowAlert(false);
-        const userData: ILogin = jwtDecode(user.token);
+        const userData: ILoginProvider = jwtDecode(user.token);
         loginStore.setFilter({
           ...loginStore,
           token: user.token,
-          fullname: userData.firstname + " " + userData.surname,
+          fullname: userData.name,
           image: userData.image,
         });
         navigate("/");
@@ -76,7 +78,7 @@ export default function Login() {
             {WEBSITE_NAME}
           </Title>
           <Text ta="center" pb="md" mt="sm" size="lg" c="gray">
-            สำหรับผู้ใช้ทั่วไป
+            สำหรับผู้ซ่อม
           </Text>
           {showAlert ? (
             <Alert
@@ -114,6 +116,7 @@ export default function Login() {
               fullWidth
               mt="xl"
               loading={mutationLogin.isPending}
+              color="pink"
               type="submit"
             >
               เข้าสู่ระบบ

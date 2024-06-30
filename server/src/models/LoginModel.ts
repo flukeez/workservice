@@ -59,7 +59,7 @@ export class LoginModel {
   }
 
   //ผู้ซ่อมเข้าสู่ระบบ
-  async LoginProvider(
+  async loginProvider(
     formData: ILoginForm
   ): Promise<{ result: object | number }> {
     const { username, password } = formData;

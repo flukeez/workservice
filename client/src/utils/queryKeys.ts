@@ -31,4 +31,10 @@ export const queryKeys = {
   providers: "Fetch Providers",
   provider: "Get Provider",
   providers_issue: "Fetch Providers For Issue",
+  work_progress: "Fetch Work Progress",
+  work_assign: "Fetch Work Assign",
+  work_history: "Fetch Work History",
+  works: "Fetch Work in Waiting",
+  work_submit: "Submit Work",
+  work_status: "Fetch Work By Status",
 };

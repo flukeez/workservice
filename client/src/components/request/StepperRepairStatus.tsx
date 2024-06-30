@@ -20,7 +20,7 @@ export default function StepperRepairStatus({ id }: StepperRepairStatusProps) {
   const statusLabels = [
     { id: 1, label: "แจ้งซ่อม" },
     { id: 2, label: "รอดำเนินการ" },
-    { id: 3, label: "รออนุมัติ" },
+    { id: 3, label: "รอการอนุมัติ" },
     { id: 4, label: "กำลังดำเนินการ" },
     { id: 5, label: "รออะไหล่" },
     { id: 6, label: "ดำเนินการต่อ" },
@@ -47,19 +47,22 @@ export default function StepperRepairStatus({ id }: StepperRepairStatusProps) {
         mx="sm"
         color="blue"
         size="sm"
-        active={status - 2} //ที่ต้องลบ 2 เพราะสถานะ 2 กับ3อันเดียวกัน และ อีก1 เพื่อแสดงสถานะปัจจุบัน
+        active={data?.result?.length - 1} //ที่ต้องลบ 2 เพราะสถานะ 2 กับ3อันเดียวกัน และ อีก1 เพื่อแสดงสถานะปัจจุบัน
         iconPosition="left"
         allowNextStepsSelect={false}
         orientation={isMobile ? "vertical" : "horizontal"}
       >
         {/* สถานะงานปัจจุบัน */}
-        {data?.result.map((item: StepProps, index: number) => (
-          <Stepper.Step
-            key={index}
-            label={item.name}
-            description={dateThai(item.timestamp)}
-          />
-        ))}
+        {data?.result.map((item: StepProps, index: number) => {
+          return (
+            <Stepper.Step
+              key={index}
+              label={item.name}
+              description={dateThai(item.timestamp)}
+            />
+          );
+        })}
+
         {/* สถานะงานถัดไป */}
         {getNextSteps().map((item, index) => (
           <Stepper.Step key={index + data?.result.length} label={item.label} />
