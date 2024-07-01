@@ -154,7 +154,7 @@ export default class WorkModel {
     try {
       let requestForm;
       //การส่งงานซ่อม
-      if (status === "7") {
+      if (status === "8") {
         requestForm = {
           status_id: status,
           total_cost: data.total_cost,

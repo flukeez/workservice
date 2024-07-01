@@ -1,6 +1,7 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosAuth } from "@/utils/axios";
 import { queryKeys } from "@/utils/queryKeys";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { IWorkForm } from "@/types/IWork";
 
 const url = "works";
 
@@ -26,12 +27,18 @@ export const useWorkSubmitMutation = () => {
 //เปลี่ยนสถานะงานซ่อม
 export const useWorkUpdateMutation = () => {
   const queryClient = useQueryClient();
-  const workUpdate = async (id: string) => {
-    const response = await axiosAuth.patch(`${url}/update/${id}`);
+  const workUpdate = async (formData: IWorkForm) => {
+    const response = await axiosAuth.patch(
+      `${url}/update/${formData.request_id}`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
     return response;
   };
   const mutation = useMutation({
-    mutationFn: (id: string) => workUpdate(id),
+    mutationFn: (formData: IWorkForm) => workUpdate(formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.work_progress] });
     },

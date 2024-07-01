@@ -61,7 +61,10 @@ export function Router() {
               <Route index element={<WorkProgress />} />
               <Route path="details/:id" element={<WorkDetails />} />
             </Route>
-            <Route path="/work_assign" element={<WorkAssign />} />
+            <Route path="/work_assign">
+              <Route index element={<WorkAssign />} />
+              <Route path="details/:id" element={<WorkDetails />} />
+            </Route>
             <Route path="/work_history" element={<WorkHistory />} />
             <Route path="/service_request" element={<RequestForm />} />
             <Route path="/home" element={<Faculty />} />

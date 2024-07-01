@@ -201,7 +201,9 @@ export default function Work() {
               render({ faculty_name, firstname, surname }) {
                 return (
                   <Stack gap="xs">
-                    <Text size="sm">{String(faculty_name)}</Text>
+                    <Text size="sm">{`หน่วยงาน : ${String(
+                      faculty_name
+                    )}`}</Text>
                     <Text size="sm" c="dimmed">
                       {`ผู้แจ้ง : ${firstname} ${surname}`}
                     </Text>

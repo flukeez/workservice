@@ -1,6 +1,7 @@
 import WorkModel from "@/models/WorkModel";
 import { IUserToken } from "@/types/UserType";
 import type { IWorkForm, IWorkQuery } from "@/types/WorkType";
+import { saveFile } from "@/utils/imagefile";
 import { FastifyInstance } from "fastify";
 
 export default async function WorkController(fastify: FastifyInstance) {
@@ -45,9 +46,13 @@ export default async function WorkController(fastify: FastifyInstance) {
     //เช็คว่างานซ่อมนี้สำเร็จยัง
     const validate = await workModel.checkStatus(id, [4, 5, 6, 7]);
     if (validate) {
+      if (Array.isArray(data.image)) {
+        const image = await saveFile("request/" + id, data.image[0]);
+        data.image = image;
+      }
       const { result } = await workModel.updateStatus(id, data);
       status = result;
     }
-    res.send(status);
+    res.send({ result: status });
   });
 }

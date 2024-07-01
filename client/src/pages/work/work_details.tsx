@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import PageHeader from "@/components/common/PageHeader";
 import StepperRepairStatus from "@/components/request/StepperRepairStatus";
-import { Button, Card, Group, Tabs } from "@mantine/core";
+import { Button, Card, Divider, Group, Tabs } from "@mantine/core";
 import { convertToNumberOrZero } from "@/utils/mynumber";
 import { useWorkSubmitMutation } from "@/hooks/work";
 import ConfirmSubmitWorkDialog from "@/components/common/ConfirmSubmitWorkDialog";
@@ -67,37 +67,39 @@ export default function WorkDetails() {
         <Card.Section withBorder inheritPadding py="md">
           <StepperRepairStatus id={id} />
         </Card.Section>
-        <Tabs defaultValue={tabState} mt="sm">
+        <Tabs defaultValue={"details"} mt="sm">
           <Tabs.List>
-            {locationState.type && (
-              <Tabs.Tab value={tabState}>{title}</Tabs.Tab>
+            {tabState === "workUpdate" ? (
+              <Tabs.Tab value={"details"}>{title}</Tabs.Tab>
+            ) : (
+              <Tabs.Tab value="details">รายละเอียด</Tabs.Tab>
             )}
-            <Tabs.Tab value="details">รายละเอียด</Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="details">
-            <WorkDetailsComp id={id} setStatus={handleSetStatus} />
-          </Tabs.Panel>
-          <Tabs.Panel value={tabState}>
-            <WorkUpdate id={id} status={status} />
-          </Tabs.Panel>
+          {tabState === "workUpdate" ? (
+            <Tabs.Panel value={"details"}>
+              <WorkUpdate id={id} status={status} />
+            </Tabs.Panel>
+          ) : (
+            <Tabs.Panel value="details">
+              <WorkDetailsComp id={id} setStatus={handleSetStatus} />
+              <Divider mt="md" />
+              <Group justify="center" mt="md">
+                <Button size="lg" color="gray" onClick={() => navigate(-1)}>
+                  ย้อนกลับ
+                </Button>
+                {tabState === "workSubmit" ? (
+                  <Button
+                    size="lg"
+                    color="blue"
+                    onClick={() => handleSubmitWork()}
+                  >
+                    ยืนยัน
+                  </Button>
+                ) : null}
+              </Group>
+            </Tabs.Panel>
+          )}
         </Tabs>
-
-        <Card.Section withBorder inheritPadding py="md" mt="lg">
-          <Group justify="center">
-            <Button size="lg" color="gray" onClick={() => navigate(-1)}>
-              ย้อนกลับ
-            </Button>
-            {tabState === "workSubmit" ? (
-              <Button size="lg" color="blue" onClick={() => handleSubmitWork()}>
-                ยืนยัน
-              </Button>
-            ) : tabState === "workUpdate" ? (
-              <Button size="lg" color="blue">
-                ยืนยัน
-              </Button>
-            ) : null}
-          </Group>
-        </Card.Section>
       </Card>
     </>
   );

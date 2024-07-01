@@ -1,18 +1,20 @@
 import { Badge, NumberInput } from "@mantine/core";
 
 interface InputPriceProps {
-  errors?: string;
+  error?: string;
   label?: string;
   placeholder?: string;
   value: number;
   onChange: (value: string | number) => void;
+  filled?: string;
 }
 export default function InputPrice({
-  errors,
+  error,
   label,
   value,
   placeholder,
   onChange,
+  filled,
 }: InputPriceProps) {
   return (
     <NumberInput
@@ -33,7 +35,8 @@ export default function InputPrice({
       }
       rightSectionPointerEvents="none"
       styles={{ input: { textAlign: "right" } }}
-      error={errors}
+      error={error}
+      variant={filled}
     />
   );
 }

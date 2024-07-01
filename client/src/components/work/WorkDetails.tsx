@@ -21,9 +21,14 @@ const labelSize = {
   xs: 12,
 };
 const inputSize = {
-  md: 8,
+  md: 9,
   sm: 8,
   xs: 12,
+};
+const offsetSize = {
+  md: 1,
+  sm: 0,
+  xs: 0,
 };
 
 const TextLabel = ({
@@ -107,6 +112,7 @@ export default function WorkDetailsComp({
                 <TextInput {...register(value)} readOnly variant="filled" />
               )}
             </Grid.Col>
+            <Grid.Col span={offsetSize} />
           </React.Fragment>
         ))}
         <Grid.Col span={labelSize}>
