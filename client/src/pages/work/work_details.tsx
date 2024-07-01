@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import PageHeader from "@/components/common/PageHeader";
 import StepperRepairStatus from "@/components/request/StepperRepairStatus";
@@ -7,8 +8,9 @@ import { useWorkSubmitMutation } from "@/hooks/work";
 import ConfirmSubmitWorkDialog from "@/components/common/ConfirmSubmitWorkDialog";
 import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
 import AlertErrorDialog from "@/components/common/AlertErrorDialog";
-import { TitleWorkPage } from "@/utils/titleWorkPage";
 import WorkDetailsComp from "@/components/work/WorkDetails";
+import WorkUpdate from "@/components/work/WorkUpdate";
+import { TitleWorkPage } from "@/utils/titleWorkPage";
 
 export default function WorkDetails() {
   const params = useParams();
@@ -19,10 +21,13 @@ export default function WorkDetails() {
   const mutation = useWorkSubmitMutation();
 
   const title = TitleWorkPage(location.state.type);
+  const tabState = location.state.type || "details";
   const listItems = [
     { title: locationState.mainTitle, href: locationState.from },
     { title: title, href: "#" },
   ];
+
+  const [status, setStatus] = useState("");
 
   //รับงานซ่อม
   const handleSubmitWork = async () => {
@@ -52,6 +57,9 @@ export default function WorkDetails() {
     }
   };
 
+  const handleSetStatus = (value: string) => {
+    setStatus(value);
+  };
   return (
     <>
       <PageHeader title={title} listItems={listItems} />
@@ -59,15 +67,18 @@ export default function WorkDetails() {
         <Card.Section withBorder inheritPadding py="md">
           <StepperRepairStatus id={id} />
         </Card.Section>
-        <Tabs defaultValue="details" mt="sm">
+        <Tabs defaultValue={tabState} mt="sm">
           <Tabs.List>
+            {locationState.type && (
+              <Tabs.Tab value={tabState}>{title}</Tabs.Tab>
+            )}
             <Tabs.Tab value="details">รายละเอียด</Tabs.Tab>
-            <Tabs.Tab value="test">
-              <div>test</div>
-            </Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="details">
-            <WorkDetailsComp id={id} />
+            <WorkDetailsComp id={id} setStatus={handleSetStatus} />
+          </Tabs.Panel>
+          <Tabs.Panel value={tabState}>
+            <WorkUpdate id={id} status={status} />
           </Tabs.Panel>
         </Tabs>
 
@@ -76,12 +87,14 @@ export default function WorkDetails() {
             <Button size="lg" color="gray" onClick={() => navigate(-1)}>
               ย้อนกลับ
             </Button>
-            {locationState.type === "workSubmit" ? (
+            {tabState === "workSubmit" ? (
               <Button size="lg" color="blue" onClick={() => handleSubmitWork()}>
                 ยืนยัน
               </Button>
-            ) : locationState.type === "workUpdate" ? (
-              <Button>update</Button>
+            ) : tabState === "workUpdate" ? (
+              <Button size="lg" color="blue">
+                ยืนยัน
+              </Button>
             ) : null}
           </Group>
         </Card.Section>

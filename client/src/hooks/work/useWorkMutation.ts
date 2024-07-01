@@ -22,3 +22,22 @@ export const useWorkSubmitMutation = () => {
   });
   return mutation;
 };
+
+//เปลี่ยนสถานะงานซ่อม
+export const useWorkUpdateMutation = () => {
+  const queryClient = useQueryClient();
+  const workUpdate = async (id: string) => {
+    const response = await axiosAuth.patch(`${url}/update/${id}`);
+    return response;
+  };
+  const mutation = useMutation({
+    mutationFn: (id: string) => workUpdate(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [queryKeys.work_progress] });
+    },
+    onError: () => {
+      console.log("error");
+    },
+  });
+  return mutation;
+};

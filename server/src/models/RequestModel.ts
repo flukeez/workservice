@@ -210,6 +210,7 @@ export class RequestModel {
           "main_issue.name as issue_name",
           "sub_issue.name as issue_sub_name",
           "tb_priority.name as priority_name",
+          "tb_request.status_id",
           db.raw("GROUP_CONCAT(tb_equip.name) AS equip_name"),
           "tb_provider.name as provider_name",
           "tb_status.name as status_name",

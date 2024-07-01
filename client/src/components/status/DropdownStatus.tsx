@@ -1,35 +1,36 @@
 import { Select } from "@mantine/core";
-import { usePrioritys } from "@/hooks/priority";
+
 import type { IConditionFilter } from "@/types/IConditionFilter";
 import type { IPriority } from "@/types/IPriority";
+import { useStatuses } from "@/hooks/status";
 
-interface PriorityProps {
-  priority: string | null;
-  setPriority: (priority: string | null) => void;
+interface StatusProps {
+  status: string | null;
+  setStatus: (status: string | null) => void;
   label?: string;
   error?: string;
   required?: boolean;
 }
-export default function DropdownPriority({
-  priority,
-  setPriority,
+export default function DropdownStatus({
+  status,
+  setStatus,
   label,
   error,
   required,
-}: PriorityProps) {
+}: StatusProps) {
   const condition: IConditionFilter = {
     txtSearch: "",
     page: 0,
     sortDirection: "asc",
-    sortField: "name",
+    sortField: "id",
   };
-  const { data } = usePrioritys(condition);
+  const { data } = useStatuses(condition);
   return (
     <Select
-      label={label || "ความเร่งด่วน"}
-      placeholder="เลือกความเร่งด่วน"
-      value={priority?.toString() || null}
-      onChange={setPriority}
+      label={label ?? "สถานะงาน"}
+      placeholder="เลือกสถานะงาน"
+      value={status?.toString() || null}
+      onChange={setStatus}
       data={
         data?.rows &&
         data.rows.map((field: IPriority) => ({
@@ -38,7 +39,6 @@ export default function DropdownPriority({
         }))
       }
       searchable
-      clearable
       required={required}
       error={error}
       nothingFoundMessage="ไม่พบข้อมูล"

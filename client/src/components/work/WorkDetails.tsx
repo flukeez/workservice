@@ -21,7 +21,7 @@ const labelSize = {
   xs: 12,
 };
 const inputSize = {
-  md: 10,
+  md: 8,
   sm: 8,
   xs: 12,
 };
@@ -46,7 +46,13 @@ const ListEquipment = ({ equip }: { equip: string[] }) => {
   );
 };
 
-export default function WorkDetailsComp({ id }: { id: number }) {
+export default function WorkDetailsComp({
+  id,
+  setStatus,
+}: {
+  id: number;
+  setStatus?: (status: string) => void;
+}) {
   const isMobile = useMediaQuery("(max-width: 390px)");
   const { data, isLoading } = useRequestDetails(id);
   const { register, reset, getValues } = useForm();
@@ -54,6 +60,9 @@ export default function WorkDetailsComp({ id }: { id: number }) {
   useEffect(() => {
     if (data && data.result) {
       reset(data.result);
+      if (setStatus) {
+        setStatus(data.result.status_id);
+      }
     }
   }, [data]);
   return (

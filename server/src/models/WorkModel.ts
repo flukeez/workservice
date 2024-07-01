@@ -1,6 +1,6 @@
 import db from "@/database";
 import { pagination } from "@/utils/pagination";
-import type { IWorkQuery } from "@/types/WorkType";
+import type { IWorkForm, IWorkQuery } from "@/types/WorkType";
 
 const tbName = "tb_request";
 
@@ -148,17 +148,62 @@ export default class WorkModel {
     return { result };
   }
 
+  //เช็คสถานะงานซ่อม
+  async updateStatus(id: number, data: IWorkForm): Promise<{ result: number }> {
+    const status = data.status_id;
+    try {
+      let requestForm;
+      //การส่งงานซ่อม
+      if (status === "7") {
+        requestForm = {
+          status_id: status,
+          total_cost: data.total_cost,
+          date_end: new Date(),
+          //อัพเดทสถานะใน ตารางรายละเอียด
+        };
+        await db("tb_request_details")
+          .update({
+            resolution: data.resolution,
+            request_cost: data.request_cost,
+            parts_cost: data.parts_cost,
+            other_cost: data.other_cost,
+            vat: data.vat,
+          })
+          .where({ request_id: id });
+      } else {
+        requestForm = {
+          status_id: status,
+        };
+      }
+
+      //อัพเดทสถานนะในตารางหลัก
+      await db(tbName).update(requestForm).where({ id });
+      //เพิ่มสถานะในตารางประวัติงารซ่อม
+      await db("tb_request_history").insert({
+        request_id: id,
+        status_id: status,
+        details: data.details,
+        image: data.image,
+      });
+      return { result: 1 };
+    } catch (error) {
+      console.log(error);
+      throw new Error("Error in update status");
+    }
+  }
+
   //เช็คสถานะงาน
   /**
    *
    * @param id
-   * @param status
+   * @param status[]
    * @returns number ถ้าเป็นจริงจะ return 1
    */
-  async checkStatus(id: number, status: number): Promise<number> {
+  async checkStatus(id: number, status: number[]): Promise<number> {
     const validate = await db(tbName)
       .select("id")
-      .where({ id, status_id: status })
+      .where({ id })
+      .whereIn("status_id", status)
       .first();
     return validate ? 1 : 0;
   }
