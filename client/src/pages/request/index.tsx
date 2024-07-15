@@ -178,7 +178,7 @@ export default function Request() {
                 <Group justify="center" gap={3} wrap="nowrap">
                   <Button
                     variant="subtle"
-                    size="conmpact-md"
+                    size="conmpact-sm"
                     onClick={() => navigate(`/request/details/${id}`)}
                   >
                     <IconListSearch size="18" color="orange" />

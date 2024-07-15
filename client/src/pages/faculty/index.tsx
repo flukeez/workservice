@@ -8,7 +8,6 @@ import {
   Grid,
   Group,
   Highlight,
-  ScrollArea,
   Text,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
@@ -139,92 +138,91 @@ export default function Faculty() {
             </Grid.Col>
           </Grid>
         </Card.Section>
-        <ScrollArea>
-          <DataTable
-            mt="md"
-            withTableBorder
-            borderRadius="sm"
-            withColumnBorders
-            striped
-            highlightOnHover
-            records={data?.rows}
-            columns={[
-              {
-                accessor: "name",
-                title: <Text fw={700}>ชื่อหน่วยงาน</Text>,
-                width: "45%",
-                sortable: true,
-                render({ name }) {
-                  return (
-                    <Highlight size="sm" highlight={facultyStore.txtSearch}>
-                      {String(name)}
-                    </Highlight>
-                  );
-                },
-              },
-              {
-                accessor: "faculty_name",
-                title: <Text fw={700}>หน่วยงงานต้นสังกัด</Text>,
-                width: "20%",
-                sortable: true,
-                render({ faculty_name }) {
-                  return (
-                    <Highlight size="sm" highlight={facultyStore.txtSearch}>
-                      {String(faculty_name || "")}
-                    </Highlight>
-                  );
-                },
-              },
-              {
-                accessor: "id",
-                title: <Text fw={700}>จัดการ</Text>,
-                width: "0%",
-                textAlign: "center",
-                render: ({ id }) => (
-                  <Group justify="center" gap={3} wrap="nowrap">
-                    <Button
-                      color="cyan"
-                      variant="subtle"
-                      size="compact-md"
-                      onClick={() => navigate("user_position/" + id)}
-                    >
-                      <IconSearch size="1.25rem" />
-                    </Button>
 
-                    <ButtonEdit onClick={() => handleUpdate(String(id))} />
-                    <ButtonDelete
-                      onClick={() => handleDelete(String(id), String(name))}
-                    />
-                  </Group>
-                ),
+        <DataTable
+          mt="md"
+          withTableBorder
+          borderRadius="sm"
+          withColumnBorders
+          striped
+          highlightOnHover
+          pinFirstColumn
+          pinLastColumn
+          records={data?.rows}
+          columns={[
+            {
+              accessor: "name",
+              title: <Text fw={700}>ชื่อหน่วยงาน</Text>,
+              width: "45%",
+              sortable: true,
+              render({ name }) {
+                return (
+                  <Highlight size="sm" highlight={facultyStore.txtSearch}>
+                    {String(name)}
+                  </Highlight>
+                );
               },
-            ]}
-            sortStatus={sortStatus}
-            onSortStatusChange={(sort) => {
-              setSortStatus(sort);
-              facultyStore.setFilter({
-                ...facultyStore,
-                sortField: sort.columnAccessor,
-                sortDirection: sort.direction,
-              });
-            }}
-            totalRecords={data?.totalItem || 0}
-            recordsPerPage={PAGE_SIZE}
-            page={facultyStore.page}
-            onPageChange={(p: number) =>
-              facultyStore.setFilter({ ...facultyStore, page: p })
-            }
-            paginationText={({ from, to, totalRecords }) =>
-              `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
-            }
-            noRecordsText="ไม่พบรายการ"
-            noRecordsIcon={<></>}
-            minHeight={120}
-            fetching={isLoading}
-            pinLastColumn
-            pinFirstColumn
-          />
-        </ScrollArea>
+            },
+            {
+              accessor: "faculty_name",
+              title: <Text fw={700}>หน่วยงงานต้นสังกัด</Text>,
+              width: "20%",
+              sortable: true,
+              render({ faculty_name }) {
+                return (
+                  <Highlight size="sm" highlight={facultyStore.txtSearch}>
+                    {String(faculty_name || "")}
+                  </Highlight>
+                );
+              },
+            },
+            {
+              accessor: "id",
+              title: <Text fw={700}>จัดการ</Text>,
+              width: "0%",
+              textAlign: "center",
+              render: ({ id }) => (
+                <Group justify="center" gap={3} wrap="nowrap">
+                  <Button
+                    color="cyan"
+                    variant="subtle"
+                    size="compact-md"
+                    onClick={() => navigate("user_position/" + id)}
+                  >
+                    <IconSearch size="1.25rem" />
+                  </Button>
+
+                  <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                  <ButtonDelete
+                    onClick={() => handleDelete(String(id), String(name))}
+                  />
+                </Group>
+              ),
+            },
+          ]}
+          sortStatus={sortStatus}
+          onSortStatusChange={(sort) => {
+            setSortStatus(sort);
+            facultyStore.setFilter({
+              ...facultyStore,
+              sortField: sort.columnAccessor,
+              sortDirection: sort.direction,
+            });
+          }}
+          totalRecords={data?.totalItem || 0}
+          recordsPerPage={PAGE_SIZE}
+          page={facultyStore.page}
+          onPageChange={(p: number) =>
+            facultyStore.setFilter({ ...facultyStore, page: p })
+          }
+          paginationText={({ from, to, totalRecords }) =>
+            `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
+          }
+          noRecordsText="ไม่พบรายการ"
+          noRecordsIcon={<></>}
+          minHeight={120}
+          fetching={isLoading}
+        />
       </Card>
     </>
   );

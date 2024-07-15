@@ -220,7 +220,7 @@ export default function WorkAssign() {
                 <Group justify="center" gap={3} wrap="nowrap">
                   <Button
                     variant="subtle"
-                    size="conmpact-md"
+                    size="conmpact-sm"
                     color="yellow"
                     onClick={() =>
                       navigate(`/work_assign/details/${id}`, {
@@ -236,7 +236,7 @@ export default function WorkAssign() {
                   </Button>
                   <Button
                     variant="subtle"
-                    size="conmpact-md"
+                    size="conmpact-sm"
                     onClick={() => handleSubmitWork(String(id), String(name))}
                   >
                     <IconListCheck size="18" />
