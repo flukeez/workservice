@@ -29,6 +29,7 @@ export default async function WorkController(fastify: FastifyInstance) {
   fastify.get("/submit/:id", async (req, res) => {
     const { id } = req.params as { id: number };
     const user = req.user as IUserToken;
+    console.log(user);
     let status = 0;
     //เช็คว่างานซ่อมมีคนรับไปยัง
     const validate = await workModel.checkStatus(id, [2]);

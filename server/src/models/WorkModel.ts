@@ -170,6 +170,23 @@ export default class WorkModel {
             vat: data.vat,
           })
           .where({ request_id: id });
+
+        //อัพเดทสถานะอุปกรณ์
+        const equip = await db("tb_request_equip")
+          .select("equip_id")
+          .where({ request_id: id });
+        if (equip.length > 0) {
+          await db("tb_equip").update({ equip_status_id: 1 }).where({ id });
+        }
+        //ยกเลิก
+      } else if (status === "9") {
+        //อัพเดทสถานะอุปกรณ์
+        const equip = await db("tb_request_equip")
+          .select("equip_id")
+          .where({ request_id: id });
+        if (equip.length > 0) {
+          await db("tb_equip").update({ equip_status_id: 4 }).where({ id });
+        }
       } else {
         requestForm = {
           status_id: status,

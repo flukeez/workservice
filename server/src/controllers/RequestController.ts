@@ -6,6 +6,7 @@ import type { IUserToken } from "@/types/UserType";
 
 export default async function RequestController(fastify: FastifyInstance) {
   const requestModel = new RequestModel();
+
   //find many
   fastify.get("/", async (req, res) => {
     const query = req.query as IRequestQuery;

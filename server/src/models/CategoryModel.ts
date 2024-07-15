@@ -7,6 +7,7 @@ import type {
 } from "@/types/CategoryType";
 
 const tbName = "tb_category";
+
 export class CategoryModel {
   async findMany(
     query: ICategoryQuery
