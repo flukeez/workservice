@@ -5,5 +5,5 @@ export default function ProtectRoute() {
   const loginStore = useLoginStore();
   const isAuthenticated = () => !!loginStore.token;
 
-  return isAuthenticated() ? <Outlet /> : <Navigate to="/login" />;
+  return isAuthenticated() ? <Outlet /> : <Navigate to="/" />;
 }

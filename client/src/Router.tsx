@@ -4,7 +4,9 @@ import { DashboardLayout } from "./components/DashboardLayout";
 import { LoadingLayout } from "./components/login/LoadingLayout";
 import ProtectRoute from "./components/protect_route/ProtectRoute";
 import PublicRoute from "./components/protect_route/PublicRoute";
+import { HomePageLayout } from "./components/home";
 
+const HomePage = lazy(() => import("@/pages/home"));
 const RequestForm = lazy(() => import("@/pages/request/request_form"));
 const Request = lazy(() => import("@/pages/request"));
 const RequestDetails = lazy(() => import("@/pages/request/request_details"));
@@ -35,6 +37,9 @@ export function Router() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route element={<HomePageLayout />}>
+          <Route path="/" element={<HomePage />} />
+        </Route>
         <Route element={<PublicRoute />}>
           <Route element={<LoadingLayout />}>
             <Route path="/login">
@@ -45,7 +50,6 @@ export function Router() {
         </Route>
         <Route element={<ProtectRoute />}>
           <Route element={<DashboardLayout />}>
-            <Route path="/" element={<Faculty />} />
             <Route path="/request">
               <Route index element={<Request />} />
               <Route path="new" element={<RequestForm />} />
