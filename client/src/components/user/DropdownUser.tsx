@@ -9,6 +9,7 @@ interface UserProps {
   label?: string;
   error?: string;
   required?: boolean;
+  placeholder?: string;
 }
 export default function DropdownUser({
   user,
@@ -16,11 +17,12 @@ export default function DropdownUser({
   label,
   error,
   required,
+  placeholder,
 }: UserProps) {
   const condition: IConditionFilter = {
     txtSearch: "",
     page: 0,
-    limit: 1000,
+    limit: "1000",
     sortDirection: "asc",
     sortField: "firstname",
   };
@@ -29,9 +31,9 @@ export default function DropdownUser({
   return (
     <Select
       label={label || "บุคคล"}
-      placeholder="เลือกรายชื่อบุคคล"
       value={user?.toString() || null}
       onChange={setUser}
+      placeholder={placeholder}
       data={
         data?.rows &&
         data.rows.map((field: User) => ({
@@ -41,7 +43,7 @@ export default function DropdownUser({
       }
       searchable
       clearable
-      required={required}
+      withAsterisk={required}
       error={error}
       nothingFoundMessage="ไม่พบข้อมูล"
     />

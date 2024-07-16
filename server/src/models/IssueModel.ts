@@ -8,7 +8,15 @@ export class IssueModel {
   async findMany(
     query: IIssueQuery
   ): Promise<{ result: IIssue[]; totalPage: number; totalItem: number }> {
-    const { txtSearch, page, limit, sortField, sortDirection } = query;
+    const {
+      txtSearch,
+      page,
+      limit,
+      sortField,
+      sortDirection,
+      issue_type,
+      issue_id,
+    } = query;
     const offset = page * limit;
     const baseQuery = db(tbName)
       .leftJoin({ tbParent: tbName }, "tb_issue.issue_id", "tbParent.id")
@@ -16,6 +24,14 @@ export class IssueModel {
         builder
           .where("tbParent.name", "LIKE", `%${txtSearch}%`)
           .orWhere(`${tbName}.name`, "LIKE", `%${txtSearch}%`);
+      })
+      .where((builder) => {
+        if (issue_type) {
+          builder.where("tb_issue.issue_type", issue_type);
+        }
+        if (issue_id) {
+          builder.where("tb_issue.issue_id", issue_id);
+        }
       })
       .andWhere(`${tbName}.issue_show`, 0);
     try {

@@ -7,6 +7,7 @@ import type {
 } from "@/types/CategoryType";
 
 const tbName = "tb_category";
+
 export class CategoryModel {
   async findMany(
     query: ICategoryQuery
@@ -48,10 +49,6 @@ export class CategoryModel {
   //เพิ่มใหม่ 1 รายการ
   async createOne(data: ICategoryForm): Promise<{ result: number }> {
     try {
-      const checkDuplicate = await this.checkDuplicate(data.code, data.name);
-      if (checkDuplicate) {
-        return { result: 0 };
-      }
       const result = await db(tbName).insert(data);
       return { result: result[0] };
     } catch (error) {
@@ -62,14 +59,6 @@ export class CategoryModel {
   //อัพเดท
   async update(id: number, data: ICategoryForm): Promise<{ result: number }> {
     try {
-      const checkDuplicate = await this.checkDuplicate(
-        data.code,
-        data.name,
-        id
-      );
-      if (checkDuplicate !== 0) {
-        return { result: 0 };
-      }
       const result = await db(tbName).where({ id }).update(data);
       return { result };
     } catch (error) {
@@ -88,16 +77,14 @@ export class CategoryModel {
     }
   }
   //เช็คซ้ำ
-  async checkDuplicate(code: string, name: string, id = 0): Promise<number> {
+  async checkDuplicate(code: string, id = 0): Promise<number> {
     try {
       const query = await db(tbName)
-        .where((builder) => {
-          builder.where({ name }).orWhere({ code });
-        })
+        .where({ code })
         .whereNot({ id })
         .where("cate_show", 0)
         .first();
-      return query ? 1 : 0;
+      return query ? 0 : 1;
     } catch (error) {
       console.error("Error:", error);
       throw new Error("Internal server error");

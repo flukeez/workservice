@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 import {
   Badge,
   Button,
@@ -16,15 +14,19 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import { IconDeviceFloppy, IconPlus } from "@tabler/icons-react";
+import { IconDeviceFloppy } from "@tabler/icons-react";
+import { Controller, useForm } from "react-hook-form";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEquipment, useEquipmentSave } from "@/hooks/equipment";
 import {
   equipmentInitialValues,
   equipmentYup,
 } from "@/validations/equipment.schema";
+
 import { convertToNumberOrZero } from "@/utils/mynumber";
 import { dateToText } from "@/utils/mydate";
+
 import DropdownCategory from "@/components/category/DropdownCategory";
 import InputDate from "@/components/common/InputDate";
 import PageHeader from "@/components/common/PageHeader";
@@ -33,6 +35,9 @@ import DropdownFacultyUser from "@/components/faculty/DropdownFacultyUser";
 import ImagePreview from "@/components/common/ImagePreview";
 import ButtonFileUpload from "@/components/common/ButtonFileUpload";
 import type { IEquipmentForm } from "@/types/IEquipment";
+import ButtonNew from "@/components/common/ButtonNew";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
 
 const listItems = [
   { title: "รายอุปกรณ์", href: "/user" },
@@ -64,7 +69,6 @@ export default function EquipmentForm() {
     reset,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
     resolver: yupResolver(equipmentYup),
     defaultValues: equipmentInitialValues,
   });
@@ -75,27 +79,19 @@ export default function EquipmentForm() {
     try {
       const { data } = await mutationSave.mutateAsync(formData);
       if (data.result) {
-        Swal.fire({
-          icon: "success",
-          title: "บันทึกข้อมูลสําเร็จ",
-        }).then((results) => {
-          if (results.isConfirmed) {
-            navigate("/equipment");
-          }
+        const isConfirmed = await AlertSuccessDialog({
+          title: "บันทึกข้อมูลสำเร็จ",
         });
+        if (isConfirmed) navigate("/equipment");
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "เกิดข้อผิดพลาด",
-          text: "มีข้อมูลอยู่แล้วในระบบ ไม่สามารถบันทึกข้อมูลได้",
+        await AlertErrorDialog({
+          html: "มีข้อมูลอยู่แล้วในระบบ ไม่สามารถบันทึกข้อมูลได้",
         });
       }
     } catch (error) {
       console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
+      await AlertErrorDialog({
+        html: "บันทึกข้อมูลไม่สำเร็จ ให้ลองออกจากระบบ แล้วเข้าสู่ระบบใหม่",
       });
     }
   };
@@ -127,13 +123,7 @@ export default function EquipmentForm() {
       <Card shadow="sm">
         <Card.Section withBorder inheritPadding py="md">
           <Group justify="right">
-            <Button
-              color="green"
-              leftSection={<IconPlus />}
-              onClick={handleNew}
-            >
-              เพิ่มข้อมูล
-            </Button>
+            <ButtonNew onClick={handleNew}>เพิ่มข้อมูล</ButtonNew>
           </Group>
         </Card.Section>
         <Divider
@@ -146,252 +136,255 @@ export default function EquipmentForm() {
             </Text>
           }
         />
-        <Grid mt="sm">
-          <Grid.Col span={layout}>
-            <TextInput
-              label="รหัสอุปกรณ์"
-              placeholder="กรอกรหัสอุปกรณ์"
-              {...register("code")}
-              error={errors.code?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={layout}>
-            <TextInput
-              label="ชื่ออุปกรณ์"
-              placeholder="กรอกชื่ออุปกรณ์"
-              required
-              {...register("name")}
-              error={errors.name?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={layout}>
-            <TextInput
-              label="ซีเรียลนัมเบอร์"
-              placeholder="กรอกซีเรียลนัมเบอร์"
-              {...register("serial")}
-              error={errors.serial?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={layout}>
-            <Controller
-              name="cate_id"
-              control={control}
-              render={({ field }) => {
-                const handleSelectChange = (value: string | null) => {
-                  field.onChange(value);
-                };
-                return (
-                  <DropdownCategory
-                    label="หมวดหมู่อุปกรณ์"
-                    category={field.value}
-                    setCategory={handleSelectChange}
-                    error={errors.cate_id?.message}
-                  />
-                );
-              }}
-            />
-          </Grid.Col>
-          <Grid.Col span={layout}>
-            <Controller
-              name="price"
-              control={control}
-              render={({ field }) => {
-                return (
-                  <NumberInput
-                    {...field}
-                    label="ราคา"
-                    hideControls
-                    decimalScale={2}
-                    fixedDecimalScale
-                    required
-                    min={0}
-                    placeholder="กรอกราคาอุปกรณ์"
-                    thousandSeparator=","
-                    rightSectionWidth={60}
-                    rightSection={
-                      <Badge color="gray" variant="light" radius="sm" size="lg">
-                        บาท
-                      </Badge>
-                    }
-                    rightSectionPointerEvents="none"
-                    styles={{ input: { textAlign: "right" } }}
-                    error={errors.price?.message}
-                  />
-                );
-              }}
-            />
-          </Grid.Col>
-          <Grid.Col span={layout}>
-            <InputWrapper label="วันเริ่มต้นใช้งาน" required>
-              <InputDate
-                textValue={dateStart}
-                onChangeText={(value: string) => [
-                  setDateStart(value),
-                  setValue("date_start", value),
-                ]}
-                isError={errors.date_start?.message}
-              />
-            </InputWrapper>
-          </Grid.Col>
-          <Grid.Col>
-            <Textarea
-              rows={3}
-              label="รายละเอียด"
-              {...register("details")}
-              error={errors.details?.message}
-            />
-          </Grid.Col>
-        </Grid>
-        <Divider
-          size="xs"
-          mt="md"
-          labelPosition="left"
-          label={
-            <Text size="lg" c="dimmed">
-              ผู้ดูแล
-            </Text>
-          }
-        />
-        <Grid mt="sm">
-          <Grid.Col span={layout}>
-            <Controller
-              name="faculty_id"
-              control={control}
-              render={({ field }) => {
-                const handleSelectChange = (value: string | null) => {
-                  field.onChange(value || "");
-                  setValue("user_id", "");
-                };
-                return (
-                  <DropdownFaculty
-                    label="หน่วยงาน"
-                    faculty={field.value}
-                    setFaculty={handleSelectChange}
-                    error={errors.faculty_id?.message}
-                  />
-                );
-              }}
-            />
-          </Grid.Col>
-          <Grid.Col span={layout}>
-            <Controller
-              name="user_id"
-              control={control}
-              render={({ field }) => {
-                const handleSelectChange = (value: string | null) => {
-                  field.onChange(value || "");
-                };
-                return (
-                  <DropdownFacultyUser
-                    label="ผู้ดูแล"
-                    user={field.value}
-                    setUser={handleSelectChange}
-                    faculty={watch("faculty_id") || "0"}
-                    error={errors.user_id?.message}
-                  />
-                );
-              }}
-            />
-          </Grid.Col>
-        </Grid>
-        <Divider
-          size="xs"
-          mt="md"
-          labelPosition="left"
-          label={
-            <Text size="lg" c="dimmed">
-              การรับประกัน
-            </Text>
-          }
-        />
-        <Grid mt="sm">
-          <Grid.Col span={layout}>
-            <TextInput
-              label="การรับประกัน"
-              placeholder="กรอกข้อมูลการรับประกัน"
-              {...register("warranty")}
-              error={errors.warranty?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={layout}>
-            <InputWrapper label="วันเริ่มต้นการประกัน">
-              <InputDate
-                textValue={warrantyStart}
-                onChangeText={(value: string) => [
-                  setWarrantyStart(value),
-                  setValue("warranty_start", value),
-                ]}
-              />
-            </InputWrapper>
-          </Grid.Col>
-          <Grid.Col span={layout}>
-            <InputWrapper label="วันสิ้นสุดการประกัน">
-              <InputDate
-                textValue={warrantyEnd}
-                onChangeText={(value: string) => [
-                  setWarrantyEnd(value),
-                  setValue("warranty_end", value),
-                ]}
-              />
-            </InputWrapper>
-          </Grid.Col>
-        </Grid>
-        <Divider
-          size="xs"
-          mt="md"
-          labelPosition="left"
-          label={
-            <Text size="lg" c="dimmed">
-              รูปภาพ
-            </Text>
-          }
-        />
-        <Grid mt="sm">
-          {watch("image") && (
+        <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>
+          <Grid mt="sm">
             <Grid.Col span={layout}>
-              <ImagePreview folder="equipment" image={watch("image")} />
+              <TextInput
+                label="รหัสอุปกรณ์"
+                {...register("code")}
+                error={errors.code?.message}
+                withAsterisk
+              />
             </Grid.Col>
-          )}
-          <Grid.Col span={layout}>
-            <Controller
-              name="image"
-              control={control}
-              render={({ field }) => {
-                const handleSelectChange = (value: File | null) => {
-                  field.onChange(value);
-                };
-                const handleDelete = () => {
-                  handleSelectChange(null);
-                };
-                return (
-                  <ButtonFileUpload
-                    file={field.value}
-                    setFile={handleSelectChange}
-                    setDelete={handleDelete}
-                  />
-                );
-              }}
-            />
-          </Grid.Col>
-        </Grid>
-        <Card.Section withBorder inheritPadding py="md" mt="lg">
-          <Group justify="center">
-            <Button
-              size="lg"
-              color="gray"
-              onClick={() => navigate("/equipment")}
-            >
-              ยกเลิก
-            </Button>
-            <Button
-              leftSection={<IconDeviceFloppy />}
-              size="lg"
-              onClick={handleSubmit(onSubmit)}
-            >
-              บันทึกข้อมูล
-            </Button>
-          </Group>
-        </Card.Section>
+            <Grid.Col span={layout}>
+              <TextInput
+                label="ชื่ออุปกรณ์"
+                required
+                {...register("name")}
+                error={errors.name?.message}
+              />
+            </Grid.Col>
+            <Grid.Col span={layout}>
+              <TextInput
+                label="ซีเรียลนัมเบอร์"
+                {...register("serial")}
+                error={errors.serial?.message}
+              />
+            </Grid.Col>
+            <Grid.Col span={layout}>
+              <Controller
+                name="cate_id"
+                control={control}
+                render={({ field }) => {
+                  const handleSelectChange = (value: string | null) => {
+                    field.onChange(value);
+                  };
+                  return (
+                    <DropdownCategory
+                      label="หมวดหมู่อุปกรณ์"
+                      category={field.value}
+                      setCategory={handleSelectChange}
+                      error={errors.cate_id?.message}
+                    />
+                  );
+                }}
+              />
+            </Grid.Col>
+            <Grid.Col span={layout}>
+              <Controller
+                name="price"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <NumberInput
+                      {...field}
+                      label="ราคา"
+                      hideControls
+                      decimalScale={2}
+                      fixedDecimalScale
+                      required
+                      min={0}
+                      thousandSeparator=","
+                      rightSectionWidth={60}
+                      rightSection={
+                        <Badge
+                          color="gray"
+                          variant="light"
+                          radius="sm"
+                          size="lg"
+                        >
+                          บาท
+                        </Badge>
+                      }
+                      rightSectionPointerEvents="none"
+                      styles={{ input: { textAlign: "right" } }}
+                      error={errors.price?.message}
+                    />
+                  );
+                }}
+              />
+            </Grid.Col>
+            <Grid.Col span={layout}>
+              <InputWrapper label="วันเริ่มต้นใช้งาน" required>
+                <InputDate
+                  textValue={dateStart}
+                  onChangeText={(value: string) => [
+                    setDateStart(value),
+                    setValue("date_start", value),
+                  ]}
+                  isError={errors.date_start?.message}
+                />
+              </InputWrapper>
+            </Grid.Col>
+            <Grid.Col>
+              <Textarea
+                rows={3}
+                label="รายละเอียด"
+                {...register("details")}
+                error={errors.details?.message}
+              />
+            </Grid.Col>
+          </Grid>
+          <Divider
+            size="xs"
+            mt="md"
+            labelPosition="left"
+            label={
+              <Text size="lg" c="dimmed">
+                ผู้ดูแล
+              </Text>
+            }
+          />
+          <Grid mt="sm">
+            <Grid.Col span={layout}>
+              <Controller
+                name="faculty_id"
+                control={control}
+                render={({ field }) => {
+                  const handleSelectChange = (value: string | null) => {
+                    field.onChange(value || "");
+                    setValue("user_id", "");
+                  };
+                  return (
+                    <DropdownFaculty
+                      label="หน่วยงาน"
+                      faculty={field.value}
+                      setFaculty={handleSelectChange}
+                      error={errors.faculty_id?.message}
+                    />
+                  );
+                }}
+              />
+            </Grid.Col>
+            <Grid.Col span={layout}>
+              <Controller
+                name="user_id"
+                control={control}
+                render={({ field }) => {
+                  const handleSelectChange = (value: string | null) => {
+                    field.onChange(value || "");
+                  };
+                  return (
+                    <DropdownFacultyUser
+                      label="ผู้ดูแล"
+                      user={field.value}
+                      setUser={handleSelectChange}
+                      faculty={watch("faculty_id") || "0"}
+                      error={errors.user_id?.message}
+                    />
+                  );
+                }}
+              />
+            </Grid.Col>
+          </Grid>
+          <Divider
+            size="xs"
+            mt="md"
+            labelPosition="left"
+            label={
+              <Text size="lg" c="dimmed">
+                การรับประกัน
+              </Text>
+            }
+          />
+          <Grid mt="sm">
+            <Grid.Col span={layout}>
+              <TextInput
+                label="การรับประกัน"
+                {...register("warranty")}
+                error={errors.warranty?.message}
+              />
+            </Grid.Col>
+            <Grid.Col span={layout}>
+              <InputWrapper label="วันเริ่มต้นการประกัน">
+                <InputDate
+                  textValue={warrantyStart}
+                  onChangeText={(value: string) => [
+                    setWarrantyStart(value),
+                    setValue("warranty_start", value),
+                  ]}
+                />
+              </InputWrapper>
+            </Grid.Col>
+            <Grid.Col span={layout}>
+              <InputWrapper label="วันสิ้นสุดการประกัน">
+                <InputDate
+                  textValue={warrantyEnd}
+                  onChangeText={(value: string) => [
+                    setWarrantyEnd(value),
+                    setValue("warranty_end", value),
+                  ]}
+                />
+              </InputWrapper>
+            </Grid.Col>
+          </Grid>
+          <Divider
+            size="xs"
+            mt="md"
+            labelPosition="left"
+            label={
+              <Text size="lg" c="dimmed">
+                รูปภาพ
+              </Text>
+            }
+          />
+          <Grid mt="sm">
+            {watch("image") && (
+              <Grid.Col span={layout}>
+                <ImagePreview folder="equipment" image={watch("image")} />
+              </Grid.Col>
+            )}
+            <Grid.Col span={layout}>
+              <Controller
+                name="image"
+                control={control}
+                render={({ field }) => {
+                  const handleSelectChange = (value: File | null) => {
+                    field.onChange(value);
+                  };
+                  const handleDelete = () => {
+                    handleSelectChange(null);
+                  };
+                  return (
+                    <ButtonFileUpload
+                      file={field.value}
+                      setFile={handleSelectChange}
+                      setDelete={handleDelete}
+                    />
+                  );
+                }}
+              />
+            </Grid.Col>
+          </Grid>
+          <Card.Section withBorder inheritPadding py="md" mt="lg">
+            <Group justify="center">
+              <Button
+                size="lg"
+                color="gray"
+                onClick={() => navigate("/equipment")}
+              >
+                ยกเลิก
+              </Button>
+              <Button
+                leftSection={<IconDeviceFloppy />}
+                size="lg"
+                onClick={handleSubmit(onSubmit)}
+              >
+                บันทึกข้อมูล
+              </Button>
+            </Group>
+          </Card.Section>
+        </form>
       </Card>
     </>
   );

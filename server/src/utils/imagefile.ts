@@ -1,15 +1,21 @@
-import { promises as fsPromises } from "fs";
 import path from "path";
+import { promises as fsPromises } from "fs";
+import type { IFile } from "@/types/FileUploadType";
 
-interface FileUpload {
-  filename: string;
-  data: Buffer;
-}
-export const saveFile = async (folder: string, file: FileUpload) => {
+export const saveFile = async (folder: string, file: IFile) => {
   const extension = path.extname(file.filename);
   const filename =
     Date.now() + "-" + Math.round(Math.random() * 1e9) + extension;
   const filePath = path.join(process.cwd(), "uploads", folder, filename);
+  const folderPath = path.join(process.cwd(), "uploads", folder);
+
+  // เช็คโฟลเดอร์
+  try {
+    await fsPromises.access(folderPath);
+  } catch (error) {
+    // ถ้าโฟลเดอร์ไม่มีอยู่ให้สร้างโฟลเดอร์ใหม่
+    await fsPromises.mkdir(folderPath, { recursive: true });
+  }
 
   try {
     await fsPromises.writeFile(filePath, file.data);

@@ -132,23 +132,82 @@ export class EquipmentModel {
       throw new Error("Internal server error");
     }
   }
-  async checkDuplicate(
-    name: string,
-    code: string,
-    serial: string,
-    id = 0
-  ): Promise<number> {
+  async checkDuplicate(code: string, serial: string, id = 0): Promise<number> {
     try {
       const query = await db(tbName)
-        .where((builder) => {
-          if (serial) builder.where({ serial });
-          builder.orWhere({ code, name });
-        })
-        .whereNot({ id })
+        .where({ code })
+        .orWhere({ serial })
+        .andWhereNot({ id })
         .first();
       return query ? 1 : 0;
     } catch (error) {
       console.error("Error:", error);
+      throw new Error("Internal server error");
+    }
+  }
+
+  async findAllById(
+    query: IEquipQuery,
+    id: string
+  ): Promise<{ result: object[]; totalItem: number; totalPage: number }> {
+    try {
+      const {
+        txtSearch,
+        page,
+        limit,
+        sortField,
+        sortDirection,
+        faculty_id,
+        user_id,
+      } = query;
+
+      const baseQuery = db(tbName).where((builder) => {
+        builder
+          .where("name", "LIKE", `%${txtSearch}%`)
+          .orWhere(`code`, "LIKE", `%${txtSearch}%`)
+          .orWhere(`serial`, "LIKE", `%${txtSearch}%`);
+      });
+
+      const equip = await db("tb_request_equip")
+        .select(db.raw("GROUP_CONCAT(equip_id) as id"))
+        .where({ request_id: id })
+        .first();
+      const equipIds = equip?.id?.split(",") || [];
+      const limitPerPage =
+        page == 0 && equipIds.length > 10 ? equipIds.length : limit;
+
+      const result = await baseQuery
+        .clone()
+        .select("id", "code", "name", "serial", db.raw("1 as sort_order"))
+        .whereIn("id", equipIds)
+        .union(function () {
+          this.select("id", "code", "name", "serial", db.raw("2 as sort_order"))
+            .from(tbName)
+            .whereNotIn("id", equipIds)
+            .where(function () {
+              this.where("name", "LIKE", `%${txtSearch}%`)
+                .orWhere(`code`, "LIKE", `%${txtSearch}%`)
+                .orWhere(`serial`, "LIKE", `%${txtSearch}%`);
+            });
+        })
+        .orderBy([
+          { column: "sort_order", order: "asc" },
+          { column: sortField, order: sortDirection },
+        ])
+        .limit(limitPerPage)
+        .offset(limitPerPage * page);
+
+      const rowCount = await baseQuery
+        .clone()
+        .count({ countId: `${tbName}.id` })
+        .first();
+
+      const totalItem = Number(rowCount?.countId || 0);
+      const totalPage = await pagination(totalItem, limit);
+
+      return { result, totalItem, totalPage };
+    } catch (error) {
+      console.log(error);
       throw new Error("Internal server error");
     }
   }

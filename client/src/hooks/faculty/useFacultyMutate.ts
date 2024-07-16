@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosAuth } from "@/utils/axios";
 import { queryKeys } from "@/utils/queryKeys";
-import type { IFacultyForm, IFacultyPositionForm } from "@/types/IFaculty";
+import type { IFacultyForm } from "@/types/IFaculty";
 
 const url = "/facultys";
 
@@ -45,51 +45,5 @@ export function useFacultyDelete() {
     },
   });
 
-  return mutation;
-}
-
-//เพิ่มคนในหน่วยงาน
-export function useFacultyPositionSave() {
-  const queryClient = useQueryClient();
-  const saveOne = async (formData: IFacultyPositionForm) => {
-    let response;
-    if (formData.type) {
-      delete formData.type;
-      response = await axiosAuth.put(`${url}/org_chart/update`, formData);
-    } else {
-      delete formData.type;
-      response = await axiosAuth.post(`${url}/org_chart/create`, formData);
-    }
-    return response;
-  };
-  const mutation = useMutation({
-    mutationFn: (formData: IFacultyPositionForm) => saveOne(formData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKeys.org_charts] });
-    },
-    onError: () => {
-      console.log("error");
-    },
-  });
-  return mutation;
-}
-
-//ลบคนในหน่วยงาน
-export function useFacultyPositionDelete() {
-  const queryClient = useQueryClient();
-  const deleteOne = async (id: number, user_id: string) => {
-    const response = await axiosAuth.delete(
-      `${url}/org_chart/del/${id}/user/${user_id}`
-    );
-    return response;
-  };
-
-  const mutation = useMutation({
-    mutationFn: ({ id, user_id }: { id: number; user_id: string }) =>
-      deleteOne(id, user_id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKeys.org_charts] });
-    },
-  });
   return mutation;
 }

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -14,6 +13,9 @@ import { IconAlertCircle } from "@tabler/icons-react";
 import { useStatus, useStatusSave } from "@/hooks/status";
 import { statusInitialValues, statusYup } from "@/validations/status.schema";
 import type { IStatusForm } from "@/types/IStatus";
+import AlertSuccessDialog from "../common/AlertSuccessDialog";
+import AlertErrorDialog from "../common/AlertErrorDialog";
+import ButtonSave from "../common/ButtonSave";
 
 interface StatusProps {
   onClose: () => void;
@@ -29,33 +31,27 @@ export default function StatusForm({ rowId, onClose }: StatusProps) {
     getValues,
     formState: { errors },
   } = useForm({
-    mode: "onChange",
     resolver: yupResolver(statusYup),
     defaultValues: statusInitialValues,
   });
   const [showAlert, setShowAlert] = useState(false);
   const onSubmit: SubmitHandler<IStatusForm> = async (formData) => {
+    setShowAlert(false);
+
     try {
       const { data } = await mutationSave.mutateAsync(formData);
-      if (data.result) {
-        setShowAlert(false);
-        Swal.fire({
-          icon: "success",
-          title: "บันทึกข้อมูลสําเร็จ",
-        }).then((results) => {
-          if (results.isConfirmed) {
-            onClose();
-          }
-        });
-      } else {
+      if (!data.result) {
         setShowAlert(true);
+        return true;
       }
+
+      const isConfirmed = await AlertSuccessDialog({
+        title: "บันทึกข้อมูลสำเร็จ",
+      });
+      if (isConfirmed) onClose();
     } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
+      await AlertErrorDialog({
+        html: "บันทึกข้อมูลไม่สำเร็จ ให้ลองออกจากระบบ แล้วเข้าสู่ระบบใหม่",
       });
     }
   };
@@ -79,21 +75,22 @@ export default function StatusForm({ rowId, onClose }: StatusProps) {
           ชื่อ <b>{getValues("name")}</b> มีแล้วในะรบบ ! กรุณาเปลี่ยนชื่อใหม่
         </Alert>
       )}
-      <Stack>
-        <TextInput
-          label="ชื่อสถานะงาน"
-          {...register("name")}
-          placeholder="กรอกชื่อสถานะงาน"
-          error={errors.name?.message}
-          required
-        />
-        <Group justify="right" mt={20}>
-          <Button color="gray" onClick={onClose}>
-            ยกเลิก
-          </Button>
-          <Button onClick={handleSubmit(onSubmit)}>บันทึก</Button>
-        </Group>
-      </Stack>
+      <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>
+        <Stack>
+          <TextInput
+            label="ชื่อสถานะงาน"
+            {...register("name")}
+            error={errors.name?.message}
+            withAsterisk
+          />
+          <Group justify="right" mt={20}>
+            <Button color="gray" onClick={onClose}>
+              ยกเลิก
+            </Button>
+            <ButtonSave loading={mutationSave.isPending} />
+          </Group>
+        </Stack>
+      </form>
     </>
   );
 }

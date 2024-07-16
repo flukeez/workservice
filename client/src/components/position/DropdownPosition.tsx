@@ -18,7 +18,7 @@ export default function DropdownPosition({
   const condition: IConditionFilter = {
     txtSearch: "",
     page: 0,
-    limit: 1000,
+    limit: "1000",
     sortDirection: "asc",
     sortField: "name",
   };
@@ -27,7 +27,6 @@ export default function DropdownPosition({
   return (
     <Select
       label={label || "ตำแหน่งงาน"}
-      placeholder="เลือกตำแหน่งงาน"
       value={position?.toString()}
       onChange={setPosition}
       data={

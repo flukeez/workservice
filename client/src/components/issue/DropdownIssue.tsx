@@ -1,28 +1,53 @@
 import { useIssues } from "@/hooks/issue";
-import { IIssue } from "@/types/IIssue";
+import { IConditionFilter } from "@/types/IConditionFilter";
+import type { IIssue, IIssueFilter } from "@/types/IIssue";
 import { Select } from "@mantine/core";
+import { useEffect } from "react";
 
 interface IssueProps {
   issue: string | null;
   setIssue: (issue: string | null) => void;
   error?: string;
+  issue_type?: string; //แสดงประเภทหมวดหมู่หลักหรือย่อย
+  issue_id?: string; //ไอดีของหมวดหมู่หลัก
+  required?: boolean;
+  label?: string;
+  placeholder?: string;
+  keys?: string; //ไว้รเรนเดอร์
 }
 
-export default function DropdownIssue({ issue, setIssue, error }: IssueProps) {
-  const condition = {
-    page: 0,
-    limit: 1000,
-    sortDirection: "asc",
-    sortField: "name",
+export default function DropdownIssue({
+  issue,
+  setIssue,
+  error,
+  issue_id,
+  issue_type,
+  required,
+  label,
+  placeholder,
+}: IssueProps) {
+  const setCondition = () => {
+    const condition: IConditionFilter & IIssueFilter = {
+      txtSearch: "",
+      page: 0,
+      sortDirection: "asc",
+      sortField: "name",
+      issueId: issue_id,
+      issueType: issue_type,
+    };
+    return condition;
   };
 
-  const { data } = useIssues(condition);
+  const { data, setFilter } = useIssues(setCondition());
 
+  useEffect(() => {
+    setFilter(setCondition());
+  }, [issue_id]);
   return (
     <Select
-      label="ประเภทปัญหา"
-      placeholder="เลือกประเภทปัญหา"
-      value={issue}
+      label={label || "ประเภทปัญหา"}
+      placeholder={placeholder || "เลือกประเภทปัญหา"}
+      value={issue?.toString() || null}
       onChange={setIssue}
       data={
         data?.rows &&
@@ -34,7 +59,7 @@ export default function DropdownIssue({ issue, setIssue, error }: IssueProps) {
       searchable
       clearable
       error={error}
-      required
+      required={required || false}
       nothingFoundMessage="ไม่พบข้อมูล"
     />
   );

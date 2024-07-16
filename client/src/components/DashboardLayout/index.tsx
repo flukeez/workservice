@@ -16,6 +16,7 @@ import { AdminHeader } from "./AdminHeader";
 import { Navbar } from "./Navbar";
 import { Suspense } from "react";
 import { IconSearch } from "@tabler/icons-react";
+import { WEBSITE_NAME } from "@/config";
 
 export function DashboardLayout() {
   const theme = useMantineTheme();
@@ -31,7 +32,6 @@ export function DashboardLayout() {
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
       }}
       padding="md"
-      bg={theme.colors.red[8]}
       styles={{
         main: {
           background: theme.colors.gray[0],
@@ -59,10 +59,7 @@ export function DashboardLayout() {
                 size="sm"
               />
             </ThemeIcon>
-
-            {/* <MantineLogo size={30} />
-             */}
-            <Text fw={700}>WorkService</Text>
+            <Text fw={700}>{WEBSITE_NAME}</Text>
             <Code>1.0.0</Code>
           </Group>
           <TextInput

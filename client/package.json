@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/noto-sans-thai": "^5.0.14",
     "@hookform/resolvers": "^3.3.4",
     "@mantine/core": "^7.8.1",
     "@mantine/dates": "^7.10.0",
@@ -20,6 +21,7 @@
     "axios": "^1.6.8",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.11",
+    "jwt-decode": "^4.0.0",
     "mantine-datatable": "^7.9.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

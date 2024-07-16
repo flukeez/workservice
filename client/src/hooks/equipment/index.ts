@@ -1,2 +1,6 @@
-export { useEquipments, useEquipment } from "./useEquipment";
+export {
+  useEquipments,
+  useEquipment,
+  useEquipmentsRepair,
+} from "./useEquipment";
 export { useEquipmentSave, useEquipmentDelete } from "./useEquipmentMutate";

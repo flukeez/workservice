@@ -22,7 +22,6 @@ export default async function EquipmentController(fastify: FastifyInstance) {
   fastify.post("/create", async (req, res) => {
     let data = req.body as IEquipmentForm;
     const checkDuplicate = await equipmentModel.checkDuplicate(
-      data.name,
       data.code,
       data.serial
     );
@@ -42,7 +41,6 @@ export default async function EquipmentController(fastify: FastifyInstance) {
     let data = req.body as IEquipmentForm;
     const { id } = req.params as { id: number };
     const checkDuplicate = await equipmentModel.checkDuplicate(
-      data.name,
       data.code,
       data.serial,
       id
@@ -78,5 +76,16 @@ export default async function EquipmentController(fastify: FastifyInstance) {
       await deleteFile("equipment", image);
     }
     res.send(result);
+  });
+
+  //แสดงใน modal รายการอุปกรณ์
+  fastify.get("/list/:id", async (req, res) => {
+    const { id } = req.params as { id: string };
+    const query = req.query as IEquipQuery;
+    const { result, totalItem, totalPage } = await equipmentModel.findAllById(
+      query,
+      id
+    );
+    res.send({ rows: result, totalItem, totalPage });
   });
 }

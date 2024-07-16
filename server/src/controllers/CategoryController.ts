@@ -21,15 +21,24 @@ export default async function CategoryController(fastify: FastifyInstance) {
 
   fastify.post("/create", async (req, res) => {
     const data = req.body as ICategoryForm;
-    const result = await categoryModel.createOne(data);
-    res.send(result);
+    let validate = await categoryModel.checkDuplicate(data.code);
+    if (validate) {
+      const { result } = await categoryModel.createOne(data);
+      validate = result;
+    }
+
+    res.send({ result: validate });
   });
 
   fastify.patch("/:id", async (req, res) => {
     const { id } = req.params as { id: number };
     const data = req.body as ICategoryForm;
-    const result = await categoryModel.update(id, data);
-    res.send(result);
+    let validate = await categoryModel.checkDuplicate(data.code, id);
+    if (validate) {
+      const { result } = await categoryModel.update(id, data);
+      validate = result;
+    }
+    res.send({ result: validate });
   });
 
   fastify.patch("/del/:id", async (req, res) => {

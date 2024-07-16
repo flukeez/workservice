@@ -3,10 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosAuth } from "@/utils/axios";
 import { queryKeys } from "@/utils/queryKeys";
 import { IConditionFilter } from "@/types/IConditionFilter";
+import { IIssueFilter } from "@/types/IIssue";
 
 const url = "/issues";
 //get all
-export const useIssues = (condition: IConditionFilter) => {
+export const useIssues = (condition: IConditionFilter & IIssueFilter) => {
   const [filter, setFilter] = useState(condition);
 
   const findMany = async () => {
@@ -15,7 +16,9 @@ export const useIssues = (condition: IConditionFilter) => {
       ["sortField", filter.sortField || "name"],
       ["sortDirection", filter.sortDirection || "asc"],
       ["page", filter.page.toString()],
-      ["limit", filter.limit.toString()],
+      ["limit", filter.limit || "20"],
+      ["issue_type", filter.issueType || ""],
+      ["issue_id", filter.issueId || ""],
     ]);
 
     const { data } = await axiosAuth.get(url, { params });

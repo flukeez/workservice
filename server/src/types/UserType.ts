@@ -60,3 +60,17 @@ export type IUserQuery = {
   sortField: string;
   sortDirection: string;
 };
+
+type PositionType = {
+  pos_id: string;
+  fac_id: string;
+};
+export type IUserToken = {
+  id: number;
+  firstname: string;
+  surname: string;
+  image: string;
+  position: PositionType[];
+  iat: number;
+  exp: number;
+};

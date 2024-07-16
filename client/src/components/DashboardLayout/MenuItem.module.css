@@ -27,7 +27,7 @@
 .activeNavLink {
     background-color: var(--mantine-color-dark-6);
     color: var(--mantine-color-gray-0);
-    border-left: 5px solid var(--mantine-color-blue-7);
+    /* border-left: 5px solid var(--mantine-color-blue-7); */
 }
 
 .activeBox {
@@ -38,10 +38,13 @@
 .activeSubNavLink {
     background-color: var(--mantine-color-dark-6);
     color: var(--mantine-color-gray-0);
-    border-left: 5px solid var(--mantine-color-blue-7);
+    /* border-left: 5px solid var(--mantine-color-blue-7); */
 }
 
 .boxnav:hover .subnavlink {
     background-color: var(--mantine-color-dark-5);
+    color: var(--mantine-color-gray-0);
+}
+.activeIconLink {
     color: var(--mantine-color-gray-0);
 }

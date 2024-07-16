@@ -3,7 +3,7 @@ import cx from "clsx";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-import { Box, NavLink } from "@mantine/core";
+import { Box, NavLink, ThemeIcon } from "@mantine/core";
 import { SideNavItem } from "./types";
 import classes from "./MenuItem.module.css";
 
@@ -39,7 +39,21 @@ export default function MenuItem({
           onClick={toggleSubMenu}
           opened={menuOpen}
           label={title}
-          leftSection={Icon && <Icon size="1.2rem" stroke={1.5} />}
+          leftSection={
+            Icon && (
+              <ThemeIcon
+                variant="light"
+                color="gray.5"
+                className={cx(classes.iconLink, {
+                  [classes.activeIconLink]:
+                    pathname === path ||
+                    (pathname.startsWith(path) && path !== "/"),
+                })}
+              >
+                <Icon size="1.2rem" stroke={1.5} />
+              </ThemeIcon>
+            )
+          }
           childrenOffset={0}
           py="sm"
           className={cx(classes.navlink)}
@@ -61,6 +75,7 @@ export default function MenuItem({
                   autoContrast
                   label={subItem.title}
                   component={Link}
+                  py="sm"
                   to={subItem.path}
                   className={cx(classes.subnavlink, {
                     [classes.activeNavLink]:
@@ -79,7 +94,21 @@ export default function MenuItem({
           component={Link}
           to={path}
           label={title}
-          leftSection={Icon && <Icon size="1.2rem" stroke={1.5} />}
+          leftSection={
+            Icon && (
+              <ThemeIcon
+                variant="light"
+                color="gray.6"
+                className={cx(classes.iconLink, {
+                  [classes.activeIconLink]:
+                    pathname === path ||
+                    (pathname.startsWith(path) && path !== "/"),
+                })}
+              >
+                <Icon size="1.2rem" stroke={1.5} />
+              </ThemeIcon>
+            )
+          }
           py="sm"
           className={cx(classes.navlink, {
             [classes.activeNavLink]:

@@ -1,12 +1,6 @@
+import type { IFilter } from "@/types/IFilter";
 import { StateCreator, create } from "zustand";
 import { persist, PersistOptions } from "zustand/middleware";
-
-interface IFilter {
-  txtSearch: string;
-  page: number;
-  sortField: string;
-  sortDirection: "asc" | "desc";
-}
 
 interface Actions {
   setFilter: (filter: IFilter) => void;

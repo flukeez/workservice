@@ -1,29 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import {
-  Button,
-  Card,
-  Grid,
-  Group,
-  Highlight,
-  Menu,
-  ScrollArea,
-  Text,
-} from "@mantine/core";
+import { Card, Grid, Group, Highlight, Text } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconChevronDown, IconPlus } from "@tabler/icons-react";
 import { timeFormNow } from "@/utils/mydate";
 import { useUserStore } from "@/stores/useUserStore";
 import { useUserDelete, useUsers } from "@/hooks/user";
 import InputSearch from "@/components/common/InputSearch";
 import PageHeader from "@/components/common/PageHeader";
 import UserInfo from "@/components/user/UserInfo";
+import ConfirmDeleteDialog from "@/components/common/ConfirmDeleteDialog";
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
+import ButtonNew from "@/components/common/ButtonNew";
+import { PAGE_SIZE } from "@/config";
+import ButtonDelete from "@/components/common/ButtonDelete";
+import ButtonEdit from "@/components/common/ButtonEdit";
 
 const title = "รายชื่อผู้ใช้";
 const listItems = [{ title: title, href: "#" }];
-const Page_size = 10;
 
 export default function User() {
   const navigate = useNavigate();
@@ -39,7 +34,6 @@ export default function User() {
       sortField: userStore.sortField,
       sortDirection: userStore.sortDirection,
       page: userStore.page - 1,
-      limit: Page_size,
     };
     return condition;
   };
@@ -51,29 +45,25 @@ export default function User() {
   const handleUpdate = (id: string) => {
     navigate("/user/" + id);
   };
-  const handleDelete = async (id: string) => {
-    try {
-      const dialog = await Swal.fire({
-        title: "คุณต้องการลบรายการนี้ใช่หรือไม่",
-        icon: "warning",
-        showCancelButton: true,
-        cancelButtonText: "ยกเลิก",
-        confirmButtonText: "ตกลง",
-      });
-      if (dialog.isConfirmed) {
-        await mutationDelete.mutateAsync(id);
-        Swal.fire({
-          title: "ลบข้อมูลสําเร็จ",
-          icon: "success",
+  const handleDelete = async (id: string, name: string) => {
+    const isConfirmed = await ConfirmDeleteDialog({
+      html: `คุณต้องการลบรายการนี่ใช่หรือไม่<p>${name}</p>`,
+    });
+
+    if (isConfirmed) {
+      try {
+        const { data } = await mutationDelete.mutateAsync(id);
+        if (data.message === "failed") {
+          // จัดการกรณีลบไม่สำเร็จ (ถ้ามี)
+          await AlertErrorDialog({ title: "ลบข้อมูลไม่สำเร็จ !!" });
+        } else {
+          await AlertSuccessDialog({ title: "ลบข้อมูลสำเร็จ" });
+        }
+      } catch (error) {
+        await AlertErrorDialog({
+          html: "ลบข้อมูลไม่สำเร็จ เนื่องจากหมดเวลาเชื่อมต่อ ให้ออกจากระบบ แล้วเข้าใหม่",
         });
       }
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
-      });
     }
   };
   const searchData = () => {
@@ -92,13 +82,7 @@ export default function User() {
       <Card shadow="sm">
         <Card.Section withBorder inheritPadding py="md">
           <Group justify="right">
-            <Button
-              color="green"
-              leftSection={<IconPlus />}
-              onClick={handleNew}
-            >
-              เพิ่มข้อมูล
-            </Button>
+            <ButtonNew onClick={handleNew}>เพิ่มข้อมูล</ButtonNew>
           </Group>
         </Card.Section>
         <Card.Section>
@@ -120,144 +104,106 @@ export default function User() {
             </Grid.Col>
           </Grid>
         </Card.Section>
-        <ScrollArea>
-          <DataTable
-            mt="md"
-            withTableBorder
-            borderRadius="sm"
-            withColumnBorders
-            striped
-            highlightOnHover
-            records={data?.rows}
-            columns={[
-              {
-                accessor: "firstname",
-                title: "ชื่อ - นามสกุล",
-                width: "45%",
-                sortable: true,
-                render({ firstname, surname, nickname, image }) {
-                  return (
-                    <UserInfo
-                      firstname={firstname}
-                      surname={surname}
-                      nickname={nickname}
-                      image={image}
-                      highlight={userStore.txtSearch}
-                    />
-                  );
-                },
+        <DataTable
+          mt="md"
+          withTableBorder
+          borderRadius="sm"
+          withColumnBorders
+          striped
+          highlightOnHover
+          records={data?.rows}
+          columns={[
+            {
+              accessor: "firstname",
+              title: <Text fw={700}>ชื่อ - นามสกุล</Text>,
+              width: "45%",
+              sortable: true,
+              render({ firstname, surname, nickname, image }) {
+                return (
+                  <UserInfo
+                    firstname={firstname}
+                    surname={surname}
+                    nickname={nickname}
+                    image={image}
+                    highlight={userStore.txtSearch}
+                  />
+                );
               },
-              {
-                accessor: "username",
-                title: "ชื่อผู้ใช้ ",
-                width: "20%",
-                sortable: true,
-                render({ username }) {
-                  return (
-                    <Highlight highlight={userStore.txtSearch}>
-                      {String(username)}
-                    </Highlight>
-                  );
-                },
+            },
+            {
+              accessor: "username",
+              title: <Text fw={700}>ชื่อผู้ใช้</Text>,
+              width: "20%",
+              sortable: true,
+              render({ username }) {
+                return (
+                  <Highlight highlight={userStore.txtSearch}>
+                    {String(username)}
+                  </Highlight>
+                );
               },
-              {
-                accessor: "phone",
-                title: "เบอร์โทรศัพท์",
-                width: "10%",
-                textAlign: "center",
-                sortable: true,
+            },
+            {
+              accessor: "phone",
+              title: <Text fw={700}>เบอร์โทรศัพท์</Text>,
+              width: "10%",
+              textAlign: "center",
+              sortable: true,
+            },
+            {
+              accessor: "last_login",
+              title: <Text fw={700}>ใช้งานล่าสุด</Text>,
+              sortable: true,
+              width: "10%",
+              textAlign: "center",
+              render({ last_login }) {
+                return (
+                  <Text size="sm" c="dimmed">
+                    {timeFormNow(String(last_login))}
+                  </Text>
+                );
               },
-              {
-                accessor: "last_login",
-                title: "ใช้งานล่าสุด",
-                sortable: true,
-                width: "10%",
-                textAlign: "center",
-                render({ last_login }) {
-                  return (
-                    <Text c="dimmed">{timeFormNow(String(last_login))}</Text>
-                  );
-                },
-              },
-              {
-                accessor: "id",
-                title: "จัดการ",
-                width: "0%",
-                textAlign: "center",
-                render: ({ id }) => (
-                  <>
-                    <Menu withArrow position="bottom">
-                      <Menu.Target>
-                        <Button
-                          hiddenFrom="md"
-                          color="blue"
-                          rightSection={
-                            <IconChevronDown size="1.05rem" stroke={1.5} />
-                          }
-                          pr={12}
-                          size="xs"
-                        >
-                          จัดการ
-                        </Button>
-                      </Menu.Target>
-                      <Menu.Dropdown>
-                        <Menu.Item onClick={() => handleUpdate(String(id))}>
-                          แก้ไข
-                        </Menu.Item>
-                        <Menu.Item
-                          onClick={() => {
-                            handleDelete(String(id));
-                          }}
-                        >
-                          ลบ
-                        </Menu.Item>
-                      </Menu.Dropdown>
-                    </Menu>
-                    <Group justify="center" visibleFrom="md" wrap="nowrap">
-                      <Button
-                        size="xs"
-                        mx="xs"
-                        onClick={() => handleUpdate(String(id))}
-                      >
-                        แก้ไข
-                      </Button>
-                      <Button
-                        color="red"
-                        size="xs"
-                        onClick={() => handleDelete(String(id))}
-                      >
-                        ลบ
-                      </Button>
-                    </Group>
-                  </>
-                ),
-              },
-            ]}
-            sortStatus={sortStatus}
-            onSortStatusChange={(sort) => [
-              setSortStatus(sort),
-              userStore.setFilter({
-                ...userStore,
-                sortField: sort.columnAccessor,
-                sortDirection: sort.direction,
-              }),
-            ]}
-            totalRecords={data?.totalItem || 0}
-            recordsPerPage={Page_size}
-            page={userStore.page}
-            onPageChange={(p: number) =>
-              userStore.setFilter({ ...userStore, page: p })
-            }
-            paginationText={({ from, to, totalRecords }) =>
-              `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
-            }
-            paginationActiveBackgroundColor="gray"
-            noRecordsText="ไม่พบรายการ"
-            noRecordsIcon={<></>}
-            minHeight={120}
-            fetching={isLoading}
-          />
-        </ScrollArea>
+            },
+            {
+              accessor: "id",
+              title: <Text fw={700}>จัดการ</Text>,
+              width: "0%",
+              textAlign: "center",
+              render: ({ id, name }) => (
+                <Group justify="center" gap={3} wrap="nowrap">
+                  <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                  <ButtonDelete
+                    onClick={() => handleDelete(String(id), String(name))}
+                  />
+                </Group>
+              ),
+            },
+          ]}
+          sortStatus={sortStatus}
+          onSortStatusChange={(sort) => [
+            setSortStatus(sort),
+            userStore.setFilter({
+              ...userStore,
+              sortField: sort.columnAccessor,
+              sortDirection: sort.direction,
+            }),
+          ]}
+          totalRecords={data?.totalItem || 0}
+          recordsPerPage={PAGE_SIZE}
+          page={userStore.page}
+          onPageChange={(p: number) =>
+            userStore.setFilter({ ...userStore, page: p })
+          }
+          paginationText={({ from, to, totalRecords }) =>
+            `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
+          }
+          noRecordsText="ไม่พบรายการ"
+          noRecordsIcon={<></>}
+          minHeight={120}
+          fetching={isLoading}
+          pinLastColumn
+          pinFirstColumn
+        />
       </Card>
     </>
   );

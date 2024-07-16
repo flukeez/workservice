@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import {
@@ -9,20 +8,24 @@ import {
   Grid,
   Group,
   Highlight,
-  Menu,
-  ScrollArea,
+  Text,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconChevronDown, IconFolderOpen, IconPlus } from "@tabler/icons-react";
+import { IconPlus, IconSearch } from "@tabler/icons-react";
 import PageHeader from "@/components/common/PageHeader";
 import InputSearch from "@/components/common/InputSearch";
 import FacultyForm from "@/components/faculty/FacultyForm";
 import { useFacultyDelete, useFacultys } from "@/hooks/faculty";
 import { useFacultyStore } from "@/stores/useFacultyStore";
+import { PAGE_SIZE } from "@/config";
+import ButtonEdit from "@/components/common/ButtonEdit";
+import ButtonDelete from "@/components/common/ButtonDelete";
+import ConfirmDeleteDialog from "@/components/common/ConfirmDeleteDialog";
+import AlertErrorDialog from "@/components/common/AlertErrorDialog";
+import AlertSuccessDialog from "@/components/common/AlertSuccessDialog";
 
 const title = "หน่วยงาน";
 const listItems = [{ title: title, href: "#" }];
-const Page_size = 10;
 export default function Faculty() {
   const navigate = useNavigate();
   const facultyStore = useFacultyStore();
@@ -38,7 +41,6 @@ export default function Faculty() {
     const condition = {
       txtSearch: facultyStore.txtSearch,
       page: facultyStore.page - 1,
-      limit: Page_size,
       sortField: sortStatus.columnAccessor,
       sortDirection: sortStatus.direction,
     };
@@ -56,29 +58,25 @@ export default function Faculty() {
     setRowId(id);
     setOpened(true);
   };
-  const handleDelete = async (id: string) => {
-    try {
-      const dialog = await Swal.fire({
-        title: "คุณต้องการลบรายการนี้ใช่หรือไม่",
-        icon: "warning",
-        showCancelButton: true,
-        cancelButtonText: "ยกเลิก",
-        confirmButtonText: "ตกลง",
-      });
-      if (dialog.isConfirmed) {
-        await mutationDelete.mutateAsync(id);
-        Swal.fire({
-          title: "ลบข้อมูลสําเร็จ",
-          icon: "success",
+  const handleDelete = async (id: string, name: string) => {
+    const isConfirmed = await ConfirmDeleteDialog({
+      html: `คุณต้องการลบรายการนี่ใช่หรือไม่<p>${name}</p>`,
+    });
+
+    if (isConfirmed) {
+      try {
+        const { data } = await mutationDelete.mutateAsync(id);
+        if (data.message === "failed") {
+          // จัดการกรณีลบไม่สำเร็จ (ถ้ามี)
+          await AlertErrorDialog({ title: "ลบข้อมูลไม่สำเร็จ !!" });
+        } else {
+          await AlertSuccessDialog({ title: "ลบข้อมูลสำเร็จ" });
+        }
+      } catch (error) {
+        await AlertErrorDialog({
+          html: "ลบข้อมูลไม่สำเร็จ เนื่องจากหมดเวลาเชื่อมต่อ ให้ออกจากระบบ แล้วเข้าใหม่",
         });
       }
-    } catch (error) {
-      console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "เกิดข้อผิดพลาด",
-        text: "ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง",
-      });
     }
   };
   const searchData = () => {
@@ -97,8 +95,12 @@ export default function Faculty() {
       <Drawer
         opened={opened}
         onClose={() => setOpened(false)}
-        title={title}
+        title={`${title} ${rowId !== "0" ? "(แก้ไข)" : "(เพิ่ม)"}`}
+        size="lg"
         position="right"
+        closeOnClickOutside={false}
+        offset={8}
+        radius="md"
       >
         {opened ? (
           <FacultyForm onClose={() => setOpened(false)} id={rowId} />
@@ -136,139 +138,91 @@ export default function Faculty() {
             </Grid.Col>
           </Grid>
         </Card.Section>
-        <ScrollArea>
-          <DataTable
-            mt="md"
-            withTableBorder
-            borderRadius="sm"
-            withColumnBorders
-            striped
-            highlightOnHover
-            records={data?.rows}
-            columns={[
-              {
-                accessor: "name",
-                title: "ชื่อหน่วยงาน",
-                width: "45%",
-                sortable: true,
-                render({ name }) {
-                  return (
-                    <Highlight highlight={facultyStore.txtSearch}>
-                      {String(name)}
-                    </Highlight>
-                  );
-                },
+
+        <DataTable
+          mt="md"
+          withTableBorder
+          borderRadius="sm"
+          withColumnBorders
+          striped
+          highlightOnHover
+          pinFirstColumn
+          pinLastColumn
+          records={data?.rows}
+          columns={[
+            {
+              accessor: "name",
+              title: <Text fw={700}>ชื่อหน่วยงาน</Text>,
+              width: "45%",
+              sortable: true,
+              render({ name }) {
+                return (
+                  <Highlight size="sm" highlight={facultyStore.txtSearch}>
+                    {String(name)}
+                  </Highlight>
+                );
               },
-              {
-                accessor: "faculty_name",
-                title: "หน่วยงงานต้นสังกัด",
-                width: "20%",
-                sortable: true,
-                render({ faculty_name }) {
-                  return (
-                    <Highlight highlight={facultyStore.txtSearch}>
-                      {String(faculty_name || "")}
-                    </Highlight>
-                  );
-                },
+            },
+            {
+              accessor: "faculty_name",
+              title: <Text fw={700}>หน่วยงงานต้นสังกัด</Text>,
+              width: "20%",
+              sortable: true,
+              render({ faculty_name }) {
+                return (
+                  <Highlight size="sm" highlight={facultyStore.txtSearch}>
+                    {String(faculty_name || "")}
+                  </Highlight>
+                );
               },
-              {
-                accessor: "org_chart",
-                title: "แผนผังองค์กร",
-                width: "10%",
-                textAlign: "center",
-                render({ id }) {
-                  return (
-                    <Button
-                      leftSection={<IconFolderOpen size="1.25rem" />}
-                      color="cyan"
-                      size="xs"
-                      onClick={() => navigate("organize_chart/" + id)}
-                    >
-                      เรียกดู
-                    </Button>
-                  );
-                },
-              },
-              {
-                accessor: "id",
-                title: "จัดการ",
-                width: "0%",
-                textAlign: "center",
-                render: ({ id }) => (
-                  <>
-                    <Menu withArrow position="bottom">
-                      <Menu.Target>
-                        <Button
-                          hiddenFrom="md"
-                          color="blue"
-                          rightSection={
-                            <IconChevronDown size="1.05rem" stroke={1.5} />
-                          }
-                          pr={12}
-                          size="xs"
-                        >
-                          จัดการ
-                        </Button>
-                      </Menu.Target>
-                      <Menu.Dropdown>
-                        <Menu.Item onClick={() => handleUpdate(String(id))}>
-                          แก้ไข
-                        </Menu.Item>
-                        <Menu.Item
-                          onClick={() => {
-                            handleDelete(String(id));
-                          }}
-                        >
-                          ลบ
-                        </Menu.Item>
-                      </Menu.Dropdown>
-                    </Menu>
-                    <Group justify="center" visibleFrom="md" wrap="nowrap">
-                      <Button
-                        size="xs"
-                        mx="xs"
-                        onClick={() => handleUpdate(String(id))}
-                      >
-                        แก้ไข
-                      </Button>
-                      <Button
-                        color="red"
-                        size="xs"
-                        onClick={() => handleDelete(String(id))}
-                      >
-                        ลบ
-                      </Button>
-                    </Group>
-                  </>
-                ),
-              },
-            ]}
-            sortStatus={sortStatus}
-            onSortStatusChange={(sort) => {
-              setSortStatus(sort);
-              facultyStore.setFilter({
-                ...facultyStore,
-                sortField: sort.columnAccessor,
-                sortDirection: sort.direction,
-              });
-            }}
-            totalRecords={data?.totalItem || 0}
-            recordsPerPage={Page_size}
-            page={facultyStore.page}
-            onPageChange={(p: number) =>
-              facultyStore.setFilter({ ...facultyStore, page: p })
-            }
-            paginationText={({ from, to, totalRecords }) =>
-              `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
-            }
-            paginationActiveBackgroundColor="gray"
-            noRecordsText="ไม่พบรายการ"
-            noRecordsIcon={<></>}
-            minHeight={120}
-            fetching={isLoading}
-          />
-        </ScrollArea>
+            },
+            {
+              accessor: "id",
+              title: <Text fw={700}>จัดการ</Text>,
+              width: "0%",
+              textAlign: "center",
+              render: ({ id }) => (
+                <Group justify="center" gap={3} wrap="nowrap">
+                  <Button
+                    color="cyan"
+                    variant="subtle"
+                    size="compact-md"
+                    onClick={() => navigate("user_position/" + id)}
+                  >
+                    <IconSearch size="1.25rem" />
+                  </Button>
+
+                  <ButtonEdit onClick={() => handleUpdate(String(id))} />
+                  <ButtonDelete
+                    onClick={() => handleDelete(String(id), String(name))}
+                  />
+                </Group>
+              ),
+            },
+          ]}
+          sortStatus={sortStatus}
+          onSortStatusChange={(sort) => {
+            setSortStatus(sort);
+            facultyStore.setFilter({
+              ...facultyStore,
+              sortField: sort.columnAccessor,
+              sortDirection: sort.direction,
+            });
+          }}
+          totalRecords={data?.totalItem || 0}
+          recordsPerPage={PAGE_SIZE}
+          page={facultyStore.page}
+          onPageChange={(p: number) =>
+            facultyStore.setFilter({ ...facultyStore, page: p })
+          }
+          paginationText={({ from, to, totalRecords }) =>
+            `แสดงข้อมูล ${from} ถึง ${to} จากทั้งหมด ${totalRecords} รายการ`
+          }
+          noRecordsText="ไม่พบรายการ"
+          noRecordsIcon={<></>}
+          minHeight={120}
+          fetching={isLoading}
+        />
       </Card>
     </>
   );
